@@ -13,3 +13,6 @@
 
 * To run RSpec tests:
   * $bundle exec rspec
+
+* Temp staging site:
+  * https://vmtapp.herokuapp.com/
