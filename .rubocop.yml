@@ -1,0 +1,14 @@
+AllCops:
+  Includes:
+    - Rakefile
+    - config.ru
+    - '**/Gemfile'
+  Excludes:
+    - 'node_modules/**/*'
+    - db/**
+    - config/**
+    - script/**
+Documentation:
+  Enabled: false
+Metrics/LineLength:
+  Max: 120

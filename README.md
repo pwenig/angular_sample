@@ -14,5 +14,10 @@
 * To run RSpec tests:
   * $bundle exec rspec
 
+* Rubocop
+  * rubocop -a
+    The -a option will automatically update some errors. Please see the
+    .rubocop.yml file for settings to ignore or alter cop rules.
+
 * Temp staging site:
   * https://vmtapp.herokuapp.com/
