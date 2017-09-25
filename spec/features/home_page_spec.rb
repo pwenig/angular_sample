@@ -1,10 +1,8 @@
 require 'rails_helper'
 
-RSpec.feature 'Home Page', :type => :feature do 
-
-  it 'visits root path' do 
+RSpec.feature 'Home Page', type: :feature do
+  it 'visits root path' do
     visit('/')
     expect(current_path).to eq(root_path)
   end
-
 end
