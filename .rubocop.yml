@@ -5,8 +5,8 @@ AllCops:
     - '**/Gemfile'
   Excludes:
     - 'node_modules/**/*'
-    - db/**
-    - config/**
+    - db/**/*
+    - config/**/*
     - script/**
 Documentation:
   Enabled: false
