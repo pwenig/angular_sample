@@ -12,3 +12,6 @@ Documentation:
   Enabled: false
 Metrics/LineLength:
   Max: 120
+Style/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
