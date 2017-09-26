@@ -1,7 +1,32 @@
-<angular-app>Loading...{{name}}
-</angular-app>
+  <% if !current_user %>
+    <div class='login-container'>
+      <div class='row'>
+        <section class='login'>
+          <h2>Login</h2>
+          <p>Only users authorized by Viacom Inc. have permission to use this interface.</p>
+          <div *ngIf='true'>
+            <%= form_for(:user, :url => session_path(:user)) do |f| %>
+                <div class="field">
+                  <%= f.email_field :email, :id => 'email-login', :placeholder => 'Email Address' %>
+                </div>
+                <div class="field">
+                  <%= f.password_field :password, :id => 'password-login', :placeholder => 'Password' %>
+                </div>
+                <%= f.submit 'Log In', :class => 'login-button' %><br>
+            <% end %>
+          </div>
+          <%= link_to 'First time? Click here to signup',  register_path, :id => 'signup-link' %>
+        </section>
+      </div>
+  </div>
+  <% end %>
 
-
-
-
- <%= javascript_pack_tag 'angular_app' %>
+  <% if current_user %>
+    <div class='login-container'>
+      <div class='row'>
+        <section class='login'>
+          <h2>Logged In User</h2>
+        </section>
+      </div>
+    </div>
+  <% end %>
