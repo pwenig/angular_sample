@@ -17,6 +17,7 @@
     text-align: center;
     height: auto;
     margin-bottom: 20px;
+    height: 110px;
 
     img {
       margin: 20px;
@@ -36,11 +37,18 @@
         font-size: 22px;
       }
     }
-
-
   }
 
+  p {
+    font-size: 20px;
+    text-align: center;
+  }
+  .alert {
+    color: red;
+    
+  }
 }
+
 
 .login-container {
   margin-top: 20px;
