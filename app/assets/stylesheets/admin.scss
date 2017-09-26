@@ -1,0 +1,64 @@
+.header-container {
+  width: 100%;
+  display: flex;
+  width: 100%;
+  margin: 0;
+  
+  .row {
+    width: 100%;
+    margin: 0;
+  }
+
+  section.header {
+    padding: 10px;
+    font-size: medium;
+    background-color: #1B1B1B;
+    color: #fff;
+    text-align: center;
+    height: auto;
+    margin-bottom: 20px;
+    height: 110px;
+
+    img {
+      margin-right: 20px;
+      margin-top: 20px;
+    }
+    a {
+      text-decoration: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .logout-link{
+      a {
+        color: white;
+        float: right;
+        margin-right: 30px;
+        font-size: 22px;
+        margin-top: 20px;
+      }
+    }
+  }
+
+  p {
+    font-size: 20px;
+    text-align: center;
+  }
+  .alert {
+    color: red;
+    
+  }
+}
+
+.navigation {
+  background-color: #2CACD9;
+
+  a {
+    margin-left: 20px;
+  }
+}
+
+.app-container {
+  background-color: #2CACD9;
+}
