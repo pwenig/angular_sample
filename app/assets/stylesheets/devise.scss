@@ -1,0 +1,28 @@
+.login-container {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .row {
+    width: 35%;
+  }
+
+  section.login {
+    padding: 10px;
+    font-size: medium;
+    border: 1px solid black;
+    text-align: center;
+    height: auto;
+
+    .submit-button {
+      height: auto;
+      padding: 5px;
+    }
+
+  }
+
+}
+
+

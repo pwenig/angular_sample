@@ -17,6 +17,10 @@
 * To create the initial admin user:
   * $rake admin:create_user
 
+* To enable email invitations, add ENV variables:
+  * EMAIL_ADDRESS
+  * EMAIL_PASSWORD
+
 * Rubocop
   * rubocop -a
     The -a option will automatically update some errors. Please see the

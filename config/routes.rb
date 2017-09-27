@@ -10,7 +10,8 @@ Rails.application.routes.draw do
   # Cleaning up devise routes
   as :user do
     get 'signin' => 'pages#index'
-    get 'register' => 'devise/registrations#new'
+    get 'invite' => 'devise/invitations#new'
+    
    
   end
 
