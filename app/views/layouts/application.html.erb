@@ -12,8 +12,11 @@
       <section class="header">
        <a href="/"><%= image_tag('viacom_logo.png') %>Tagging Project</a>
        <% if current_user %>
-          <div class="logout-link"><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></div>
+          <span class="logout-link"><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></span>
         <% end %>
+        <% if current_user && current_user.admin %>
+          <span class="logout-link"><%= link_to 'Admin', admin_root_path %></span>
+       <% end %>
       </section>
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>

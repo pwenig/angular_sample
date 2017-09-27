@@ -1,10 +1,17 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :users
+
+    root to: "users#index"
+  end
+
   devise_for :users
 
   # Cleaning up devise routes
   as :user do
     get 'signin' => 'pages#index'
-    get 'register' => 'devise/registrations#new'
+    get 'invite' => 'devise/invitations#new'
+    
    
   end
 
