@@ -43,7 +43,7 @@ class NetworkDashboard < Administrate::BaseDashboard
   # Overwrite this method to customize how networks are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(network)
-  #   "Network ##{network.id}"
-  # end
+  def display_resource(network)
+    network.name
+  end
 end

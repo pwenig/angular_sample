@@ -47,4 +47,12 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Networks')
     expect(current_path).to eq(admin_networks_path)
   end
+
+  it 'directs to program admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Programs')
+    expect(current_path).to eq(admin_programs_path)
+  end
 end

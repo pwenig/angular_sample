@@ -18,6 +18,25 @@ namespace :import do
     puts 'Upload finished!'
   end
 
+  task programs: :environment do
+    puts 'Starting upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'programs.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        next if Program.exists?(name: row['Program'])
+        network = Network.find_by(name: row['Network'])
+        if network
+          Program.create!(name: row['Program'], abbrev: row['Program_abbrev'], network_id: network.id)
+        else
+          Program.create!(name: row['Program'], abbrev: row['Program_abbrev'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
   def export_to_csv(networks)
     CSV.open('./lib/csv_data/networks_normalized.csv', 'wb') do |csv|
       csv << Network.attribute_names
