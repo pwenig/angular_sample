@@ -17,6 +17,9 @@
 * To create the initial admin user:
   * $rake admin:create_user
 
+* To import initial network data:
+  * $rake import:networks
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD
