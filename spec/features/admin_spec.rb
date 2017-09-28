@@ -7,13 +7,6 @@ RSpec.feature 'Admin', type: :feature do
     @user = User.create(email: 'user@user.com', password: 'password')
   end
 
-  it 'logs in an admin user' do
-    fill_in('email-login', with: @admin.email)
-    fill_in('password-login', with: @admin.password)
-    click_on('Log In')
-    expect(current_path).to eq(admin_root_path)
-  end
-
   it 'redirects a non-admin user' do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
@@ -23,4 +16,36 @@ RSpec.feature 'Admin', type: :feature do
     visit('/admin')
     expect(page).to have_text('You are not authorized to access this page.')
   end
+
+  it 'logs in an admin user' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    expect(current_path).to eq(admin_root_path)
+  end
+
+  it 'directs to user admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Users')
+    expect(current_path).to eq(admin_users_path)
+  end 
+
+  it 'directs to agency admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Agencies')
+    expect(current_path).to eq(admin_agencies_path)
+  end 
+
+  it 'directs to network admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Networks')
+    expect(current_path).to eq(admin_networks_path)
+  end 
+  
 end
