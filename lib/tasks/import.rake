@@ -27,11 +27,7 @@ namespace :import do
       csv.each do |row|
         next if Program.exists?(name: row['Program'])
         network = Network.find_by(name: row['Network'])
-        if network
-          Program.create!(name: row['Program'], abbrev: row['Program_abbrev'], network_id: network.id)
-        else
-          Program.create!(name: row['Program'], abbrev: row['Program_abbrev'])
-        end
+        Program.create!(name: row['Program'], abbrev: row['Program_abbrev'], network_id: network.id)
       end
     end
     puts 'Upload finished!'
