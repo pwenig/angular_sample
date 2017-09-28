@@ -30,7 +30,7 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Log In')
     click_on('Users')
     expect(current_path).to eq(admin_users_path)
-  end 
+  end
 
   it 'directs to agency admin' do
     fill_in('email-login', with: @admin.email)
@@ -38,7 +38,7 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Log In')
     click_on('Agencies')
     expect(current_path).to eq(admin_agencies_path)
-  end 
+  end
 
   it 'directs to network admin' do
     fill_in('email-login', with: @admin.email)
@@ -46,6 +46,5 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Log In')
     click_on('Networks')
     expect(current_path).to eq(admin_networks_path)
-  end 
-  
+  end
 end
