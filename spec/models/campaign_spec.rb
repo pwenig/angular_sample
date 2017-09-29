@@ -1,11 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Network, type: :model do
-  subject { Network.new(abbrev: 'Foo') }
+RSpec.describe Campaign, type: :model do
+  subject { Campaign.new(abbrev: 'Foo') }
 
-  it 'creates a network' do
-    network = Network.create(name: 'Comedy Central', abbrev: 'CCL')
-    expect(network.name).to include('Comedy Central')
+  it 'creates a campaign' do
+    campaign = Campaign.create!(name: 'Foo', abbrev: 'F01')
+    expect(campaign.name).to include('Foo')
+    expect(campaign.abbrev).to include('F01')
   end
 
   it 'should validate :abbrev required' do

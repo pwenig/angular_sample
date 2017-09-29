@@ -55,4 +55,28 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Programs')
     expect(current_path).to eq(admin_programs_path)
   end
+
+  it 'directs to season admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Seasons')
+    expect(current_path).to eq(admin_seasons_path)
+  end
+
+  it 'directs to campaign admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Campaigns')
+    expect(current_path).to eq(admin_campaigns_path)
+  end
+
+  it 'directs to campaign type admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Campaign Types')
+    expect(current_path).to eq(admin_campaign_types_path)
+  end
 end
