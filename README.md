@@ -20,6 +20,9 @@
 * To import initial network data:
   * $rake import:networks
 
+* To import initial program data (after network data):
+  * $rake import:programs
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD
