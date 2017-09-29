@@ -10,26 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170928211548) do
+ActiveRecord::Schema.define(version: 20170928230024) do
 
   create_table "agencies", force: :cascade do |t|
-    t.string "name"
-    t.string "abbrev"
+    t.string "name", null: false
+    t.string "abbrev", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "networks", force: :cascade do |t|
-    t.string "name"
-    t.string "abbrev"
+    t.string "name", null: false
+    t.string "abbrev", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "programs", force: :cascade do |t|
-    t.string "name"
-    t.string "abbrev"
-    t.integer "network_id"
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.integer "network_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["network_id"], name: "index_programs_on_network_id"
