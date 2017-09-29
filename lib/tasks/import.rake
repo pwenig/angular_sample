@@ -33,36 +33,35 @@ namespace :import do
     puts 'Upload finished!'
   end
 
-  task seasons: :environment do 
+  task seasons: :environment do
     puts 'Starting Seasons upload...'
     puts ''
-    ActiveRecord::Base.transaction do 
+    ActiveRecord::Base.transaction do
       csv_text = File.read(Rails.root.join('lib', 'csv_data', 'seasons.csv')).scrub
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless Season.exists?(name: row['SEASON'])
           Season.create!(name: row['SEASON'], abbrev: row['SN ABBR'])
         end
-      end 
-    end 
+      end
+    end
     puts 'Upload finished!'
-  end 
+  end
 
-  task campaign_types: :environment do 
+  task campaign_types: :environment do
     puts 'Starting Campaign Types upload...'
     puts ''
-    ActiveRecord::Base.transaction do 
+    ActiveRecord::Base.transaction do
       csv_text = File.read(Rails.root.join('lib', 'csv_data', 'campaign_types.csv')).scrub
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless CampaignType.exists?(name: row['CAMPAIGN TYPE'])
           CampaignType.create!(name: row['CAMPAIGN TYPE'], abbrev: row['CPN TYPE ABBR'])
         end
-      end 
-    end 
+      end
+    end
     puts 'Upload finished!'
-  end 
-
+  end
 
   def export_to_csv(networks)
     CSV.open('./lib/csv_data/networks_normalized.csv', 'wb') do |csv|

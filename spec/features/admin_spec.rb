@@ -79,7 +79,4 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Campaign Types')
     expect(current_path).to eq(admin_campaign_types_path)
   end
-
-
-
 end
