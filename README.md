@@ -23,6 +23,12 @@
 * To import initial program data (after network data):
   * $rake import:programs
 
+* To import initial season data:
+  * $rake import:seasons
+
+* To import initial campaign type data:
+  * $rake import:campaign_types
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD

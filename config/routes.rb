@@ -4,6 +4,9 @@ Rails.application.routes.draw do
     resources :agencies
     resources :networks
     resources :programs
+    resources :seasons
+    resources :campaigns
+    resources :campaign_types
 
     root to: "users#index"
   end
