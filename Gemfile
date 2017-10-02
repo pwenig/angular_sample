@@ -26,14 +26,17 @@ end
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '~> 2.13'
   gem 'pry'
   gem 'rspec-rails', '~> 3.6', '>= 3.6.1'
-  gem 'selenium-webdriver'
-  gem 'shoulda', '~> 3.5'
   gem 'sqlite3'
 end
+
+group :test do 
+  gem 'shoulda', '~> 3.5'
+  gem 'selenium-webdriver'
+  gem 'capybara', '~> 2.13'
+  gem 'factory_girl_rails', require: false
+end 
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
