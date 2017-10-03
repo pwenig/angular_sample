@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20171003183504) do
     t.integer "program_id", null: false
     t.integer "season_id", null: false
     t.integer "campaign_type_id", null: false
-    t.string "custom", null: false
+    t.string "custom"
     t.integer "start_month", null: false
     t.integer "start_day", null: false
     t.integer "start_year", null: false
