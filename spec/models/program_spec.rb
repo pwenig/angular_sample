@@ -9,6 +9,10 @@ RSpec.describe Program, type: :model do
     should belong_to(:network)
   end
 
+  it 'should have many campaign inputs' do
+    should have_many(:campaign_inputs)
+  end
+
   it 'creates a program' do
     network = Network.create(name: 'Comedy Central', abbrev: 'CCL')
     program = Program.create(name: 'Clusterfest', abbrev: 'CLTF', network_id: network.id)

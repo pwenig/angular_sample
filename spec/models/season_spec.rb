@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Season, type: :model do
   subject { Season.new(abbrev: 'Foo') }
 
+  it 'should have many campaign inputs' do
+    should have_many(:campaign_inputs)
+  end
+
   it 'creates a season' do
     season = Season.create!(name: 'S00', abbrev: 's00')
     expect(season.name).to include('S00')
