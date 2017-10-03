@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe Network, type: :model do
   subject { Network.new(abbrev: 'Foo') }
 
-  it 'should have many programs' do 
+  it 'should have many programs' do
     should have_many(:programs)
-  end 
+  end
 
   it 'creates a network' do
     network = Network.create(name: 'Comedy Central', abbrev: 'CCL')

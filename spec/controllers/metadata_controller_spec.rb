@@ -1,12 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe MetadataController do
-
   describe 'GET /metadata' do
-
-    let!(:user) {
+    let!(:user) do
       User.create!(email: 'test@example.com', password: 'testing')
-    }
+    end
 
     before(:each) do
       sign_in(user)
@@ -20,7 +18,5 @@ RSpec.describe MetadataController do
       expect(metadata['networks'].length).to_not eq(0)
       expect(metadata['networks'].length).to eq(1)
     end
-
   end
-
 end

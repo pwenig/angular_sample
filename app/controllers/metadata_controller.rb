@@ -1,8 +1,6 @@
 class MetadataController < ApplicationController
-
   def index
-    @metadata = MetadataService.get_data
+    @metadata = MetadataService.fetch_data
     render json: @metadata
   end
-
 end

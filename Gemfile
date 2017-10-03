@@ -31,12 +31,12 @@ group :development, :test do
   gem 'sqlite3'
 end
 
-group :test do 
-  gem 'shoulda', '~> 3.5'
-  gem 'selenium-webdriver'
+group :test do
   gem 'capybara', '~> 2.13'
   gem 'factory_girl_rails', require: false
-end 
+  gem 'selenium-webdriver'
+  gem 'shoulda', '~> 3.5'
+end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
