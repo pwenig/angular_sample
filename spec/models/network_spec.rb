@@ -7,6 +7,10 @@ RSpec.describe Network, type: :model do
     should have_many(:programs)
   end
 
+  it 'should have many campaign inputs' do
+    should have_many(:campaign_inputs)
+  end
+
   it 'creates a network' do
     network = Network.create(name: 'Comedy Central', abbrev: 'CCL')
     expect(network.name).to include('Comedy Central')
