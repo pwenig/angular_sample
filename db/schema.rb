@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(version: 20171003183504) do
 
   create_table "campaign_inputs", force: :cascade do |t|
     t.integer "program_id", null: false
-    t.integer "network_id", null: false
     t.integer "season_id", null: false
     t.integer "campaign_type_id", null: false
     t.string "custom", null: false
@@ -36,7 +35,6 @@ ActiveRecord::Schema.define(version: 20171003183504) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["campaign_type_id"], name: "index_campaign_inputs_on_campaign_type_id"
-    t.index ["network_id"], name: "index_campaign_inputs_on_network_id"
     t.index ["program_id"], name: "index_campaign_inputs_on_program_id"
     t.index ["season_id"], name: "index_campaign_inputs_on_season_id"
   end

@@ -2,7 +2,6 @@ class CreateCampaignInputs < ActiveRecord::Migration[5.1]
   def change
     create_table :campaign_inputs do |t|
       t.references :program, foreign_key: true, :null => false 
-      t.references :network, foreign_key: true, :null => false      
       t.references :season, foreign_key: true, :null => false
       t.references :campaign_type, foreign_key: true, :null => false
       t.string :custom, :null => false
