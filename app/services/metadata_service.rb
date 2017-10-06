@@ -13,11 +13,11 @@ class MetadataService
   def self.fetch_networks
     Network.all.as_json(
       except: %i[
-        id created_at updated_at
+        created_at updated_at
       ],
       include: {
         programs: {
-          except: %i[id created_at updated_at network_id]
+          except: %i[created_at updated_at network_id]
         }
       }
     )
@@ -26,7 +26,7 @@ class MetadataService
   def self.fetch_seasons
     Season.all.as_json(
       except: %i[
-        id created_at updated_at
+        created_at updated_at
       ]
     )
   end
@@ -34,7 +34,7 @@ class MetadataService
   def self.fetch_campaigns
     Campaign.all.as_json(
       except: %i[
-        id created_at updated_at
+        created_at updated_at
       ]
     )
   end
@@ -42,7 +42,7 @@ class MetadataService
   def self.fetch_campaign_types
     CampaignType.all.as_json(
       except: %i[
-        id created_at updated_at
+        created_at updated_at
       ]
     )
   end

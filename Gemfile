@@ -17,6 +17,7 @@ gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 gem 'webpacker'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'angular_rails_csrf'
 gem 'jbuilder', '~> 2.5'
 
 group :production do

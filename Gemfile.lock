@@ -51,6 +51,8 @@ GEM
       momentjs-rails (~> 2.8)
       sass-rails (~> 5.0)
       selectize-rails (~> 0.6)
+    angular_rails_csrf (2.1.1)
+      railties (>= 3, < 5.2)
     arel (8.0.0)
     ast (2.3.0)
     autoprefixer-rails (7.1.2.2)
@@ -289,6 +291,7 @@ PLATFORMS
 
 DEPENDENCIES
   administrate
+  angular_rails_csrf
   bootstrap-sass
   byebug
   capybara (~> 2.13)

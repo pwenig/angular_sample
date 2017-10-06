@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   
   root 'pages#index'
   resources :metadata, only: [:index]
+  resources :campaign_inputs
   devise_for :users
 
   # Cleaning up devise routes
