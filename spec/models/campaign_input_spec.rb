@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe CampaignInput, type: :model do
-  it 'should belong to a network' do
-    should belong_to(:network)
-  end
-
   it 'should belong to a program' do
     should belong_to(:program)
   end
@@ -31,7 +27,6 @@ RSpec.describe CampaignInput, type: :model do
     end_year = 2017
     campaign_input_tag = 'CCL_ CLTF_ S00_ BG_ xx_ 20170121-20170221'
     campaign_input = CampaignInput.create!(
-      network: network,
       program: program,
       campaign_type: campaign_type,
       season: season,
@@ -44,7 +39,6 @@ RSpec.describe CampaignInput, type: :model do
       end_year: end_year,
       campaign_input_tag: campaign_input_tag
     )
-    expect(campaign_input.network.name).to include('Comedy Central')
     expect(campaign_input.program.name).to include('Clusterfest')
     expect(campaign_input.campaign_type.name).to include('Binge')
     expect(campaign_input.season.name).to include('S00')
