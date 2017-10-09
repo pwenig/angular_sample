@@ -27,6 +27,7 @@ RSpec.describe CampaignInput, type: :model do
     end_year = 2017
     campaign_input_tag = 'CCL_ CLTF_ S00_ BG_ xx_ 20170121-20170221'
     campaign_input = CampaignInput.create!(
+      network: network,
       program: program,
       campaign_type: campaign_type,
       season: season,
