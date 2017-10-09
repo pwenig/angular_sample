@@ -14,7 +14,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
-    expect(page).to have_text('Tag Manager')
+    expect(page).to have_text('Campaign Input')
   end
 
   it 'creates a campaign input tag' do
@@ -33,13 +33,13 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_select('Campaign Type', options: ['Binge'])
     select('Binge', from: 'Campaign Type')
     expect(page).to have_text('Binge')
-    expect(page).to have_field('Custom')
-    fill_in('Custom', with: 'XX')
+    expect(page).to have_field('custom')
+    fill_in('custom', with: 'XX')
     expect(page).to have_select('Start Month')
     select('01', from: 'Start Month')
     select('01', from: 'Start Day')
     select('02', from: 'End Month')
     select('02', from: 'End Day')
-    expect(page).to have_text('Campaign Input: CCL_CLTF_s00_BG_XX_20170101-20170202')
+    expect(page).to have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
   end
 end

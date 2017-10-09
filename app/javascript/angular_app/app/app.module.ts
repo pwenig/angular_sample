@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
-import { AppComponent } from './app.component';
+import { CampaignComponent } from './campaign.component';
 import {SelectComponent} from './select.component';
 import {YearSelectComponent} from './yearselect.component';
 import {MonthSelectComponent} from './monthselect.component';
@@ -19,7 +19,7 @@ import {RangePipe} from '../shared/range.pipe'
 
 @NgModule({
   declarations: [
-    AppComponent,
+    CampaignComponent,
     SelectComponent,
     YearSelectComponent,
     MonthSelectComponent,
@@ -33,6 +33,6 @@ import {RangePipe} from '../shared/range.pipe'
     TimepickerModule.forRoot()
   ],
   providers: [MetadataService, CampaignInputService],
-  bootstrap: [AppComponent]
+  bootstrap: [CampaignComponent]
 })
 export class AppModule { }

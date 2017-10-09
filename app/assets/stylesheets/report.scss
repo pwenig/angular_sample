@@ -48,7 +48,80 @@
     
   }
 }
+.input-tag-container {
 
+  section.input-tag {
+  width: 500px;
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+
+    .submit-column {
+      flex: 1;
+      font-size: 13px;
+      text-align: right;
+      margin-top: 5px;
+
+      button.input-submit {
+        background-color: #2CACD9;
+      }
+    }
+
+    .tag-column {
+      flex: 2;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+  }
+}
+
+.select-container {
+
+  section.select {
+  width: 585px;
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+
+    .network-column {
+      margin: 10px;
+    }
+
+    .column {
+      flex: 1;
+      margin: 10px;
+
+    }
+
+    .campaign-type-column {
+      margin: 10px;
+      width: 190px;
+    }
+
+    .custom-column {
+      margin-left: 10px;
+      margin-top: 8px;
+      input#custom {
+        font-size: 18px;
+        border: 1px solid lightgrey;
+        border-radius: 5%;
+        padding: 5px;
+        width: 170px;
+      }
+    }
+
+    .year-column {
+      margin: 10px;
+
+     select.form-control {
+       width: 190px;
+     }
+
+    }
+
+  }
+
+}
 
 .login-container {
   margin-top: 20px;
@@ -90,8 +163,15 @@
 
   }
 
+  section.component {
+    height: auto;
+  }
+
 }
 
-button.input-submit {
-  background-color: #2CACD9;
+h2.campaign-title {
+  text-align: left;
+  font-size: 20px;
+  color: #2CACD9;
 }
+
