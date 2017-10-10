@@ -10,7 +10,7 @@ RSpec.feature 'User', type: :feature do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
-    expect(page).to have_text('Tag Manager')
+    expect(page).to have_text('Signed in successfully.')
   end
 
   it 'logs out a user' do

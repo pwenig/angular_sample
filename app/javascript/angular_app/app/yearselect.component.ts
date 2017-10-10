@@ -2,8 +2,8 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'year-select-component',
-  template: `<label for="{{label}}">{{label}}</label>
-  <select class="form-control" id="{{label}}" required (change)="optionSelected()" [(ngModel)]="chosenOption">
+  template: `<label for="year">{{label}}</label>
+  <select class="form-control" id="year" required (change)="optionSelected()" [(ngModel)]="chosenOption">
   <option *ngFor="let value of (2017 | range : 2027)" [ngValue]="value" >{{value}}</option>
   `
 })

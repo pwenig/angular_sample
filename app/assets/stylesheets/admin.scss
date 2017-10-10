@@ -1,3 +1,5 @@
+@import "variables.scss";
+
 .header-container {
   width: 100%;
   display: flex;
@@ -7,17 +9,16 @@
   .row {
     width: 100%;
     margin: 0;
+    background-color: $primary-color;
   }
 
   section.header {
     padding: 10px;
     font-size: medium;
-    background-color: #1B1B1B;
+    background-color: $primary-color;
     color: #fff;
     text-align: center;
-    height: auto;
     margin-bottom: 20px;
-    height: 110px;
 
     img {
       margin-right: 20px;
@@ -52,13 +53,20 @@
 }
 
 .navigation {
-  background-color: #2CACD9;
+  background-color: $primary-color;
 
   a {
     margin-left: 20px;
+    color: white;
   }
 }
 
 .app-container {
-  background-color: #2CACD9;
+  background-color: $primary-color;
+}
+
+.main-content__header {
+  a {
+    color: $primary-color;
+  }
 }
