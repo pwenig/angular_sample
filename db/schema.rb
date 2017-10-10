@@ -75,8 +75,8 @@ ActiveRecord::Schema.define(version: 20171003183504) do
     t.integer "network_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["abbrev"], name: "index_programs_on_abbrev", unique: true
-    t.index ["name"], name: "index_programs_on_name", unique: true
+    t.index ["network_id", "abbrev"], name: "index_programs_on_network_id_and_abbrev", unique: true
+    t.index ["network_id", "name"], name: "index_programs_on_network_id_and_name", unique: true
     t.index ["network_id"], name: "index_programs_on_network_id"
   end
 
