@@ -15,7 +15,7 @@ RSpec.describe Program, type: :model do
 
   it 'creates a program' do
     network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
-    program = Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network.id)
+    program = Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network)
     expect(program.name).to include('Clusterfest')
     expect(program.network.name).to include('Comedy Central')
   end
@@ -23,15 +23,15 @@ RSpec.describe Program, type: :model do
   it 'creates a program with the same name on different networks' do
     network1 = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
     network2 = Network.create!(name: 'Comedy Central Two', abbrev: 'CCL2')
-    Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network1.id)
-    program2 = Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network2.id)
+    Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network1)
+    program2 = Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network2)
     expect(program2.name).to include('Clusterfest')
   end
 
   it 'does not create a program with the same name on the same network' do
     network1 = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
-    Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network1.id)
-    program2 = Program.new(name: 'Clusterfest', abbrev: 'CLTF', network_id: network1.id)
+    Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network1)
+    program2 = Program.new(name: 'Clusterfest', abbrev: 'CLTF', network: network1)
     expect(program2).to_not be_valid
     expect(program2.errors[:name]).to include('has already been taken')
   end
