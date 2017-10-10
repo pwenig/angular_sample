@@ -20,7 +20,7 @@ RSpec.describe Program, type: :model do
     expect(program.network.name).to include('Comedy Central')
   end
 
-  it 'creates a program with the same and on different networks' do
+  it 'creates a program with the same name on different networks' do
     network1 = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
     network2 = Network.create!(name: 'Comedy Central Two', abbrev: 'CCL2')
     Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network1.id)
@@ -28,7 +28,7 @@ RSpec.describe Program, type: :model do
     expect(program2.name).to include('Clusterfest')
   end
 
-  it 'does not create a program with the same and on the same network' do
+  it 'does not create a program with the same name on the same network' do
     network1 = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
     Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network1.id)
     program2 = Program.new(name: 'Clusterfest', abbrev: 'CLTF', network_id: network1.id)
