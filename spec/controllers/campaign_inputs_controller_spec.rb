@@ -72,5 +72,34 @@ RSpec.describe CampaignInputsController do
       post :create, params: create_params
       expect(response.status).to be(200)
     end
+
+    it 'responds with a 204 if a campaign input tag does not exist' do
+      get :show, params: { id: 'CCL_ CLTF_ S00_ BG_ xx_ 20170121-20170221' }
+      expect(response.status).to be(204)
+    end
+
+    it 'responds with a 200 if a campaign input tag exists' do
+      network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
+      program = Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network)
+      campaign_type = CampaignType.create!(name: 'Binge', abbrev: 'BG')
+      season = Season.create!(name: 'S00', abbrev: 's00')
+      create_params = {
+        network_id: network,
+        program_id: program,
+        campaign_type_id: campaign_type,
+        season_id: season,
+        custom: 'xx',
+        start_month: 1,
+        start_day: 21,
+        start_year: 2017,
+        end_month: 2,
+        end_day: 21,
+        end_year: 2017,
+        campaign_input_tag: 'CCL_ CLTF_ S00_ BG_ xx_ 20170121-20170221'
+      }
+      post :create, params: create_params
+      get :show, params: { id: 'CCL_ CLTF_ S00_ BG_ xx_ 20170121-20170221' }
+      expect(response.status).to be(200)
+    end
   end
 end

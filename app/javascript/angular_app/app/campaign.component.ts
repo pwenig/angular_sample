@@ -9,7 +9,8 @@ import { CampaignInputService } from '../services/campaign_input_service';
     <div class="input-tag-container" *ngIf="inputTag">
       <div class="row">
         <section class="input-tag">
-          <div class="submit-column"><button class="input-submit" type="submit" (click)="saveInput()" [disabled]="saveDisabled">Select/Create</button></div>
+          <div class="submit-column" *ngIf="campaignInputTagStatus == 204"><button class="input-submit" type="submit" (click)="saveInput()" [disabled]="saveDisabled">Create</button></div>
+          <div class="submit-column" *ngIf="campaignInputTagStatus == 200"><button class="input-submit" type="submit" [disabled]="saveDisabled">Select</button></div>
           <div class="tag-column">{{ campaignInput.campaignInputTag }}</div>
         </section>
       </div>
@@ -92,6 +93,7 @@ export class CampaignComponent implements OnInit {
   inputTag: boolean = false;
   saveDisabled: boolean = false;
   showSelectors: boolean = true;
+  campaignInputTagStatus: any;
   
   constructor( private _metadata: MetadataService, private _campaign: CampaignInputService) {
   }
@@ -152,8 +154,26 @@ export class CampaignComponent implements OnInit {
       this.campaignInput.endYear +
       this.campaignInput.endMonth +
       this.campaignInput.endDay
-    // This will show the input tag and save button 
+    // Check to see if the tag already exists
+    if(this.campaignInput.campaignInputTag) {
+      this.verifyTag();
+    }
+    
+    // This will show the input tag and save button
     this.inputTag = true;
+
+  }
+
+  verifyTag() {
+    this._campaign.verifyInput(this.campaignInput.campaignInputTag).subscribe(
+      
+      (status) => {
+        this.campaignInputTagStatus = status;
+      },
+      (error) => {
+        console.log('Error', error)
+      }
+    )
 
   }
   saveInput() {

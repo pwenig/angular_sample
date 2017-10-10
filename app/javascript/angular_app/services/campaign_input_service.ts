@@ -12,6 +12,7 @@ export class CampaignInputService {
 
   constructor(private http: HttpClient){}
 
+  // Creates a new Campaign Input 
   createInput(campaignInput): Observable<any> {
 
     let subject: Subject<any> = new Subject;
@@ -31,4 +32,22 @@ export class CampaignInputService {
     return subject.asObservable();
   }
 
+  // Checks to see if a Campaign Input already exists
+  verifyInput(campaignInput): Observable<any>{
+    let subject: Subject<any> = new Subject;
+    this.http.get('/campaign_inputs/' + campaignInput, { observe: 'response' }).subscribe(
+
+      (res) => { 
+        subject.next(res.status);
+      },
+
+      (error) => {
+        console.log('Error', error);
+        subject.error(error);
+      }
+
+    )
+    return subject.asObservable();
+  }
+  
 }

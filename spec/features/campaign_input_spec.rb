@@ -40,6 +40,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     select('01', from: 'Start Day')
     select('02', from: 'End Month')
     select('02', from: 'End Day')
+    expect(page).to have_text('Create')
     expect(page).to have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
   end
 end

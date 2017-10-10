@@ -15,6 +15,15 @@ class CampaignInputsController < ApplicationController
     end
   end
 
+  def show
+    @campaign_input = CampaignInput.find_by(campaign_input_tag: params[:id])
+    if @campaign_input
+      render json: @campaign_input, status: 200
+    else
+      head :no_content
+    end
+  end
+
   private
 
   def permitted_params
