@@ -21,7 +21,7 @@ import { CampaignInputService } from '../services/campaign_input_service';
         <div class="row">
         
           <section class="select">
-            <div class="network-column">
+            <div class="network-column" *ngIf="networks && networks.length > 0">
               <select-component [label]="networkLabel" [options]="networks" (selected)="attributeUpdated($event, 'network')"></select-component>
             </div>
             <div class="column" *ngIf="campaignInput.network">
@@ -36,7 +36,7 @@ import { CampaignInputService } from '../services/campaign_input_service';
             <div class="campaign-type-column"> <select-component [label]="campaignTypeLabel" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component></div>
             <div class="custom-column"> 
               <label for="type">Custom</label><br>
-              <input type="text" id="custom" [(ngModel)]="campaignInput.custom">
+              <input type="text" id="custom" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom">
             </div>
           </section>
 
@@ -119,15 +119,26 @@ export class CampaignComponent implements OnInit {
   // Updates the attribute when it is selected from child components
   attributeUpdated(value, attribute) {
     this.campaignInput[attribute] = value;
+    this.checkAttributes();
+  }
 
-    if(attribute == 'endDay') {
-      this.createTag();
-    }
-
+  // Checks to see if everything is selected before creating the tag
+  checkAttributes() {
+    if(this.campaignInput.network && 
+      this.campaignInput.program &&
+      this.campaignInput.season &&
+      this.campaignInput.campaignType && 
+      this.campaignInput.custom &&
+      this.campaignInput.startYear &&
+      this.campaignInput.startMonth &&
+      this.campaignInput.startDay &&
+      this.campaignInput.endYear &&
+      this.campaignInput.endMonth &&
+      this.campaignInput.endDay
+      ) { this.createTag(); };
   }
 
   createTag() {
-   
     // Create the campaign input tag
     this.campaignInput.campaignInputTag = 
       this.campaignInput.network.abbrev + '_' + 
@@ -146,7 +157,6 @@ export class CampaignComponent implements OnInit {
 
   }
   saveInput() {
-    this.createTag();
     // Create the params
     var createParams = {
       network_id: this.campaignInput.network.id,
