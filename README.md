@@ -29,6 +29,9 @@
 * To import initial campaign type data:
   * $rake import:campaign_types
 
+* To import initial publisher data:
+  * $rake import:publishers
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD

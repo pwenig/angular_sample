@@ -7,11 +7,18 @@
 module Admin
   class ApplicationController < Administrate::ApplicationController
     before_action :authenticate_admin
+    before_action :default_params
 
     def authenticate_admin
       return unless current_user.try(:admin) != true
       flash[:alert] = 'You are not authorized to access this page.'
       redirect_to(root_path)
+    end
+
+    # Sorts the admin collections by name.
+    def default_params
+      params[:order] ||= 'name'
+      params[:direction] ||= 'asc'
     end
 
     # Override this value to specify the number of elements to display at a time

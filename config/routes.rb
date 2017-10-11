@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :seasons
     resources :campaigns
     resources :campaign_types
+    resources :publishers
 
     root to: "users#index"
   end
