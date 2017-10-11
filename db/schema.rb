@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171003183504) do
+ActiveRecord::Schema.define(version: 20171011202250) do
 
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
@@ -19,6 +19,15 @@ ActiveRecord::Schema.define(version: 20171003183504) do
     t.datetime "updated_at", null: false
     t.index ["abbrev"], name: "index_agencies_on_abbrev", unique: true
     t.index ["name"], name: "index_agencies_on_name", unique: true
+  end
+
+  create_table "buy_methods", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_buy_methods_on_abbrev", unique: true
+    t.index ["name"], name: "index_buy_methods_on_name", unique: true
   end
 
   create_table "campaign_inputs", force: :cascade do |t|
@@ -78,6 +87,15 @@ ActiveRecord::Schema.define(version: 20171003183504) do
     t.index ["network_id", "abbrev"], name: "index_programs_on_network_id_and_abbrev", unique: true
     t.index ["network_id", "name"], name: "index_programs_on_network_id_and_name", unique: true
     t.index ["network_id"], name: "index_programs_on_network_id"
+  end
+
+  create_table "publishers", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_publishers_on_abbrev", unique: true
+    t.index ["name"], name: "index_publishers_on_name", unique: true
   end
 
   create_table "seasons", force: :cascade do |t|

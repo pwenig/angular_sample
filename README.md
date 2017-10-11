@@ -29,6 +29,9 @@
 * To import initial campaign type data:
   * $rake import:campaign_types
 
+* To import initial buy methods data:
+  * $rake import:buy_methods
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD
