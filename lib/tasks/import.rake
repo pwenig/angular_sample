@@ -78,6 +78,21 @@ namespace :import do
     puts 'Upload finished!'
   end
 
+  task buy_methods: :environment do
+    puts 'Starting Buy Methods upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'buy_methods.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless BuyMethod.exists?(name: row['BUY METHOD'])
+          BuyMethod.create!(name: row['BUY METHOD'], abbrev: row['BUY ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
   def export_to_csv(networks)
     CSV.open('./lib/csv_data/networks_normalized.csv', 'wb') do |csv|
       csv << Network.attribute_names
