@@ -78,6 +78,36 @@ namespace :import do
     puts 'Upload finished!'
   end
 
+  task publishers: :environment do
+    puts 'Starting Publishers upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'publishers.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless Publisher.exists?(name: row['PUBLISHER'])
+          Publisher.create!(name: row['PUBLISHER'], abbrev: row['PUB ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task agencies: :environment do
+    puts 'Starting Agencies upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'agencies.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless Agency.exists?(name: row['AGENCY'])
+          Agency.create!(name: row['AGENCY'], abbrev: row['AGY ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
   def export_to_csv(networks)
     CSV.open('./lib/csv_data/networks_normalized.csv', 'wb') do |csv|
       csv << Network.attribute_names

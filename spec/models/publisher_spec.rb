@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Agency, type: :model do
-  subject { Agency.new(abbrev: 'sc') }
+RSpec.describe Publisher, type: :model do
+  subject { Publisher.new(abbrev: 'Foo') }
 
-  it 'creates an agency' do
-    agency = Agency.create(name: 'Sterling Cooper', abbrev: 'sc')
-    expect(agency.name).to include('Sterling Cooper')
-    expect(agency.abbrev).to include('sc')
+  it 'should create a publisher' do
+    publisher = Publisher.create!(name: 'ABC', abbrev: 'ABCX')
+    expect(publisher.name).to include('ABC')
+    expect(publisher.abbrev).to include('ABCX')
   end
 
   it 'should validate :abbrev required' do

@@ -6,9 +6,10 @@ Rails.application.routes.draw do
     resources :campaign_types
     resources :networks
     resources :programs
+    resources :publishers
     resources :seasons
     resources :users
-   
+    
     root to: "users#index"
   end
   

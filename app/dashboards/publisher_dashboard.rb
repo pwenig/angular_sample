@@ -1,6 +1,6 @@
 require 'administrate/base_dashboard'
 
-class AgencyDashboard < Administrate::BaseDashboard
+class PublisherDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
   # a hash that describes the type of each of the model's fields.
   #
@@ -8,11 +8,8 @@ class AgencyDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    id: Field::Number,
     name: Field::String,
-    abbrev: Field::String,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    abbrev: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -40,10 +37,10 @@ class AgencyDashboard < Administrate::BaseDashboard
     abbrev
   ].freeze
 
-  # Overwrite this method to customize how agencies are displayed
+  # Overwrite this method to customize how publishers are displayed
   # across all pages of the admin dashboard.
   #
-  def display_resource(agency)
-    agency.name
+  def display_resource(publisher)
+    publisher.name
   end
 end

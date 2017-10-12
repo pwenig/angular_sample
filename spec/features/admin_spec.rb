@@ -87,4 +87,13 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Buy Methods')
     expect(current_path).to eq(admin_buy_methods_path)
   end
+
+  it 'directs to publisher admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Publishers')
+    expect(current_path).to eq(admin_publishers_path)
+  end
+  
 end
