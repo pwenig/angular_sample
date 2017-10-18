@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :buy_methods
     resources :campaigns
     resources :campaign_types
+    resources :inventory_types
     resources :networks
     resources :programs
     resources :publishers
@@ -16,6 +17,7 @@ Rails.application.routes.draw do
   root 'pages#index'
   resources :metadata, only: [:index]
   resources :campaign_inputs
+  resources :package_inputs
   devise_for :users
 
   # Cleaning up devise routes

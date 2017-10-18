@@ -1,23 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { MetadataService } from '../services/metadata_service';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { CampaignInputService } from '../services/campaign_input_service';
 
 @Component({
-  selector: 'campaign-component',
+  selector: 'campaign',
   template: `
     <h2 class="campaign-title">Campaign Input</h2>
     <div class="input-tag-container" *ngIf="inputTag">
       <div class="row">
         <section class="input-tag">
-          <div class="submit-column" *ngIf="campaignInputTagStatus == 204"><button class="input-submit" type="submit" (click)="saveInput()" [disabled]="saveDisabled">Create</button></div>
-          <div class="submit-column" *ngIf="campaignInputTagStatus == 200"><button class="input-submit" type="submit" [disabled]="saveDisabled">Select</button></div>
+          <div class="submit-column" *ngIf="!existingCampaignInput"><button class="input-submit" type="submit" (click)="saveInput()" [disabled]="saveDisabled">Create</button></div>
+          <div class="submit-column" *ngIf="existingCampaignInput"><button class="input-submit" type="submit" [disabled]="saveDisabled" (click)="selectInput()">Select</button></div>
           <div class="tag-column">{{ campaignInput.campaignInputTag }}</div>
         </section>
       </div>
     </div>
 
     <div *ngIf="showSelectors">
-
       <div class="select-container">
         <div class="row">
         
@@ -34,10 +32,12 @@ import { CampaignInputService } from '../services/campaign_input_service';
           </section>
 
           <section class="select" *ngIf="campaignInput.season">
-            <div class="campaign-type-column"> <select-component [label]="campaignTypeLabel" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component></div>
+            <div class="campaign-type-column"> 
+              <select-component [label]="campaignTypeLabel" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component>
+            </div>
             <div class="custom-column"> 
-              <label for="type">Custom</label><br>
-              <input type="text" id="custom" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom">
+              <label for="type">Campaign Custom</label><br>
+              <input type="text" id="custom" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
             </div>
           </section>
 
@@ -75,9 +75,11 @@ import { CampaignInputService } from '../services/campaign_input_service';
 
 export class CampaignComponent implements OnInit {
 
-  networks: any;
-  seasons: any;
-  campaignTypes: any;
+  @Input() networks: any[];
+  @Input() seasons: any[];
+  @Input() campaignTypes: any[];
+  @Output() campaignInputTagFinal = new EventEmitter();
+
   campaignInput: any = {};
   campaignInputTag: any;
   networkLabel: string = 'Network';
@@ -93,29 +95,13 @@ export class CampaignComponent implements OnInit {
   inputTag: boolean = false;
   saveDisabled: boolean = false;
   showSelectors: boolean = true;
-  campaignInputTagStatus: any;
+  existingCampaignInput: any;
   
-  constructor( private _metadata: MetadataService, private _campaign: CampaignInputService) {
-  }
+  constructor( private _campaign: CampaignInputService) {}
 
   ngOnInit() {
     this.campaignInput.startYear = 2017;
     this.campaignInput.endYear = 2017;
-    
-    // Call MetadataService
-    this._metadata.getMetadata().subscribe(
-
-      (data) => {
-        this.networks = data['networks'];
-        this.seasons = data['seasons'];
-        this.campaignTypes = data['campaign_types'];
-      },
-      (error) => {
-        console.log('Error', error)
-      }
-
-    )
-
   };
 
   // Updates the attribute when it is selected from child components
@@ -167,8 +153,8 @@ export class CampaignComponent implements OnInit {
   verifyTag() {
     this._campaign.verifyInput(this.campaignInput.campaignInputTag).subscribe(
       
-      (status) => {
-        this.campaignInputTagStatus = status;
+      (result) => {
+        this.existingCampaignInput = result;
       },
       (error) => {
         console.log('Error', error)
@@ -197,12 +183,19 @@ export class CampaignComponent implements OnInit {
       (result) => {
         this.saveDisabled = true;
         this.showSelectors = false;
+        this.campaignInputTagFinal.emit(result);
       },
       (error) => {
         console.log('ERROR', error)
       }
     );
 
+  }
+
+  selectInput() {
+    this.saveDisabled = true;
+    this.showSelectors = false;
+    this.campaignInputTagFinal.emit(this.existingCampaignInput);
   }
 
 }

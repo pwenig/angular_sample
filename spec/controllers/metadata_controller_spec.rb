@@ -16,6 +16,7 @@ RSpec.describe MetadataController do
       Agency.create(name: 'Sterling Cooper', abbrev: 'sc')
       BuyMethod.create!(name: 'CPA', abbrev: 'CPA')
       Publisher.create!(name: 'ABC', abbrev: 'ABCX')
+      InventoryType.create!(name: 'Partner Social Distribution', abbrev: 'PSD')
     end
 
     it 'fetches metadata' do
@@ -29,7 +30,7 @@ RSpec.describe MetadataController do
       expect(metadata['agencies'].length).to eq(1)
       expect(metadata['buy_methods'].length).to eq(1)
       expect(metadata['publishers'].length).to eq(1)
-      
+      expect(metadata['inventory_types'].length).to eq(1)
     end
   end
 end

@@ -4,15 +4,15 @@ import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 
 @Injectable()
-export class CampaignInputService {
+export class PackageInputService {
 
   constructor(private http: HttpClient){}
 
-  // Creates a new Campaign Input 
-  createInput(campaignInput): Observable<any> {
-
+   // Creates a new Package Input 
+  createInput(packageInput): Observable<any> {
+  
     let subject: Subject<any> = new Subject;
-    this.http.post('/campaign_inputs', campaignInput).subscribe(
+    this.http.post('/package_inputs', packageInput).subscribe(
 
       (success) => {
         subject.next(success);
@@ -27,10 +27,11 @@ export class CampaignInputService {
     return subject.asObservable();
   }
 
-  // Checks to see if a Campaign Input already exists
-  verifyInput(campaignInput): Observable<any>{
+
+  // Checks to see if a Package Input already exists
+  verifyInput(packageInput): Observable<any>{
     let subject: Subject<any> = new Subject;
-    this.http.get('/campaign_inputs/' + campaignInput, { observe: 'response' }).subscribe(
+    this.http.get('/package_inputs/' + packageInput, { observe: 'response' }).subscribe(
 
       (res) => { 
         subject.next(res.body);
@@ -44,5 +45,6 @@ export class CampaignInputService {
     )
     return subject.asObservable();
   }
+
   
 }
