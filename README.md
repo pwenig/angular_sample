@@ -29,6 +29,9 @@
 * To import initial campaign type data:
   * $rake import:campaign_types
 
+* To import initial buy methods data:
+  * $rake import:buy_methods
+
 * To import initial publisher data:
   * $rake import:publishers
 

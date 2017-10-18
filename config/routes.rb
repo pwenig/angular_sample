@@ -10,8 +10,7 @@ Rails.application.routes.draw do
     resources :publishers
     resources :seasons
     resources :users
-   
-    root to: "users#index"
+    root 'users#index'
   end
   
   root 'pages#index'
