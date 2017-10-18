@@ -3,4 +3,5 @@ class CampaignInput < ApplicationRecord
   belongs_to :network
   belongs_to :season
   belongs_to :campaign_type
+  has_many :package_inputs
 end

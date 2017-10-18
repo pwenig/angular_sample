@@ -4,7 +4,7 @@ RSpec.describe Agency, type: :model do
   subject { Agency.new(abbrev: 'sc') }
 
   it 'creates an agency' do
-    agency = Agency.create(name: 'Sterling Cooper', abbrev: 'sc')
+    agency = Agency.create!(name: 'Sterling Cooper', abbrev: 'sc')
     expect(agency.name).to include('Sterling Cooper')
     expect(agency.abbrev).to include('sc')
   end

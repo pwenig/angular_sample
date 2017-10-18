@@ -38,6 +38,12 @@
 * To import initial agencies:
   * $rake import:agencies
 
+* To import initial buy methods data:
+  * $rake import:buy_methods
+
+* To import initial inventory types data:
+  * $rake import:inventory_types
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD

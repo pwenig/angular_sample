@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171011202250) do
+ActiveRecord::Schema.define(version: 20171017213855) do
 
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
@@ -69,6 +69,15 @@ ActiveRecord::Schema.define(version: 20171011202250) do
     t.index ["name"], name: "index_campaigns_on_name", unique: true
   end
 
+  create_table "inventory_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_inventory_types_on_abbrev", unique: true
+    t.index ["name"], name: "index_inventory_types_on_name", unique: true
+  end
+
   create_table "networks", force: :cascade do |t|
     t.string "name", null: false
     t.string "abbrev", null: false
@@ -76,6 +85,23 @@ ActiveRecord::Schema.define(version: 20171011202250) do
     t.datetime "updated_at", null: false
     t.index ["abbrev"], name: "index_networks_on_abbrev", unique: true
     t.index ["name"], name: "index_networks_on_name", unique: true
+  end
+
+  create_table "package_inputs", force: :cascade do |t|
+    t.integer "campaign_input_id", null: false
+    t.integer "agency_id", null: false
+    t.integer "publisher_id", null: false
+    t.integer "buy_method_id", null: false
+    t.integer "inventory_type_id", null: false
+    t.string "custom", null: false
+    t.string "package_input_tag", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agency_id"], name: "index_package_inputs_on_agency_id"
+    t.index ["buy_method_id"], name: "index_package_inputs_on_buy_method_id"
+    t.index ["campaign_input_id"], name: "index_package_inputs_on_campaign_input_id"
+    t.index ["inventory_type_id"], name: "index_package_inputs_on_inventory_type_id"
+    t.index ["publisher_id"], name: "index_package_inputs_on_publisher_id"
   end
 
   create_table "programs", force: :cascade do |t|

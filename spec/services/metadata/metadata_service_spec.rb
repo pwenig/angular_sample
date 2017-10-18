@@ -1,38 +1,33 @@
 require 'rails_helper'
 
 RSpec.describe MetadataService do
-  it 'gets a list of networks' do
-    Network.create(name: 'Comedy Central', abbrev: 'CCL')
-    networks = MetadataService.fetch_networks
-    expect(networks.length).to_not eq(0)
-    expect(networks.length).to eq(1)
-  end
-
-  it 'gets a list of networks and the network programs' do
+  before(:each) do
     network = Network.create(name: 'Comedy Central', abbrev: 'CCL')
     Program.create(name: 'Clusterfest', abbrev: 'CLTF', network_id: network.id)
-    networks = MetadataService.fetch_networks
-    expect(networks.first['programs'].length).to eq(1)
+    Season.create!(name: 'S00', abbrev: 's00')
+    CampaignType.create!(name: 'Binge', abbrev: 'BG')
+    Campaign.create!(name: 'Foo', abbrev: 'F01')
+    Agency.create(name: 'Sterling Cooper', abbrev: 'sc')
+    BuyMethod.create!(name: 'CPA', abbrev: 'CPA')
+    Publisher.create!(name: 'ABC', abbrev: 'ABCX')
+    InventoryType.create!(name: 'Partner Social Distribution', abbrev: 'PSD')
   end
 
-  it 'gets a list of seasons' do
-    Season.create(name: 'S01', abbrev: 's01')
-    seasons = MetadataService.fetch_seasons
-    expect(seasons.length).to_not eq(0)
-    expect(seasons.length).to eq(1)
+  it 'returns the metadata object' do
+    metadata = MetadataService.fetch_data
+    expect(metadata['networks'].length).to eq(1)
+    expect(metadata['networks'].first['programs'].length).to eq(1)
+    expect(metadata['seasons'].length).to eq(1)
+    expect(metadata['campaign_types'].length).to eq(1)
+    expect(metadata['campaigns'].length).to eq(1)
+    expect(metadata['agencies'].length).to eq(1)
+    expect(metadata['buy_methods'].length).to eq(1)
+    expect(metadata['publishers'].length).to eq(1)
+    expect(metadata['inventory_types'].length).to eq(1)
   end
 
-  it 'gets list of campaigns' do
-    Campaign.create(name: 'First', abbrev: '001')
-    campaigns = MetadataService.fetch_campaigns
-    expect(campaigns.length).to_not eq(0)
-    expect(campaigns.length).to eq(1)
-  end
-
-  it 'gets a list of campaign types' do
-    CampaignType.create(name: 'App Download', abbrev: 'ad')
-    campaign_types = MetadataService.fetch_campaign_types
-    expect(campaign_types.length).to_not eq(0)
-    expect(campaign_types.length).to eq(1)
+  it 'returns model data' do
+    model_data = MetadataService.fetch_table_data(Season)
+    expect(model_data.length).to eq(1)
   end
 end

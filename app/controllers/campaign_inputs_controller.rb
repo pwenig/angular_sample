@@ -5,20 +5,24 @@ class CampaignInputsController < ApplicationController
   end
 
   def create
-    # Check to see if it already exists
     @campaign_input = CampaignInput.find_by(campaign_input_tag: params['campaign_input_tag'])
     if @campaign_input
-      render json: @campaign_input, status: 200
+      render json: @campaign_input, except: %i[network_id program_id season_id],
+             include: %i[network season program], status: 200
     else
       @campaign_input = CampaignInput.create!(permitted_params)
-      render json: @campaign_input, status: 201
+      render json: @campaign_input, except: %i[network_id program_id season_id],
+             include: %i[network season program], status: 201
     end
   end
 
   def show
     @campaign_input = CampaignInput.find_by(campaign_input_tag: params[:id])
     if @campaign_input
-      render json: @campaign_input, status: 200
+      render json: @campaign_input,
+             except: %i[network_id program_id season_id],
+             include: %i[network season program],
+             status: 200
     else
       head :no_content
     end

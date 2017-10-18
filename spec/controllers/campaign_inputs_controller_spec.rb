@@ -1,17 +1,24 @@
 require 'rails_helper'
 
 RSpec.describe CampaignInputsController do
-  describe 'GET /campaign_inputs' do
-    let!(:user) { User.create!(email: 'test@example.com', password: 'testing') }
-    before(:each) do
-      sign_in(user)
-    end
+  let!(:user) { User.create!(email: 'test@example.com', password: 'testing') }
+  before(:each) do
+    sign_in(user)
+  end
 
+  describe 'GET /campaign_inputs' do
     it 'fetches campaign inputs' do
       get :index
       expect(response.status).to eq(200)
     end
 
+    it 'responds with a 204 if a campaign input tag does not exist' do
+      get :show, params: { id: 'CCL_ CLTF_ S00_ BG_ xx_ 20170121-20170221' }
+      expect(response.status).to be(204)
+    end
+  end
+
+  describe 'POST /campaign_inputs' do
     it 'creates a campaign input' do
       network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
       create_params = {
@@ -72,12 +79,9 @@ RSpec.describe CampaignInputsController do
       post :create, params: create_params
       expect(response.status).to be(200)
     end
+  end
 
-    it 'responds with a 204 if a campaign input tag does not exist' do
-      get :show, params: { id: 'CCL_ CLTF_ S00_ BG_ xx_ 20170121-20170221' }
-      expect(response.status).to be(204)
-    end
-
+  describe 'SHOW /campaign_inputs/:campaign_input_tag' do
     it 'responds with a 200 if a campaign input tag exists' do
       network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
       program = Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network)
