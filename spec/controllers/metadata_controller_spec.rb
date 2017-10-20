@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe MetadataController do
   describe 'GET /metadata' do
-    let!(:user) do
-      User.create!(email: 'test@example.com', password: 'testing')
-    end
+    let!(:user) { FactoryGirl.create(:user) }
 
     before(:each) do
       sign_in(user)
