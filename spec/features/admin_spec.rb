@@ -4,7 +4,7 @@ RSpec.feature 'Admin', type: :feature do
   before do
     visit('/')
     @admin = User.create(email: 'admin@admin.com', password: 'password', admin: true)
-    @user = User.create(email: 'user@user.com', password: 'password')
+    @user = FactoryGirl.create(:user)
   end
 
   it 'redirects a non-admin user' do

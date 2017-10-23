@@ -43,6 +43,22 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.include Devise::Test::ControllerHelpers, type: :controller
 
+  config.include FactoryGirl::Syntax::Methods
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
+
   # Fast login for tests that specify 'login: true'
   config.before(:each, login: true) do
     Warden.test_mode!

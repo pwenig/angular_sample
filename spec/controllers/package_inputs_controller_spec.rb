@@ -1,7 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe PackageInputsController do
-  let!(:user) { User.create!(email: 'test@example.com', password: 'testing') }
+  let!(:user) { FactoryGirl.create(:user) }
+  let(:network) {FactoryGirl.create(:network)}
+  let(:program) {Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network)}
+  let(:campaign_type) {FactoryGirl.create(:campaign_type)}
+  let(:season) {FactoryGirl.create(:season)}
+  let(:agency) {FactoryGirl.create(:agency)}
+  let(:publisher) {FactoryGirl.create(:publisher)}
+  let(:buy_method) {FactoryGirl.create(:buy_method)}
+  let(:inventory_type) {FactoryGirl.create(:inventory_type)}
+
   before(:each) do
     sign_in(user)
   end
@@ -21,12 +30,11 @@ RSpec.describe PackageInputsController do
   describe 'POST /package_inputs' do
     it 'creates a package input and responds with a 201' do
       # Create the campaign input
-      network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
       campaign_input = CampaignInput.create!(
         network: network,
-        program: Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network.id),
-        campaign_type: CampaignType.create!(name: 'Binge', abbrev: 'BG'),
-        season: Season.create!(name: 'S00', abbrev: 's00'),
+        program: program,
+        campaign_type: campaign_type,
+        season: season,
         custom: 'xx',
         start_month: '01',
         start_day: '21',
@@ -38,10 +46,10 @@ RSpec.describe PackageInputsController do
       )
       create_params = {
         campaign_input_id: campaign_input,
-        agency_id: Agency.create!(name: 'Sterling Cooper', abbrev: 'sc'),
-        publisher_id: Publisher.create!(name: 'ABC', abbrev: 'ABCX'),
-        buy_method_id: BuyMethod.create!(name: 'CPA', abbrev: 'CPA'),
-        inventory_type_id: InventoryType.create!(name: 'Partner Social Distribution', abbrev: 'PSD'),
+        agency_id: agency,
+        publisher_id: publisher,
+        buy_method_id: buy_method,
+        inventory_type_id: inventory_type,
         custom: 'xx',
         package_input_tag: 'CCL_CLTF_S00_SC_ABCX_CPA_PSD_xx'
       }
@@ -50,12 +58,11 @@ RSpec.describe PackageInputsController do
     end
 
     it 'responds with a 200 if a package input tag exists' do
-      network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
       campaign_input = CampaignInput.create!(
         network: network,
-        program: Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network_id: network.id),
-        campaign_type: CampaignType.create!(name: 'Binge', abbrev: 'BG'),
-        season: Season.create!(name: 'S00', abbrev: 's00'),
+        program: program,
+        campaign_type: campaign_type,
+        season: season,
         custom: 'xx',
         start_month: '01',
         start_day: '21',
@@ -67,10 +74,6 @@ RSpec.describe PackageInputsController do
       )
 
       # Create the first one
-      agency = Agency.create!(name: 'Sterling Cooper', abbrev: 'sc')
-      publisher = Publisher.create!(name: 'ABC', abbrev: 'ABCX')
-      buy_method = BuyMethod.create!(name: 'CPA', abbrev: 'CPA')
-      inventory_type = InventoryType.create!(name: 'Partner Social Distribution', abbrev: 'PSD')
       PackageInput.create!(
         campaign_input: campaign_input,
         agency: agency,
