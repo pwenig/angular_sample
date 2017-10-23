@@ -4,7 +4,7 @@ import { MetadataService } from '../services/metadata_service';
 @Component({
   selector: 'app-component',
   template: `
-    <campaign [networks]="networks" [seasons]="seasons" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
+    <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
     <div *ngIf="checkCampaignInput(campaignInput)">
       <package [campaignInput]="campaignInput" [agencies]="agencies" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
     </div>
@@ -22,6 +22,8 @@ export class AppComponent implements OnInit {
   inventoryTypes: any[];
   campaignInput: any = {};
   packageInput: any = [];
+  campaignTags: any = [];
+  showPackageInput: boolean = false;
 
   constructor( private _metadata: MetadataService) {}
 
@@ -37,6 +39,7 @@ export class AppComponent implements OnInit {
         this.publishers = data['publishers'];
         this.buyMethods = data['buy_methods'];
         this.inventoryTypes = data['inventory_types'];
+        this.campaignTags = data['campaign_tags'];
       },
       (error) => {
         console.log('Error', error)
@@ -48,6 +51,7 @@ export class AppComponent implements OnInit {
 
   setCampaignTag(campaignTag) {
     this.campaignInput = campaignTag;
+    this.showPackageInput = true;
   }
 
   setPackageTag(packageTag) {

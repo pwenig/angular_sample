@@ -5,12 +5,14 @@ import { CampaignInputService } from '../services/campaign_input_service';
   selector: 'campaign',
   template: `
     <h2 class="campaign-title">Campaign Input</h2>
-    <div class="input-tag-container" *ngIf="inputTag">
+    <p *ngIf="showFinal">{{campaignInput.campaignInputTag }}</p>
+    <div class="input-tag-container">
       <div class="row">
-        <section class="input-tag">
-          <div class="submit-column" *ngIf="!existingCampaignInput"><button class="input-submit" type="submit" (click)="saveInput()" [disabled]="saveDisabled">Create</button></div>
-          <div class="submit-column" *ngIf="existingCampaignInput"><button class="input-submit" type="submit" [disabled]="saveDisabled" (click)="selectInput()">Select</button></div>
-          <div class="tag-column">{{ campaignInput.campaignInputTag }}</div>
+        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch" (newTag)="showSelectors=true && showButtons=true" (tagChosen)="tagSelected($event)"></search>
+        <section class="input-tag" *ngIf="showButtons">
+          <input [ngModel]="campaignInput.campaignInputTag"class="form-control" [disabled]=true>
+          <button class="new-tag" *ngIf="!existingCampaignInput" type="submit" (click)="saveInput()">Create</button>
+          <button class="new-tag" *ngIf="existingCampaignInput"  type="submit" (click)="selectInput()">Select</button>
         </section>
       </div>
     </div>
@@ -78,6 +80,7 @@ export class CampaignComponent implements OnInit {
   @Input() networks: any[];
   @Input() seasons: any[];
   @Input() campaignTypes: any[];
+  @Input() campaignTags: any[];
   @Output() campaignInputTagFinal = new EventEmitter();
 
   campaignInput: any = {};
@@ -92,10 +95,12 @@ export class CampaignComponent implements OnInit {
   endYearLabel: string = 'End Year';
   endMonthLabel: string = 'End Month';
   endDayLabel: string = 'End Day';
-  inputTag: boolean = false;
-  saveDisabled: boolean = false;
-  showSelectors: boolean = true;
+  showFinal: boolean = false;
+  showSelectors: boolean = false;
+  showButtons: boolean = false;
+  showSearch: boolean = true;
   existingCampaignInput: any;
+  searchDesc: string = 'Search Campaign Tags';
   
   constructor( private _campaign: CampaignInputService) {}
 
@@ -145,16 +150,16 @@ export class CampaignComponent implements OnInit {
       this.verifyTag();
     }
     
-    // This will show the input tag and save button
-    this.inputTag = true;
-
   }
 
   verifyTag() {
     this._campaign.verifyInput(this.campaignInput.campaignInputTag).subscribe(
       
       (result) => {
+        // Show either select or create button
         this.existingCampaignInput = result;
+        this.campaignInputTagFinal.emit(result);
+
       },
       (error) => {
         console.log('Error', error)
@@ -181,8 +186,9 @@ export class CampaignComponent implements OnInit {
     this._campaign.createInput(createParams).subscribe(
 
       (result) => {
-        this.saveDisabled = true;
         this.showSelectors = false;
+        this.showButtons = false;
+        this.showFinal = true;
         this.campaignInputTagFinal.emit(result);
       },
       (error) => {
@@ -193,9 +199,19 @@ export class CampaignComponent implements OnInit {
   }
 
   selectInput() {
-    this.saveDisabled = true;
+    this.showFinal = true;
     this.showSelectors = false;
+    this.showButtons = false;
     this.campaignInputTagFinal.emit(this.existingCampaignInput);
+  }
+
+  tagSelected(tag) {
+    this.campaignInput.campaignInputTag = tag;
+    this.showFinal = true;
+    this.showSearch = false;
+    this.existingCampaignInput = true
+    this.campaignInputTagFinal.emit(this.existingCampaignInput);
+    this.verifyTag();
   }
 
 }
