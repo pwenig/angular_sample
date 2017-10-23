@@ -11,6 +11,7 @@ class MetadataService
     metaobject['buy_methods'] = fetch_table_data(BuyMethod)
     metaobject['publishers'] = fetch_table_data(Publisher)
     metaobject['inventory_types'] = fetch_table_data(InventoryType)
+    metaobject['campaign_tags'] = fetch_campaign_tags
     metaobject
   end
 
@@ -26,4 +27,9 @@ class MetadataService
       )
     end
   end
+
+  # Get the campaign input tags for searching
+  def self.fetch_campaign_tags
+    CampaignInput.all.map{ |x| x['campaign_input_tag'] }.as_json
+  end 
 end
