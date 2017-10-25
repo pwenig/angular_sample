@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.feature 'Package Input', type: :feature, js: true do
   before do
     visit('/')
-    @user =  FactoryGirl.create(:user)
+    @user = FactoryGirl.create(:user)
     network = Network.create(name: 'Comedy Central', abbrev: 'CCL')
     Program.create(name: 'Clusterfest', abbrev: 'CLTF', network_id: network.id)
     Season.create!(name: 'S00', abbrev: 's00')
     CampaignType.create!(name: 'Binge', abbrev: 'BG')
-    
+
     Agency.create(name: 'Sterling Cooper', abbrev: 'sc')
     BuyMethod.create!(name: 'CPA', abbrev: 'CPA')
     Publisher.create!(name: 'ABC', abbrev: 'ABCX')

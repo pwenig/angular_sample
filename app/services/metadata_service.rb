@@ -2,16 +2,17 @@ class MetadataService
   require 'json'
 
   def self.fetch_data
-    metaobject = {}
-    metaobject['networks'] = fetch_table_data(Network)
-    metaobject['seasons'] = fetch_table_data(Season)
-    metaobject['campaigns'] = fetch_table_data(Campaign)
-    metaobject['campaign_types'] = fetch_table_data(CampaignType)
-    metaobject['agencies'] = fetch_table_data(Agency)
-    metaobject['buy_methods'] = fetch_table_data(BuyMethod)
-    metaobject['publishers'] = fetch_table_data(Publisher)
-    metaobject['inventory_types'] = fetch_table_data(InventoryType)
-    metaobject['campaign_tags'] = fetch_campaign_tags
+    metaobject = {
+      networks: fetch_table_data(Network),
+      seasons: fetch_table_data(Season),
+      campaigns: fetch_table_data(Campaign),
+      campaign_types: fetch_table_data(CampaignType),
+      agencies: fetch_table_data(Agency),
+      buy_methods: fetch_table_data(BuyMethod),
+      publishers: fetch_table_data(Publisher),
+      inventory_types: fetch_table_data(InventoryType),
+      campaign_tags: fetch_campaign_tags
+    }
     metaobject
   end
 
@@ -30,6 +31,6 @@ class MetadataService
 
   # Get the campaign input tags for searching
   def self.fetch_campaign_tags
-    CampaignInput.all.map{ |x| x['campaign_input_tag'] }.as_json
-  end 
+    CampaignInput.all.map { |x| x['campaign_input_tag'] }.as_json
+  end
 end

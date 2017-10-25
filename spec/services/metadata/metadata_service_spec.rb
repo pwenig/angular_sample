@@ -28,15 +28,15 @@ RSpec.describe MetadataService do
 
   it 'returns the metadata object' do
     metadata = MetadataService.fetch_data
-    expect(metadata['networks'].length).to eq(1)
-    expect(metadata['networks'].first['programs'].length).to eq(1)
-    expect(metadata['seasons'].length).to eq(1)
-    expect(metadata['campaign_types'].length).to eq(1)
-    expect(metadata['agencies'].length).to eq(1)
-    expect(metadata['buy_methods'].length).to eq(1)
-    expect(metadata['publishers'].length).to eq(1)
-    expect(metadata['inventory_types'].length).to eq(1)
-    expect(metadata['campaign_tags'].length).to eq(1)
+    expect(metadata[:networks].length).to eq(1)
+    expect(metadata[:networks].first['programs'].length).to eq(1)
+    expect(metadata[:seasons].length).to eq(1)
+    expect(metadata[:campaign_types].length).to eq(1)
+    expect(metadata[:agencies].length).to eq(1)
+    expect(metadata[:buy_methods].length).to eq(1)
+    expect(metadata[:publishers].length).to eq(1)
+    expect(metadata[:inventory_types].length).to eq(1)
+    expect(metadata[:campaign_tags].length).to eq(1)
   end
 
   it 'returns model data' do

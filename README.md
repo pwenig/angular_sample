@@ -17,6 +17,9 @@
 * To create the initial admin user:
   * $rake admin:create_user
 
+* To import all initial data:
+  * $rake import:all
+
 * To import initial network data:
   * $rake import:networks
 
@@ -40,6 +43,9 @@
 
 * To import initial inventory types data:
   * $rake import:inventory_types
+
+* To import initial tactics data:
+  * $rake import:tactics
 
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS

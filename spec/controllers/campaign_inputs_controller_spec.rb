@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe CampaignInputsController do
   let!(:user) { FactoryGirl.create(:user) }
-  let(:network) {FactoryGirl.create(:network)}
-  let(:program) {Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network)}
-  let(:campaign_type) {FactoryGirl.create(:campaign_type)}
-  let(:season) {FactoryGirl.create(:season)}
+  let(:network) { FactoryGirl.create(:network) }
+  let(:program) { Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network) }
+  let(:campaign_type) { FactoryGirl.create(:campaign_type) }
+  let(:season) { FactoryGirl.create(:season) }
 
   before(:each) do
     sign_in(user)

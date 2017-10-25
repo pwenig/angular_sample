@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe PackageInputsController do
   let!(:user) { FactoryGirl.create(:user) }
-  let(:network) {FactoryGirl.create(:network)}
-  let(:program) {Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network)}
-  let(:campaign_type) {FactoryGirl.create(:campaign_type)}
-  let(:season) {FactoryGirl.create(:season)}
-  let(:agency) {FactoryGirl.create(:agency)}
-  let(:publisher) {FactoryGirl.create(:publisher)}
-  let(:buy_method) {FactoryGirl.create(:buy_method)}
-  let(:inventory_type) {FactoryGirl.create(:inventory_type)}
+  let(:network) { FactoryGirl.create(:network) }
+  let(:program) { Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network) }
+  let(:campaign_type) { FactoryGirl.create(:campaign_type) }
+  let(:season) { FactoryGirl.create(:season) }
+  let(:agency) { FactoryGirl.create(:agency) }
+  let(:publisher) { FactoryGirl.create(:publisher) }
+  let(:buy_method) { FactoryGirl.create(:buy_method) }
+  let(:inventory_type) { FactoryGirl.create(:inventory_type) }
 
   before(:each) do
     sign_in(user)

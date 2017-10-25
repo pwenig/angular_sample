@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'User', type: :feature do
   before do
     visit('/')
-    @user =  FactoryGirl.create(:user)
+    @user = FactoryGirl.create(:user)
   end
 
   it 'logs in an existing user' do
