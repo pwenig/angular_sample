@@ -17,11 +17,11 @@ class CampaignInputsController < ApplicationController
   end
 
   def show
-    @campaign_input = CampaignInput.find_by(campaign_input_tag: params[:id])
+    @campaign_input = CampaignInput.includes(:package_inputs).find_by(campaign_input_tag: params[:id])
     if @campaign_input
       render json: @campaign_input,
              except: %i[network_id program_id season_id],
-             include: %i[network season program],
+             include: %i[network season program package_inputs],
              status: 200
     else
       head :no_content

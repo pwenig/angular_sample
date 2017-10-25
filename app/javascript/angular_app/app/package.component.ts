@@ -1,17 +1,19 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
 import { PackageInputService } from '../services/package_input_service';
 
 @Component({
   selector: 'package',
   template: `
     <h2 class="campaign-title">Package Input</h2>
-    <div class="input-tag-container" *ngIf="inputTag">
+    <p *ngIf="showFinal">{{ packageInput.packageInputTag }}</p>
+    <div class="input-tag-container">
       <div class="row">
-        <section class="input-tag">
-          <div class="submit-column" *ngIf="!existingPackageInput"><button class="input-submit" type="submit" (click)="saveInput()" [disabled]="saveDisabled">Create</button></div>
-          <div class="submit-column" *ngIf="existingPackageInput"><button class="input-submit" type="submit" [disabled]="saveDisabled" (click)="selectInput()">Select</button></div>
-          <div class="tag-column">{{ packageInput.packageInputTag }}</div>
-        </section>
+      <search [inputTags]="packageTags" [searchDesc]="searchDesc" *ngIf="showSearch && (packageTags && packageTags.length > 0)" (newTag)="showSelectors=true && showButtons=true" (tagChosen)="tagSelected($event)"></search> 
+      <section class="input-tag" *ngIf="showButtons">
+        <input [ngModel]="packageInput.packageInputTag" class="form-control" [disabled]=true>
+        <button class="new-tag" *ngIf="!existingPackageInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create</button>
+        <button class="new-tag" *ngIf="existingPackageInput && showButtons" type="submit" (click)="selectInput()">Select</button>
+      </section>
       </div>
     </div>
 
@@ -45,12 +47,13 @@ import { PackageInputService } from '../services/package_input_service';
   `
 })
 
-export class PackageComponent {
+export class PackageComponent implements OnInit {
   @Input() campaignInput: {};
   @Input() agencies: any[];
   @Input() publishers: any[];
   @Input() buyMethods: any[];
   @Input() inventoryTypes: any[];
+  @Input() packageTags: any[];
   @Output() packageInputTagFinal = new EventEmitter();
 
   agencyLabel: string = 'Agency';
@@ -59,12 +62,22 @@ export class PackageComponent {
   inventoryTypeLabel: string = 'Inventory Type';
   packageInput: any = {};
   packageInputTag: any;
-  inputTag: boolean = false;
   existingPackageInput: any;
-  showSelectors: boolean = true;
-  saveDisabled: boolean = false;
+  showSelectors: boolean = false;
+  showButtons: boolean = false;
+  showSearch: boolean = true;
+  showFinal: boolean = false;
+  searchDesc: string = 'Search Package Tags';
+  invalid: boolean = true;
 
   constructor( private _package: PackageInputService) {}
+
+  ngOnInit() {
+    if(this.packageTags.length == 0) {
+      this.showButtons = true;
+      this.showSelectors = true;
+    }
+  }
 
   // Updates the attribute when it is selected from child components
   attributeUpdated(value, attribute) {
@@ -79,7 +92,11 @@ export class PackageComponent {
       this.packageInput.buyMethod &&
       this.packageInput.inventoryType &&
       this.packageInput.custom
-      ) { this.createTag(); };
+      ){ 
+        this.createTag(); 
+        // This will enable the create button
+        this.invalid = false;
+      };
   }
 
   createTag() {
@@ -97,7 +114,6 @@ export class PackageComponent {
     if(this.packageInput.packageInputTag) {
       this.verifyTag();
     }
-      this.inputTag = true
   }
 
   verifyTag() {
@@ -105,6 +121,10 @@ export class PackageComponent {
 
       (result) => {
         this.existingPackageInput = result;
+        if(result) {
+          this.packageInputTagFinal.emit(result)
+        }
+        
       },
       (error) => {
         console.log('Error', error)
@@ -126,8 +146,9 @@ export class PackageComponent {
     this._package.createInput(createParams).subscribe(
 
       (result) => {
-        this.saveDisabled = true;
         this.showSelectors = false;
+        this.showButtons = false;
+        this.showFinal = true;
         this.packageInputTagFinal.emit(result);
       },
       (error) => {
@@ -138,9 +159,17 @@ export class PackageComponent {
   }
 
   selectInput() {
-    this.saveDisabled = true;
+    this.showFinal = true;
     this.showSelectors = false;
+    this.showButtons = false;
     this.packageInputTagFinal.emit(this.existingPackageInput);
+  }
+
+  tagSelected(tag) {
+    this.packageInput.packageInputTag = tag;
+    this.showFinal = true;
+    this.showSearch = false;
+    this.verifyTag();
   }
 
 }

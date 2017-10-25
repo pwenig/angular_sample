@@ -6,7 +6,7 @@ import { MetadataService } from '../services/metadata_service';
   template: `
     <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
     <div *ngIf="checkCampaignInput(campaignInput)">
-      <package [campaignInput]="campaignInput" [agencies]="agencies" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
+      <package [campaignInput]="campaignInput" [packageTags]="packageTags" [agencies]="agencies" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
     </div>
   `
 })
@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   campaignInput: any = {};
   packageInput: any = [];
   campaignTags: any = [];
+  packageTags: any = [];
   showPackageInput: boolean = false;
 
   constructor( private _metadata: MetadataService) {}
@@ -51,6 +52,9 @@ export class AppComponent implements OnInit {
 
   setCampaignTag(campaignTag) {
     this.campaignInput = campaignTag;
+    if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
+      this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
+    }
     this.showPackageInput = true;
   }
 
