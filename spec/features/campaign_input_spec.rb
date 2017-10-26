@@ -60,7 +60,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
   end
 
-  it 'selects a campaign input tag from the search box' do 
+  it 'selects a campaign input tag from the search box' do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -69,5 +69,5 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     find('.dropdown-menu li a').click
     expect(page).to have_text('CCL_BC_S01_AW_xx_20170121-20170221')
     expect(page).to have_text('Package Input')
-  end 
+  end
 end

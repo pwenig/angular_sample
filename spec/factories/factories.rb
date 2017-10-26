@@ -4,38 +4,38 @@ FactoryGirl.define do
     password 'MyPassword'
   end
 
-  factory :network do 
+  factory :network do
     name 'Comedy Central'
     abbrev 'CCL'
-  end 
+  end
 
-  factory :campaign_type do 
+  factory :campaign_type do
     name 'Binge'
     abbrev 'BG'
   end
 
-  factory :season do 
+  factory :season do
     name 'S00'
     abbrev 's00'
-  end 
+  end
 
-  factory :agency do 
+  factory :agency do
     name 'Sterling Cooper'
     abbrev 'SC'
   end
 
-  factory :publisher do 
+  factory :publisher do
     name 'ABC'
     abbrev 'ABCX'
-  end 
+  end
 
-  factory :buy_method do 
+  factory :buy_method do
     name 'CPA'
     abbrev 'CPA'
-  end 
+  end
 
-  factory :inventory_type do 
+  factory :inventory_type do
     name 'Partner Social Distribution'
     abbrev 'PSD'
-  end 
+  end
 end

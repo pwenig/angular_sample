@@ -103,4 +103,12 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Inventory Types')
     expect(current_path).to eq(admin_inventory_types_path)
   end
+
+  it 'directs to tactic admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Tactics')
+    expect(current_path).to eq(admin_tactics_path)
+  end
 end

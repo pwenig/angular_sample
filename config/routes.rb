@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :programs
     resources :publishers
     resources :seasons
+    resources :tactics
     resources :users
     root 'users#index'
   end

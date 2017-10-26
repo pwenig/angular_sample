@@ -58,7 +58,6 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
-
   # Fast login for tests that specify 'login: true'
   config.before(:each, login: true) do
     Warden.test_mode!
