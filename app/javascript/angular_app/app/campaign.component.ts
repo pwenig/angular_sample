@@ -8,16 +8,16 @@ import { CampaignInputService } from '../services/campaign_input_service';
     <p *ngIf="showFinal">{{campaignInput.campaignInputTag }}</p>
     <div class="input-tag-container">
       <div class="row">
-        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch" (newTag)="showSelectors=true && showButtons=true" (tagChosen)="tagSelected($event)"></search>
+        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch && campaignTags.length > 0" (newTag)="showSelectors=true && showButtons=true" (tagChosen)="tagSelected($event)"></search>
         <section class="input-tag" *ngIf="showButtons">
-          <input [ngModel]="campaignInput.campaignInputTag"class="form-control" [disabled]=true>
-          <button class="new-tag" *ngIf="!existingCampaignInput" type="submit" (click)="saveInput()">Create</button>
-          <button class="new-tag" *ngIf="existingCampaignInput"  type="submit" (click)="selectInput()">Select</button>
+          <input [ngModel]="campaignInput.campaignInputTag" class="form-control" [disabled]=true>
+          <button class="new-tag" *ngIf="!existingCampaignInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create</button>
+          <button class="new-tag" *ngIf="existingCampaignInput && showButtons" type="submit" (click)="selectInput()">Select</button>
         </section>
       </div>
     </div>
 
-    <div *ngIf="showSelectors">
+    <div *ngIf="showSelectors || campaignTags.length == 0 ">
       <div class="select-container">
         <div class="row">
         
@@ -101,6 +101,7 @@ export class CampaignComponent implements OnInit {
   showSearch: boolean = true;
   existingCampaignInput: any;
   searchDesc: string = 'Search Campaign Tags';
+  invalid: boolean = true;
   
   constructor( private _campaign: CampaignInputService) {}
 
@@ -128,7 +129,11 @@ export class CampaignComponent implements OnInit {
       this.campaignInput.endYear &&
       this.campaignInput.endMonth &&
       this.campaignInput.endDay
-      ) { this.createTag(); };
+      ){ 
+        this.createTag();
+        // This will enable the create button
+        this.invalid = false; 
+      };
   }
 
   createTag() {
@@ -158,7 +163,9 @@ export class CampaignComponent implements OnInit {
       (result) => {
         // Show either select or create button
         this.existingCampaignInput = result;
-        this.campaignInputTagFinal.emit(result);
+        if(result) {
+          this.campaignInputTagFinal.emit(result);
+        }
 
       },
       (error) => {
@@ -209,8 +216,6 @@ export class CampaignComponent implements OnInit {
     this.campaignInput.campaignInputTag = tag;
     this.showFinal = true;
     this.showSearch = false;
-    this.existingCampaignInput = true
-    this.campaignInputTagFinal.emit(this.existingCampaignInput);
     this.verifyTag();
   }
 
