@@ -47,6 +47,18 @@
 * To import initial tactics data:
   * $rake import:tactics
 
+* To import initial devices data:
+  * $rake import:devices
+
+* To import initial ad_types data:
+  * $rake import:ad_types
+
+* To import initial episodes data:
+  * $rake import:episodes
+
+* To import initial targeting types data:
+  * $rake import:targeting_types
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD

@@ -111,4 +111,37 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Tactics')
     expect(current_path).to eq(admin_tactics_path)
   end
+
+  it 'directs to device admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Devices')
+    expect(current_path).to eq(admin_devices_path)
+  end
+
+  it 'directs to ad type admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Ad Types')
+    expect(current_path).to eq(admin_ad_types_path)
+  end
+
+  it 'directs to episode admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Episodes')
+    expect(current_path).to eq(admin_episodes_path)
+  end
+
+  it 'directs to targeting type admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Targeting Types')
+    expect(current_path).to eq(admin_targeting_types_path)
+  end
+
 end

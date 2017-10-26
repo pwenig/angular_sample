@@ -123,6 +123,97 @@ namespace :import do
     puts 'Upload finished!'
   end
 
+  task tactics: :environment do
+    puts 'Starting Tactics upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'tactics.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless Tactic.exists?(name: row['TACTIC'])
+          Tactic.create!(name: row['TACTIC'], abbrev: row['TAC ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task devices: :environment do
+    puts 'Starting Devices upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'devices.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless Device.exists?(name: row['DEVICE'])
+          Device.create!(name: row['DEVICE'], abbrev: row['DVC ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task ad_types: :environment do
+    puts 'Starting Ad Types upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'ad_types.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless AdType.exists?(name: row['AD TYPE'])
+          AdType.create!(name: row['AD TYPE'], abbrev: row['AD ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task episodes: :environment do
+    puts 'Starting Episodes upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'episodes.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless Episode.exists?(name: row['EPISODE'])
+          Episode.create!(name: row['EPISODE'], abbrev: row['EP ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task targeting_types: :environment do
+    puts 'Starting Targeting Types upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'targeting_types.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless TargetingType.exists?(name: row['TARGETING TYPE'])
+          TargetingType.create!(name: row['TARGETING TYPE'], abbrev: row['TGT ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task all: :environment do
+    Rake::Task['import:networks'].invoke
+    Rake::Task['import:programs'].invoke
+    Rake::Task['import:seasons'].invoke
+    Rake::Task['import:campaign_types'].invoke
+    Rake::Task['import:buy_methods'].invoke
+    Rake::Task['import:publishers'].invoke
+    Rake::Task['import:agencies'].invoke
+    Rake::Task['import:inventory_types'].invoke
+    Rake::Task['import:tactics'].invoke
+    Rake::Task['import:devices'].invoke
+    Rake::Task['import:ad_types'].invoke
+    Rake::Task['import:episodes'].invoke
+    Rake::Task['import:targeting_types'].invoke
+  end
+
   def export_to_csv(networks)
     CSV.open('./lib/csv_data/networks_normalized.csv', 'wb') do |csv|
       csv << Network.attribute_names
