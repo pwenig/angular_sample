@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171025195802) do
+ActiveRecord::Schema.define(version: 20171026180643) do
+
+  create_table "ad_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_ad_types_on_abbrev", unique: true
+    t.index ["name"], name: "index_ad_types_on_name", unique: true
+  end
 
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
@@ -67,6 +76,24 @@ ActiveRecord::Schema.define(version: 20171025195802) do
     t.datetime "updated_at", null: false
     t.index ["abbrev"], name: "index_campaigns_on_abbrev", unique: true
     t.index ["name"], name: "index_campaigns_on_name", unique: true
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_devices_on_abbrev", unique: true
+    t.index ["name"], name: "index_devices_on_name", unique: true
+  end
+
+  create_table "episodes", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_episodes_on_abbrev", unique: true
+    t.index ["name"], name: "index_episodes_on_name", unique: true
   end
 
   create_table "inventory_types", force: :cascade do |t|
@@ -140,6 +167,15 @@ ActiveRecord::Schema.define(version: 20171025195802) do
     t.datetime "updated_at", null: false
     t.index ["abbrev"], name: "index_tactics_on_abbrev", unique: true
     t.index ["name"], name: "index_tactics_on_name", unique: true
+  end
+
+  create_table "targeting_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_targeting_types_on_abbrev", unique: true
+    t.index ["name"], name: "index_targeting_types_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|

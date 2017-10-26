@@ -1,15 +1,19 @@
 Rails.application.routes.draw do
   namespace :admin do
+    resources :ad_types
     resources :agencies
     resources :buy_methods
     resources :campaigns
     resources :campaign_types
+    resources :devices
+    resources :episodes
     resources :inventory_types
     resources :networks
     resources :programs
     resources :publishers
     resources :seasons
     resources :tactics
+    resources :targeting_types
     resources :users
     root 'users#index'
   end
