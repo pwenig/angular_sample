@@ -8,6 +8,21 @@ export class PackageInputService {
 
   constructor(private http: HttpClient){}
 
+  // Package String format
+  // Network_Program_Season_Agency_Publisher_BuyMethod_
+  // InventoryType_CustomDimension
+  createPackageString(campaignObj, packageObj){
+    let packageString = campaignObj['network']['abbrev'] + '_' +
+      campaignObj['program']['abbrev'] + '_' +
+      campaignObj['season']['abbrev'] + '_' +
+      packageObj.agency.abbrev + '_' +
+      packageObj.publisher.abbrev + '_' +
+      packageObj.buyMethod.abbrev + '_' +
+      packageObj.inventoryType.abbrev + '_' +
+      packageObj.custom
+    return packageString;
+  }
+
    // Creates a new Package Input 
   createInput(packageInput): Observable<any> {
   

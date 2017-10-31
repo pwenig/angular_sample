@@ -11,6 +11,11 @@ class MetadataService
       buy_methods: fetch_table_data(BuyMethod),
       publishers: fetch_table_data(Publisher),
       inventory_types: fetch_table_data(InventoryType),
+      ad_types: fetch_table_data(AdType),
+      targeting_types: fetch_table_data(TargetingType),
+      tactics: fetch_table_data(Tactic),
+      devices: fetch_table_data(Device),
+      episodes: fetch_table_data(Episode),
       campaign_tags: fetch_campaign_tags
     }
     metaobject

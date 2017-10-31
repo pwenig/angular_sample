@@ -5,26 +5,37 @@ import { MetadataService } from '../services/metadata_service';
   selector: 'app-component',
   template: `
     <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
-    <div *ngIf="checkCampaignInput(campaignInput)">
+    <div *ngIf="showPackageInput">
       <package [campaignInput]="campaignInput" [packageTags]="packageTags" [agencies]="agencies" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
+    </div>
+    <div *ngIf="showPlacementInput">
+      <placement [campaignInput]="campaignInput" [placementTags]="placementTags" [packageInput]="packageInput" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)"></placement>
     </div>
   `
 })
 
 export class AppComponent implements OnInit {
 
-  networks: any[];
-  seasons: any[];
-  campaignTypes: any[];
-  agencies: any[];
-  publishers: any[];
-  buyMethods: any[];
-  inventoryTypes: any[];
+  networks: any = [];
+  seasons: any = [];
+  campaignTypes: any = [];
+  agencies: any = [];
+  publishers: any = [];
+  buyMethods: any = [];
+  inventoryTypes: any = [];
+  adTypes: any = [];
+  targetingTypes: any = [];
+  tactics: any = [];
+  devices: any = [];
+  episodes: any = [];
   campaignInput: any = {};
-  packageInput: any = [];
+  packageInput: any = {}
+  placementInput: any = {};
   campaignTags: any = [];
   packageTags: any = [];
+  placementTags: any = [];
   showPackageInput: boolean = false;
+  showPlacementInput: boolean = false;
 
   constructor( private _metadata: MetadataService) {}
 
@@ -40,6 +51,11 @@ export class AppComponent implements OnInit {
         this.publishers = data['publishers'];
         this.buyMethods = data['buy_methods'];
         this.inventoryTypes = data['inventory_types'];
+        this.adTypes = data['ad_types'];
+        this.targetingTypes = data['targeting_types'];
+        this.tactics = data['tactics'];
+        this.devices = data['devices'];
+        this.episodes = data['episodes'];
         this.campaignTags = data['campaign_tags'];
       },
       (error) => {
@@ -60,10 +76,15 @@ export class AppComponent implements OnInit {
 
   setPackageTag(packageTag) {
     this.packageInput = packageTag;
+    if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
+      this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
+    }
+    this.showPlacementInput = true;
+
   }
 
-  checkCampaignInput(campaignTag) {
-    return (campaignTag && (Object.keys(campaignTag).length != 0));
+  setPlacementTag(placementTag) {
+    this.placementInput = placementTag;
   }
 
 }

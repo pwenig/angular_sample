@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   resources :metadata, only: [:index]
   resources :campaign_inputs
   resources :package_inputs
+  resources :placement_inputs
   devise_for :users
 
   # Cleaning up devise routes

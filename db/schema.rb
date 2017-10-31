@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171026180643) do
+ActiveRecord::Schema.define(version: 20171026195402) do
 
   create_table "ad_types", force: :cascade do |t|
     t.string "name", null: false
@@ -129,6 +129,36 @@ ActiveRecord::Schema.define(version: 20171026180643) do
     t.index ["campaign_input_id"], name: "index_package_inputs_on_campaign_input_id"
     t.index ["inventory_type_id"], name: "index_package_inputs_on_inventory_type_id"
     t.index ["publisher_id"], name: "index_package_inputs_on_publisher_id"
+  end
+
+  create_table "placement_inputs", force: :cascade do |t|
+    t.string "placement_input_tag", null: false
+    t.string "tentpole_details"
+    t.integer "tactic_id", null: false
+    t.integer "device_id", null: false
+    t.integer "ad_type_id", null: false
+    t.string "audience_type", null: false
+    t.integer "width", null: false
+    t.integer "height", null: false
+    t.integer "package_input_id", null: false
+    t.integer "targeting_type_1_id"
+    t.integer "targeting_type_2_id"
+    t.integer "targeting_type_3_id"
+    t.integer "targeting_type_4_id"
+    t.integer "episode_start_id"
+    t.integer "episode_end_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ad_type_id"], name: "index_placement_inputs_on_ad_type_id"
+    t.index ["device_id"], name: "index_placement_inputs_on_device_id"
+    t.index ["episode_end_id"], name: "index_placement_inputs_on_episode_end_id"
+    t.index ["episode_start_id"], name: "index_placement_inputs_on_episode_start_id"
+    t.index ["package_input_id"], name: "index_placement_inputs_on_package_input_id"
+    t.index ["tactic_id"], name: "index_placement_inputs_on_tactic_id"
+    t.index ["targeting_type_1_id"], name: "index_placement_inputs_on_targeting_type_1_id"
+    t.index ["targeting_type_2_id"], name: "index_placement_inputs_on_targeting_type_2_id"
+    t.index ["targeting_type_3_id"], name: "index_placement_inputs_on_targeting_type_3_id"
+    t.index ["targeting_type_4_id"], name: "index_placement_inputs_on_targeting_type_4_id"
   end
 
   create_table "programs", force: :cascade do |t|
