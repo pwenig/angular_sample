@@ -143,5 +143,4 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Targeting Types')
     expect(current_path).to eq(admin_targeting_types_path)
   end
-
 end

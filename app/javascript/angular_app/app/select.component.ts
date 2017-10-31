@@ -10,14 +10,19 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
   `
 })
 
-export class SelectComponent {
+export class SelectComponent implements OnInit {
   @Input() label: string;
   @Input() options: any;
+  @Input() default: any;
   @Output() selected = new EventEmitter();
 
   private chosenOption: any;
   private placeholder: any;
 
+  ngOnInit() {
+    this.chosenOption = this.default;
+  }
+  
   optionSelected() {
     this.selected.emit(this.chosenOption);
   }

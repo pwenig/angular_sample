@@ -10,6 +10,11 @@ RSpec.describe MetadataService do
     BuyMethod.create!(name: 'CPA', abbrev: 'CPA')
     Publisher.create!(name: 'ABC', abbrev: 'ABCX')
     InventoryType.create!(name: 'Partner Social Distribution', abbrev: 'PSD')
+    AdType.create!(name: 'Animated Gif', abbrev: 'GIF')
+    TargetingType.create!(name: 'Behavioral', abbrev: 'BT')
+    Tactic.create!(name: 'Audio', abbrev: 'AUD')
+    Device.create!(name: 'Over the Top', abbrev: 'OTT')
+    Episode.create!(name: 'E01', abbrev: 'E01')
     CampaignInput.create!(
       network: network,
       program: program,
@@ -36,6 +41,11 @@ RSpec.describe MetadataService do
     expect(metadata[:buy_methods].length).to eq(1)
     expect(metadata[:publishers].length).to eq(1)
     expect(metadata[:inventory_types].length).to eq(1)
+    expect(metadata[:ad_types].length).to eq(1)
+    expect(metadata[:targeting_types].length).to eq(1)
+    expect(metadata[:tactics].length).to eq(1)
+    expect(metadata[:devices].length).to eq(1)
+    expect(metadata[:episodes].length).to eq(1)
     expect(metadata[:campaign_tags].length).to eq(1)
   end
 

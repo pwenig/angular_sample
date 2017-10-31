@@ -7,7 +7,7 @@ import { Component, Input, Output, EventEmitter} from '@angular/core';
         <input [ngModel]="selected" (ngModelChange)="tagSelected($event)"
         [typeahead]="inputTags"
         class="form-control" placeholder="{{searchDesc}}">
-        <button class="new-tag" type="submit" (click)="newInput()">New</button>
+        <button class="new-tag" type="submit" (click)="newInput()">New Campaign String</button>
       </section>
   `
 })

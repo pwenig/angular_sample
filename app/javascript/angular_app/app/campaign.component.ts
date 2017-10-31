@@ -5,14 +5,14 @@ import { CampaignInputService } from '../services/campaign_input_service';
   selector: 'campaign',
   template: `
     <h2 class="campaign-title">Campaign Input</h2>
-    <p *ngIf="showFinal">{{campaignInput.campaignInputTag }}</p>
+    <p *ngIf="showFinal" class="final-string">{{campaignInput.campaignInputTag }}</p>
     <div class="input-tag-container">
       <div class="row">
-        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch && campaignTags.length > 0" (newTag)="showSelectors=true && showButtons=true" (tagChosen)="tagSelected($event)"></search>
+        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch" (newTag)="showSelectors=true && showButtons=true" (tagChosen)="tagSelected($event)"></search>
         <section class="input-tag" *ngIf="showButtons">
           <input [ngModel]="campaignInput.campaignInputTag" class="form-control" [disabled]=true>
-          <button class="new-tag" *ngIf="!existingCampaignInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create</button>
-          <button class="new-tag" *ngIf="existingCampaignInput && showButtons" type="submit" (click)="selectInput()">Select</button>
+          <button class="new-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="saveInput()" [disabled]="invalid">Create Campaign String</button>
+          <button class="new-tag" *ngIf="existingCampaignInput && showButtons" type="submit" (click)="selectInput()">Select Campaign String</button>
         </section>
       </div>
     </div>
@@ -22,7 +22,7 @@ import { CampaignInputService } from '../services/campaign_input_service';
         <div class="row">
         
           <section class="select">
-            <div class="network-column" *ngIf="networks && networks.length > 0">
+            <div class="first-column" *ngIf="networks && networks.length > 0">
               <select-component [label]="networkLabel" [options]="networks" (selected)="attributeUpdated($event, 'network')"></select-component>
             </div>
             <div class="column" *ngIf="campaignInput.network">
@@ -39,7 +39,7 @@ import { CampaignInputService } from '../services/campaign_input_service';
             </div>
             <div class="custom-column"> 
               <label for="type">Campaign Custom</label><br>
-              <input type="text" id="custom" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+              <input type="text" id="customCampaign" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
             </div>
           </section>
 
@@ -100,7 +100,7 @@ export class CampaignComponent implements OnInit {
   showButtons: boolean = false;
   showSearch: boolean = true;
   existingCampaignInput: any;
-  searchDesc: string = 'Search Campaign Tags';
+  searchDesc: string = 'Search Campaign Strings';
   invalid: boolean = true;
   
   constructor( private _campaign: CampaignInputService) {}
@@ -130,31 +130,13 @@ export class CampaignComponent implements OnInit {
       this.campaignInput.endMonth &&
       this.campaignInput.endDay
       ){ 
-        this.createTag();
+        this.campaignInput.campaignInputTag = this._campaign.createCampaignString(this.campaignInput)
         // This will enable the create button
         this.invalid = false; 
+        if(this.campaignInput.campaignInputTag) {
+          this.verifyTag();
+        }
       };
-  }
-
-  createTag() {
-    // Create the campaign input tag
-    this.campaignInput.campaignInputTag = 
-      this.campaignInput.network.abbrev + '_' + 
-      this.campaignInput.program.abbrev + '_' +
-      this.campaignInput.season.abbrev + '_' +
-      this.campaignInput.campaignType.abbrev + '_' +
-      this.campaignInput.custom + '_' +
-      this.campaignInput.startYear +
-      this.campaignInput.startMonth +
-      this.campaignInput.startDay + '-' +
-      this.campaignInput.endYear +
-      this.campaignInput.endMonth +
-      this.campaignInput.endDay
-    // Check to see if the tag already exists
-    if(this.campaignInput.campaignInputTag) {
-      this.verifyTag();
-    }
-    
   }
 
   verifyTag() {

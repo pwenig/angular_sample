@@ -1,4 +1,4 @@
-require "administrate/base_dashboard"
+require 'administrate/base_dashboard'
 
 class EpisodeDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
@@ -12,7 +12,7 @@ class EpisodeDashboard < Administrate::BaseDashboard
     name: Field::String,
     abbrev: Field::String,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -20,24 +20,24 @@ class EpisodeDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :name,
-    :abbrev
+  COLLECTION_ATTRIBUTES = %i[
+    name
+    abbrev
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :name,
-    :abbrev
+  SHOW_PAGE_ATTRIBUTES = %i[
+    name
+    abbrev
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :name,
-    :abbrev
+  FORM_ATTRIBUTES = %i[
+    name
+    abbrev
   ].freeze
 
   # Overwrite this method to customize how episodes are displayed
