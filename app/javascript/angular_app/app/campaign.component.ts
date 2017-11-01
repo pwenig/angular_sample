@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CampaignInputService } from '../services/campaign_input_service';
+import {SelectComponent} from './select.component';
+import {MonthSelectComponent} from './monthselect.component';
+import {DaySelectComponent} from './dayselect.component';
 
 @Component({
   selector: 'campaign',
@@ -13,7 +16,8 @@ import { CampaignInputService } from '../services/campaign_input_service';
           <input [ngModel]="campaignInput.campaignInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="saveInput()" [disabled]="invalid">Create Campaign String</button>
           <button class="new-tag" *ngIf="existingCampaignInput && showButtons" type="submit" (click)="selectInput()">Select Campaign String</button>
-        </section>
+          <button class="cancel-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="cancelInput()">Cancel</button>
+          </section>
       </div>
     </div>
 
@@ -76,6 +80,9 @@ import { CampaignInputService } from '../services/campaign_input_service';
 })
 
 export class CampaignComponent implements OnInit {
+  @ViewChild(SelectComponent) selectComponent:SelectComponent;
+  @ViewChild(MonthSelectComponent) monthSelectComponent:MonthSelectComponent;
+  @ViewChild(DaySelectComponent) daySelectComponent:DaySelectComponent;
 
   @Input() networks: any[];
   @Input() seasons: any[];
@@ -199,6 +206,22 @@ export class CampaignComponent implements OnInit {
     this.showFinal = true;
     this.showSearch = false;
     this.verifyTag();
+  }
+
+  // Clears the selected options
+  cancelInput(){
+    this.selectComponent.clearSelections('Network');
+    this.selectComponent.clearSelections('Program');
+    this.selectComponent.clearSelections('Season');
+    this.selectComponent.clearSelections('Campaign Type');
+    this.monthSelectComponent.clearSelections('Start Month');
+    this.daySelectComponent.clearSelections('Start Day');
+    this.monthSelectComponent.clearSelections('End Month');
+    this.daySelectComponent.clearSelections('End Day');
+    this.campaignInput.campaignInputTag = null;
+    this.campaignInput.custom = null;
+    this.campaignInput.startYear = 2017;
+    this.campaignInput.endYear = 2017;
   }
 
 }

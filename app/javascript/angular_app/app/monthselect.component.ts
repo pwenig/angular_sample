@@ -19,4 +19,10 @@ export class MonthSelectComponent {
   optionSelected() {
     this.selected.emit(this.chosenOption);
   }
+
+  clearSelections(label) {
+    var selectElement = document.getElementById(label);
+    selectElement['value'] = null;
+  }
+
 }

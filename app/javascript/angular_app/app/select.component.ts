@@ -26,4 +26,15 @@ export class SelectComponent implements OnInit {
   optionSelected() {
     this.selected.emit(this.chosenOption);
   }
+
+  clearSelections(label) {
+    var selectElement = document.getElementById(label);
+    // The last targeting type option is the default none value
+    if(label == 'Targeting Type 1' || label == 'Targeting Type 1' || label == 'Targeting Type 2' || label == 'Targeting Type 3' || label == 'Targeting Type 4'){
+      selectElement['value'] = "10: Object";
+    } else {
+      selectElement['value'] = this.default;
+    }
+  }
+
 }
