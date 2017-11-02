@@ -1,5 +1,7 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { PlacementInputService } from '../services/placement_input_service';
+import {SelectComponent} from './select.component';
+
 
 @Component({
   selector: 'placement',
@@ -16,7 +18,8 @@ import { PlacementInputService } from '../services/placement_input_service';
           <input [ngModel]="placementInput.placementInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="!existingPlacementInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Placement String</button>
           <button class="new-tag" *ngIf="existingPlacementInput && showButtons" type="submit" (click)="selectInput()">Select Placement String</button>
-        </section>
+          <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Cancel</button>
+          </section>
       </div>
     </div>
 
@@ -24,10 +27,10 @@ import { PlacementInputService } from '../services/placement_input_service';
       <div class="select-container">
         <div class="row">
           <section class="select">
-            <div class="column" *ngIf="episodes && episodes.length > 0">
+            <div class="column" *ngIf="(episodes && episodes.length > 0) && campaignInput.season.name != 'Tentpole'">
               <select-component [label]="episodeStartLabel" [options]="episodes" (selected)="attributeUpdated($event, 'episodeStartDate')"></select-component>
             </div>
-            <div class="column" *ngIf="episodes && episodes.length > 0">
+            <div class="column" *ngIf="(episodes && episodes.length > 0) && campaignInput.season.name != 'Tentpole'">
               <select-component [label]="episodeEndLabel" [options]="episodes" (selected)="attributeUpdated($event, 'episodeEndDate')"></select-component>
             </div>
             <div class="custom-column" *ngIf="campaignInput.season.name == 'Tentpole'"> 
@@ -86,6 +89,8 @@ import { PlacementInputService } from '../services/placement_input_service';
 })
 
 export class PlacementComponent {
+  @ViewChild(SelectComponent) selectComponent:SelectComponent;
+  
   @Input() campaignInput: {};
   @Input() packageInput: {};
   @Input() placementTags: any[];
@@ -138,7 +143,8 @@ export class PlacementComponent {
 
   // Checks to see if everything is selected before creating the tag
   checkAttributes(){
-    if(this.placementInput.episodeStartDate &&
+    if(this.campaignInput['season']['name'] != 'Tentpole' && 
+      this.placementInput.episodeStartDate &&
       this.placementInput.episodeEndDate &&
       this.placementInput.tactic &&
       this.placementInput.device &&
@@ -154,7 +160,23 @@ export class PlacementComponent {
       }
      // This will enable the create button
      this.invalid = false;
-    };
+
+    }else if(this.placementInput.tactic &&
+      this.placementInput.tentpole &&
+      this.placementInput.device &&
+      this.placementInput.adType &&
+      this.placementInput.audience &&
+      this.placementInput.height &&
+      this.placementInput.width
+    ){
+      this.placementInput.placementInputTag = this._placement.createPlacementString(this.campaignInput, this.packageInput, this.placementInput)
+      // Check to see if placement tag exists
+      if(this.placementInput.placementInputTag){
+        this.verifyTag();
+      }
+     // This will enable the create button
+     this.invalid = false;
+    }
 
   }
 
@@ -176,22 +198,40 @@ export class PlacementComponent {
 
   saveInput() {
     // Create the params
-    var createParams = {
-      package_input_id: this.packageInput['id'],
-      tentpole_details: this.placementInput.tentpole,
-      tactic_id: this.placementInput.tactic.id,
-      device_id: this.placementInput.device.id,
-      ad_type_id: this.placementInput.adType.id,
-      audience_type: this.placementInput.audience,
-      width: this.placementInput.width,
-      height: this.placementInput.height,
-      targeting_type_1_id: this.placementInput.targetingType1.id,
-      targeting_type_2_id: this.placementInput.targetingType2.id,
-      targeting_type_3_id: this.placementInput.targetingType3.id,
-      targeting_type_4_id: this.placementInput.targetingType4.id,
-      episode_start_id: this.placementInput.episodeStartDate.id,
-      episode_end_id: this.placementInput.episodeEndDate.id,
-      placement_input_tag: this.placementInput.placementInputTag
+    let createParams = {};
+    if(this.campaignInput['season']['name'] != 'Tentpole'){
+      createParams = {
+        package_input_id: this.packageInput['id'],
+        tactic_id: this.placementInput.tactic.id,
+        device_id: this.placementInput.device.id,
+        ad_type_id: this.placementInput.adType.id,
+        audience_type: this.placementInput.audience,
+        width: this.placementInput.width,
+        height: this.placementInput.height,
+        targeting_type_1_id: this.placementInput.targetingType1.id,
+        targeting_type_2_id: this.placementInput.targetingType2.id,
+        targeting_type_3_id: this.placementInput.targetingType3.id,
+        targeting_type_4_id: this.placementInput.targetingType4.id,
+        episode_start_id: this.placementInput.episodeStartDate.id,
+        episode_end_id: this.placementInput.episodeEndDate.id,
+        placement_input_tag: this.placementInput.placementInputTag
+      } 
+    } else {
+      createParams = {
+        package_input_id: this.packageInput['id'],
+        tentpole_details: this.placementInput.tentpole,
+        tactic_id: this.placementInput.tactic.id,
+        device_id: this.placementInput.device.id,
+        ad_type_id: this.placementInput.adType.id,
+        audience_type: this.placementInput.audience,
+        width: this.placementInput.width,
+        height: this.placementInput.height,
+        targeting_type_1_id: this.placementInput.targetingType1.id,
+        targeting_type_2_id: this.placementInput.targetingType2.id,
+        targeting_type_3_id: this.placementInput.targetingType3.id,
+        targeting_type_4_id: this.placementInput.targetingType4.id,
+        placement_input_tag: this.placementInput.placementInputTag
+      }
     }
     this._placement.createInput(createParams).subscribe(
 
@@ -219,6 +259,24 @@ export class PlacementComponent {
   newTagSection() {
     this.showButtons = true 
     this.showSelectors = true
+  }
+
+  // Clears the selected options
+  cancelInput() {
+    this.selectComponent.clearSelections('Tactic')
+    this.selectComponent.clearSelections('Episode Start')
+    this.selectComponent.clearSelections('Episode End')
+    this.selectComponent.clearSelections('Device')
+    this.selectComponent.clearSelections('Ad Type')
+    this.selectComponent.clearSelections('Targeting Type 1')
+    this.selectComponent.clearSelections('Targeting Type 2')
+    this.selectComponent.clearSelections('Targeting Type 3')
+    this.selectComponent.clearSelections('Targeting Type 4')
+    this.placementInput.height = null;
+    this.placementInput.width = null;
+    this.placementInput.audience = null;
+    this.placementInput.tentpole = null;
+    this.placementInput.placementInputTag = null;
   }
 
 }

@@ -70,4 +70,33 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('CCL_BC_S01_AW_xx_20170121-20170221')
     expect(page).to have_text('Package Input')
   end
+
+  it 'cancels a campaign input' do
+    fill_in('email-login', with: @user.email)
+    fill_in('password-login', with: @user.password)
+    click_on('Log In')
+    click_on('New')
+    expect(page).to have_select('Network', options: ['Select Network', 'Comedy Central'])
+    select('Comedy Central', from: 'Network')
+    expect(page).to have_text('Comedy Central')
+    expect(page).to have_select('Program', options: ['Select Program', 'Clusterfest', 'Broad City'])
+    select('Clusterfest', from: 'Program')
+    expect(page).to have_text('Clusterfest')
+    expect(page).to have_select('Season', options: ['Select Season', 'S00', 'S01'])
+    select('S00', from: 'Season')
+    expect(page).to have_text('S00')
+    expect(page).to have_select('Campaign Type', options: ['Select Campaign Type', 'Binge', 'Awareness'])
+    select('Binge', from: 'Campaign Type')
+    expect(page).to have_text('Binge')
+    expect(page).to have_field('customCampaign')
+    fill_in('customCampaign', with: 'XX')
+    expect(page).to have_select('Start Month')
+    select('01', from: 'Start Month')
+    select('01', from: 'Start Day')
+    select('02', from: 'End Month')
+    select('02', from: 'End Day')
+    expect(page).to have_text('Cancel')
+    click_on('Cancel')
+    expect(page).to_not have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
+  end
 end

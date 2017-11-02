@@ -14,8 +14,8 @@ class CreatePlacementInputs < ActiveRecord::Migration[5.1]
       t.references :targeting_type_2, foreign_key: { to_table: :targeting_types }, index: true
       t.references :targeting_type_3, foreign_key: { to_table: :targeting_types }, index: true
       t.references :targeting_type_4, foreign_key: { to_table: :targeting_types }, index: true
-      t.references :episode_start, foreign_key: { to_table: :episodes }, index: true
-      t.references :episode_end, foreign_key: { to_table: :episodes }, index: true
+      t.references :episode_start, foreign_key: { to_table: :episodes }, index: true, null: true
+      t.references :episode_end, foreign_key: { to_table: :episodes }, index: true, null: true
       
       t.timestamps
     end

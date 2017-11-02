@@ -1,5 +1,6 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { PackageInputService } from '../services/package_input_service';
+import {SelectComponent} from './select.component';
 
 @Component({
   selector: 'package',
@@ -11,13 +12,14 @@ import { PackageInputService } from '../services/package_input_service';
         <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
           <select-string-component [label]="packageLabel" [options]="packageTags" (selected)="selectInput($event)"></select-string-component>
           <button class="new-tag" type="submit" (click)="newTagSection()">New Package String</button>
-        </section>
+          </section>
 
         <section class="input-tag" *ngIf="showButtons">
           <input [ngModel]="packageInput.packageInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="!existingPackageInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Package String</button>
           <button class="new-tag" *ngIf="existingPackageInput && showButtons" type="submit" (click)="selectInput(packageInput.packageInputTag)">Select Package String</button>
-        </section>
+          <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Cancel</button>
+          </section>
       </div>
     </div>
 
@@ -52,6 +54,8 @@ import { PackageInputService } from '../services/package_input_service';
 })
 
 export class PackageComponent implements OnInit {
+  @ViewChild(SelectComponent) selectComponent:SelectComponent;
+  
   @Input() campaignInput: {};
   @Input() agencies: any[];
   @Input() publishers: any[];
@@ -159,6 +163,16 @@ export class PackageComponent implements OnInit {
   newTagSection() {
     this.showButtons = true 
     this.showSelectors = true
+  }
+
+  // Clears the selected options
+  cancelInput() {
+    this.selectComponent.clearSelections('Agency');
+    this.selectComponent.clearSelections('Publisher');
+    this.selectComponent.clearSelections('Buy Method');
+    this.selectComponent.clearSelections('Inventory Type');
+    this.packageInput.custom = null;
+    this.packageInput.packageInputTag = null;
   }
 
 }
