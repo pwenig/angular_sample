@@ -18,3 +18,5 @@ Style/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
     - lib/tasks/*.rake
+Metrics/AbcSize:
+  Enabled: false

@@ -90,10 +90,10 @@ export class PlacementInputService {
     }
   
 
-  // Checks to see if a Package Input already exists
+  // Checks to see if a Placement Input already exists
   verifyInput(placementInputString): Observable<any>{
     let subject: Subject<any> = new Subject;
-    this.http.get('/package_inputs/' + placementInputString, { observe: 'response' }).subscribe(
+    this.http.get('/placement_inputs/' + placementInputString, { observe: 'response' }).subscribe(
 
       (res) => { 
         subject.next(res.body);

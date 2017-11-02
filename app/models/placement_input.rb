@@ -9,6 +9,7 @@ class PlacementInput < ApplicationRecord
   belongs_to :targeting_type_4, class_name: 'TargetingType'
   belongs_to :episode_start, class_name: 'Episode', optional: true
   belongs_to :episode_end, class_name: 'Episode', optional: true
+  has_many :ad_inputs
 
   validate :tentpole_details_must_be_present
   validate :episode_dates_must_be_present

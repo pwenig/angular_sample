@@ -16,6 +16,7 @@ class MetadataService
       tactics: fetch_table_data(Tactic),
       devices: fetch_table_data(Device),
       episodes: fetch_table_data(Episode),
+      creative_groups: fetch_table_data(CreativeGroup),
       campaign_tags: fetch_campaign_tags
     }
     metaobject

@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171102015325) do
+ActiveRecord::Schema.define(version: 20171102163046) do
+
+  create_table "ad_inputs", force: :cascade do |t|
+    t.integer "placement_input_id"
+    t.integer "creative_group_id"
+    t.string "custom", null: false
+    t.string "ad_input_tag", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creative_group_id"], name: "index_ad_inputs_on_creative_group_id"
+    t.index ["placement_input_id"], name: "index_ad_inputs_on_placement_input_id"
+  end
 
   create_table "ad_types", force: :cascade do |t|
     t.string "name", null: false
