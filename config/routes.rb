@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :buy_methods
     resources :campaigns
     resources :campaign_types
+    resources :creative_groups
     resources :devices
     resources :episodes
     resources :inventory_types

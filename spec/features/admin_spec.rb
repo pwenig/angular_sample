@@ -143,4 +143,12 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Targeting Types')
     expect(current_path).to eq(admin_targeting_types_path)
   end
+
+  it 'directs to creative group admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Creative Groups')
+    expect(current_path).to eq(admin_creative_groups_path)
+  end
 end

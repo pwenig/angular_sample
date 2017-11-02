@@ -59,6 +59,9 @@
 * To import initial targeting types data:
   * $rake import:targeting_types
 
+* To import initial creative groups data:
+  * $rake import:creative_groups
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD

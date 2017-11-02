@@ -198,6 +198,21 @@ namespace :import do
     puts 'Upload finished!'
   end
 
+  task creative_groups: :environment do
+    puts 'Starting Creative Groups upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'creative_groups.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless CreativeGroup.exists?(name: row['CREATIVE GROUP'])
+          CreativeGroup.create!(name: row['CREATIVE GROUP'], abbrev: row['CTVE GRP ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
   task all: :environment do
     Rake::Task['import:networks'].invoke
     Rake::Task['import:programs'].invoke
@@ -212,6 +227,7 @@ namespace :import do
     Rake::Task['import:ad_types'].invoke
     Rake::Task['import:episodes'].invoke
     Rake::Task['import:targeting_types'].invoke
+    Rake::Task['import:creative_groups'].invoke
   end
 
   def export_to_csv(networks)

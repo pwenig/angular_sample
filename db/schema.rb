@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171026195402) do
+ActiveRecord::Schema.define(version: 20171102015325) do
 
   create_table "ad_types", force: :cascade do |t|
     t.string "name", null: false
@@ -76,6 +76,15 @@ ActiveRecord::Schema.define(version: 20171026195402) do
     t.datetime "updated_at", null: false
     t.index ["abbrev"], name: "index_campaigns_on_abbrev", unique: true
     t.index ["name"], name: "index_campaigns_on_name", unique: true
+  end
+
+  create_table "creative_groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_creative_groups_on_abbrev", unique: true
+    t.index ["name"], name: "index_creative_groups_on_name", unique: true
   end
 
   create_table "devices", force: :cascade do |t|
