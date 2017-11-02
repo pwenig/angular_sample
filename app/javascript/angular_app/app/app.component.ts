@@ -11,6 +11,9 @@ import { MetadataService } from '../services/metadata_service';
     <div *ngIf="showPlacementInput">
       <placement [campaignInput]="campaignInput" [placementTags]="placementTags" [packageInput]="packageInput" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)"></placement>
     </div>
+    <div *ngIf="showAdInput">
+      <ad [campaignInput]="campaignInput" [packageInput]="packageInput" [placementInput]="placementInput" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)"></ad>
+    </div>
   `
 })
 
@@ -28,14 +31,18 @@ export class AppComponent implements OnInit {
   tactics: any = [];
   devices: any = [];
   episodes: any = [];
+  creativeGroups: any = [];
   campaignInput: any = {};
   packageInput: any = {}
   placementInput: any = {};
+  adInput: any = {};
   campaignTags: any = [];
   packageTags: any = [];
+  adTags: any = [];
   placementTags: any = [];
   showPackageInput: boolean = false;
   showPlacementInput: boolean = false;
+  showAdInput: boolean = false;
 
   constructor( private _metadata: MetadataService) {}
 
@@ -56,6 +63,7 @@ export class AppComponent implements OnInit {
         this.tactics = data['tactics'];
         this.devices = data['devices'];
         this.episodes = data['episodes'];
+        this.creativeGroups = data['creative_groups'];
         this.campaignTags = data['campaign_tags'];
       },
       (error) => {
@@ -85,6 +93,14 @@ export class AppComponent implements OnInit {
 
   setPlacementTag(placementTag) {
     this.placementInput = placementTag;
+    if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
+      this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
+    }
+    this.showAdInput = true;
+  }
+
+  setAdTag(adTag) {
+    this.adInput = adTag;
   }
 
 }

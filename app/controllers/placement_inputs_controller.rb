@@ -1,8 +1,8 @@
 class PlacementInputsController < ApplicationController
   def create
-    @placement_input = PlacementInput.find_by(placement_input_tag: params['placement_input_tag'])
+    @placement_input = PlacementInput.includes(:ad_inputs).find_by(placement_input_tag: params['placement_input_tag'])
     if @placement_input
-      render json: @placement_input, status: 200
+      render json: @placement_input, include: %i[ad_inputs], status: 200
     else
       @placement_input = PlacementInput.create!(permitted_params)
       render json: @placement_input, status: 201
@@ -10,9 +10,9 @@ class PlacementInputsController < ApplicationController
   end
 
   def show
-    @placement_input = PlacementInput.find_by(placement_input_tag: params['placement_input_tag'])
+    @placement_input = PlacementInput.includes(:ad_inputs).find_by(placement_input_tag: params[:id])
     if @placement_input
-      render json: @placement_input, status: 200
+      render json: @placement_input, include: %i[ad_inputs], status: 200
     else
       head :no_content
     end

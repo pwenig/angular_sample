@@ -12,7 +12,7 @@ class PackageInputsController < ApplicationController
     else
       @package_input = PackageInput.create!(permitted_params)
       render json: @package_input, except: %i[agency_id publisher_id buy_method_id inventory_type_id],
-             include: %i[agency publisher buy_method inventory_type placement_inputs], status: 201
+             include: %i[agency publisher buy_method inventory_type], status: 201
     end
   end
 

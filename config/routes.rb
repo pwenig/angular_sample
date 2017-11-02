@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :campaign_inputs
   resources :package_inputs
   resources :placement_inputs
+  resources :ad_inputs
   devise_for :users
 
   # Cleaning up devise routes

@@ -43,7 +43,7 @@ import {SelectComponent} from './select.component';
               <select-component [label]="inventoryTypeLabel" [options]="inventoryTypes" (selected)="attributeUpdated($event, 'inventoryType')"></select-component>
             </div>
             <div class="custom-column"> 
-              <label for="type">Package Custom</label><br>
+              <label for="customPackage">Package Custom</label><br>
               <input type="text" id="customPackage" [(ngModel)]="packageInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
             </div>
           </section>

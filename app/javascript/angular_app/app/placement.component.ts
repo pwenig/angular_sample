@@ -17,9 +17,9 @@ import {SelectComponent} from './select.component';
         <section class="input-tag" *ngIf="showButtons">
           <input [ngModel]="placementInput.placementInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="!existingPlacementInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Placement String</button>
-          <button class="new-tag" *ngIf="existingPlacementInput && showButtons" type="submit" (click)="selectInput()">Select Placement String</button>
+          <button class="new-tag" *ngIf="existingPlacementInput && showButtons" type="submit" (click)="selectInput(placementInput.placementInputTag)">Select Placement String</button>
           <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Cancel</button>
-          </section>
+        </section>
       </div>
     </div>
 
@@ -34,8 +34,8 @@ import {SelectComponent} from './select.component';
               <select-component [label]="episodeEndLabel" [options]="episodes" (selected)="attributeUpdated($event, 'episodeEndDate')"></select-component>
             </div>
             <div class="custom-column" *ngIf="campaignInput.season.name == 'Tentpole'"> 
-              <label for="type">Tentpole Details</label><br>
-              <input type="text" id="custom" [(ngModel)]="placementInput.tentpole" placeholder="Enter Details" (change)="checkAttributes()">
+              <label for="customTentpole">Tentpole Details</label><br>
+              <input type="text" id="customTentpole" [(ngModel)]="placementInput.tentpole" placeholder="Enter Details" (change)="checkAttributes()">
             </div>
           </section>
 
@@ -242,7 +242,7 @@ export class PlacementComponent {
         this.placementTagFinal.emit(result);
       },
       (error) => {
-        console.log('ERROR', error)
+        console.log('ERROR', error);
       }
     );
 
@@ -253,7 +253,7 @@ export class PlacementComponent {
     this.showFinal = true;
     this.showSelectors = false;
     this.showButtons = false;
-    this.placementTagFinal.emit(this.placementInput.placementInputTag);
+    this.verifyTag();
   }
 
   newTagSection() {
