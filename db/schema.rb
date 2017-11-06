@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171102163046) do
+ActiveRecord::Schema.define(version: 20171106171324) do
+
+  create_table "abtest_labels", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_abtest_labels_on_abbrev", unique: true
+    t.index ["name"], name: "index_abtest_labels_on_name", unique: true
+  end
 
   create_table "ad_inputs", force: :cascade do |t|
     t.integer "placement_input_id"
@@ -96,6 +105,15 @@ ActiveRecord::Schema.define(version: 20171102163046) do
     t.datetime "updated_at", null: false
     t.index ["abbrev"], name: "index_creative_groups_on_abbrev", unique: true
     t.index ["name"], name: "index_creative_groups_on_name", unique: true
+  end
+
+  create_table "creative_messages", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "abbrev", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbrev"], name: "index_creative_messages_on_abbrev", unique: true
+    t.index ["name"], name: "index_creative_messages_on_name", unique: true
   end
 
   create_table "devices", force: :cascade do |t|
@@ -256,6 +274,13 @@ ActiveRecord::Schema.define(version: 20171102163046) do
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "video_lengths", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_video_lengths_on_name", unique: true
   end
 
 end

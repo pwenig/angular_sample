@@ -62,6 +62,15 @@
 * To import initial creative groups data:
   * $rake import:creative_groups
 
+* To import initial creative messages data:
+  * $rake import:creative_messages
+
+* To import initial ab test labels data:
+  * $rake import:abtest_labels
+
+* To import initial video lengths data:
+  * $rake import:video_lengths
+
 * To enable email invitations, add ENV variables:
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD
