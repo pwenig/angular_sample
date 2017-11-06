@@ -151,4 +151,28 @@ RSpec.feature 'Admin', type: :feature do
     click_on('Creative Groups')
     expect(current_path).to eq(admin_creative_groups_path)
   end
+
+  it 'directs to creative message admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Creative Messages')
+    expect(current_path).to eq(admin_creative_messages_path)
+  end
+
+  it 'directs to ab test labels admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Abtest Labels')
+    expect(current_path).to eq(admin_abtest_labels_path)
+  end
+
+  it 'directs to video lengths admin' do
+    fill_in('email-login', with: @admin.email)
+    fill_in('password-login', with: @admin.password)
+    click_on('Log In')
+    click_on('Video Length')
+    expect(current_path).to eq(admin_video_lengths_path)
+  end
 end

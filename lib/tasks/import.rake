@@ -213,6 +213,51 @@ namespace :import do
     puts 'Upload finished!'
   end
 
+  task creative_messages: :environment do
+    puts 'Starting Creative Message upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'creative_messages.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless CreativeMessage.exists?(name: row['CREATIVE MESSAGE'])
+          CreativeMessage.create!(name: row['CREATIVE MESSAGE'], abbrev: row['CTVE MSG ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task abtest_labels: :environment do
+    puts 'Starting AB Test Labels upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'abtest_labels.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless AbtestLabel.exists?(name: row['A/B TEST LABEL'])
+          AbtestLabel.create!(name: row['A/B TEST LABEL'], abbrev: row['A/B ABBR'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
+  task video_lengths: :environment do
+    puts 'Starting Video Lengths upload...'
+    puts ''
+    ActiveRecord::Base.transaction do
+      csv_text = File.read(Rails.root.join('lib', 'csv_data', 'video_lengths.csv')).scrub
+      csv = CSV.parse(csv_text, headers: true)
+      csv.each do |row|
+        unless VideoLength.exists?(name: row['VIDEO LENGTH']) || row['VIDEO LENGTH'].blank?
+          VideoLength.create!(name: row['VIDEO LENGTH'])
+        end
+      end
+    end
+    puts 'Upload finished!'
+  end
+
   task all: :environment do
     Rake::Task['import:networks'].invoke
     Rake::Task['import:programs'].invoke
@@ -228,6 +273,9 @@ namespace :import do
     Rake::Task['import:episodes'].invoke
     Rake::Task['import:targeting_types'].invoke
     Rake::Task['import:creative_groups'].invoke
+    Rake::Task['import:creative_messages'].invoke
+    Rake::Task['import:abtest_labels'].invoke
+    Rake::Task['import:video_lengths'].invoke
   end
 
   def export_to_csv(networks)
