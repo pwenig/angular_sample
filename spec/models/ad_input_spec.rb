@@ -9,6 +9,10 @@ RSpec.describe AdInput, type: :model do
     should belong_to(:creative_group)
   end
 
+  it 'should have many creative inputs' do
+    should have_many(:creative_inputs)
+  end
+
   it 'should create an ad input' do
     network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
     campaign_input = CampaignInput.create!(

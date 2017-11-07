@@ -11,7 +11,8 @@ export class AdInputService {
   // Ad String format
   // Network_Program_Season_CreativeGroup_Publisher_Size_CustomDimension
   createAdString(campaignObj, packageObj, placementObj, adObj) {
-    let adString = campaignObj['network']['abbrev'] + '_' +
+    if(placementObj.ad_type.abbrev != 'SVD' && placementObj.ad_type.abbrev != 'NSV') {
+      let adString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       adObj.creativeGroup.abbrev + '_' +
@@ -20,6 +21,16 @@ export class AdInputService {
       placementObj.height + '_' +
       adObj.custom
     return adString;
+
+    } else {
+      let adString = campaignObj['network']['abbrev'] + '_' +
+      campaignObj['program']['abbrev'] + '_' +
+      campaignObj['season']['abbrev'] + '_' +
+      adObj.creativeGroup.abbrev + '_' +
+      packageObj['publisher']['abbrev'] + '_' +
+      adObj.custom
+    return adString;
+    }
   }
 
   createInput(adInput): Observable<any> {

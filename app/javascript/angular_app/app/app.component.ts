@@ -14,6 +14,9 @@ import { MetadataService } from '../services/metadata_service';
     <div *ngIf="showAdInput">
       <ad [campaignInput]="campaignInput" [packageInput]="packageInput" [placementInput]="placementInput" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)"></ad>
     </div>
+    <div *ngIf="showCreativeInput">
+      <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)"></creative>
+    </div>
   `
 })
 
@@ -32,24 +35,30 @@ export class AppComponent implements OnInit {
   devices: any = [];
   episodes: any = [];
   creativeGroups: any = [];
+  creativeMessages: any = [];
+  abtestLabels: any = [];
+  videoLengths: any = [];
   campaignInput: any = {};
   packageInput: any = {}
   placementInput: any = {};
   adInput: any = {};
+  creativeInput: any = {};
   campaignTags: any = [];
   packageTags: any = [];
   adTags: any = [];
+  creativeTags: any = [];
   placementTags: any = [];
   showPackageInput: boolean = false;
   showPlacementInput: boolean = false;
   showAdInput: boolean = false;
+  showCreativeInput: boolean = false;
 
   constructor( private _metadata: MetadataService) {}
 
   ngOnInit() {
     // Call MetadataService
     this._metadata.getMetadata().subscribe(
-      
+
       (data) => {
         this.networks = data['networks'];
         this.seasons = data['seasons'];
@@ -64,6 +73,9 @@ export class AppComponent implements OnInit {
         this.devices = data['devices'];
         this.episodes = data['episodes'];
         this.creativeGroups = data['creative_groups'];
+        this.creativeMessages = data['creative_messages'];
+        this.abtestLabels = data['abtest_labels'];
+        this.videoLengths = data['video_lengths'];
         this.campaignTags = data['campaign_tags'];
       },
       (error) => {
@@ -101,6 +113,14 @@ export class AppComponent implements OnInit {
 
   setAdTag(adTag) {
     this.adInput = adTag;
+    if(this.adInput.creative_inputs && this.adInput.creative_inputs.length > 0) {
+      this.creativeTags = this.adInput.creative_inputs.map(n=> n['creative_input_tag']);
+    }
+    this.showCreativeInput = true;
+  }
+
+  setCreativeTag(creativeTag) {
+    this.creativeInput = creativeTag;
   }
 
 }

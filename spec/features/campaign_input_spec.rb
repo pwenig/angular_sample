@@ -71,7 +71,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('Package Input')
   end
 
-  it 'cancels a campaign input' do
+  it 'clears a campaign input' do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -95,8 +95,8 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     select('01', from: 'Start Day')
     select('02', from: 'End Month')
     select('02', from: 'End Day')
-    expect(page).to have_text('Cancel')
-    click_on('Cancel')
+    expect(page).to have_text('Clear')
+    click_on('Clear')
     expect(page).to_not have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
   end
 end

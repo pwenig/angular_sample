@@ -18,7 +18,7 @@ import {SelectComponent} from './select.component';
           <input [ngModel]="placementInput.placementInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="!existingPlacementInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Placement String</button>
           <button class="new-tag" *ngIf="existingPlacementInput && showButtons" type="submit" (click)="selectInput(placementInput.placementInputTag)">Select Placement String</button>
-          <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Cancel</button>
+          <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
         </section>
       </div>
     </div>
@@ -51,7 +51,7 @@ import {SelectComponent} from './select.component';
             </div>
           </section>
 
-          <section class="select">
+          <section class="select" *ngIf="placementInput.adType">
             <div class="column" *ngIf="targetingTypes && targetingTypes.length > 0">
               <select-component [label]="targetingType1Label" [options]="targetingTypes" [default]="defaultTargetingType" (selected)="attributeUpdated($event, 'targetingType1')"></select-component>
             </div>
@@ -66,16 +66,16 @@ import {SelectComponent} from './select.component';
             </div>
           </section>
 
-          <section class="select">
+          <section class="select" *ngIf="placementInput.adType">
             <div class="custom-column"> 
               <label for="type">Audience Type</label><br>
               <input type="text" id="customAudience" [(ngModel)]="placementInput.audience" placeholder="Enter Type" (change)="checkAttributes()">
             </div>
-            <div class="custom-column"> 
+            <div class="custom-column" *ngIf="!videoAdType()"> 
               <label for="type">Width</label><br>
               <input type="text" id="customWidth" [(ngModel)]="placementInput.width" placeholder="Enter Width" (change)="checkAttributes()">
             </div>
-            <div class="custom-column"> 
+            <div class="custom-column" *ngIf="!videoAdType()"> 
               <label for="type">Height</label><br>
               <input type="text" id="customHeight" [(ngModel)]="placementInput.height" placeholder="Enter Width" (change)="checkAttributes()">
             </div>
@@ -143,40 +143,39 @@ export class PlacementComponent {
 
   // Checks to see if everything is selected before creating the tag
   checkAttributes(){
-    if(this.campaignInput['season']['name'] != 'Tentpole' && 
+    // Not a tentpole and not video ad type
+    if(this.campaignInput['season']['name'] != 'Tentpole' && !this.videoAdType() && 
       this.placementInput.episodeStartDate &&
       this.placementInput.episodeEndDate &&
-      this.placementInput.tactic &&
-      this.placementInput.device &&
-      this.placementInput.adType &&
-      this.placementInput.audience &&
       this.placementInput.height &&
-      this.placementInput.width
+      this.placementInput.width &&
+      this.mainAttributes()
     ){
-      this.placementInput.placementInputTag = this._placement.createPlacementString(this.campaignInput, this.packageInput, this.placementInput)
-      // Check to see if placement tag exists
-      if(this.placementInput.placementInputTag){
-        this.verifyTag();
-      }
-     // This will enable the create button
-     this.invalid = false;
+      this.createString();
 
-    }else if(this.placementInput.tactic &&
+    // Tentpole and not video ad type
+    }else if(this.campaignInput['season']['name'] == 'Tentpole' && !this.videoAdType() && this.mainAttributes() &&
       this.placementInput.tentpole &&
-      this.placementInput.device &&
-      this.placementInput.adType &&
-      this.placementInput.audience &&
       this.placementInput.height &&
       this.placementInput.width
     ){
-      this.placementInput.placementInputTag = this._placement.createPlacementString(this.campaignInput, this.packageInput, this.placementInput)
-      // Check to see if placement tag exists
-      if(this.placementInput.placementInputTag){
-        this.verifyTag();
+      this.createString();
+
+    // Not a tentpole and is a video ad type
+    }else if(this.campaignInput['season']['name'] != 'Tentpole' && this.videoAdType() &&
+      this.placementInput.episodeStartDate &&
+      this.placementInput.episodeEndDate &&
+      this.mainAttributes()
+    ){
+      this.createString();
+
+      // Tentpole and is a video ad type
+    }else if(this.campaignInput['season']['name'] == 'Tentpole' && this.videoAdType() &&
+      this.placementInput.tentpole &&
+      this.mainAttributes()
+    ){
+      this.createString();
       }
-     // This will enable the create button
-     this.invalid = false;
-    }
 
   }
 
@@ -257,26 +256,46 @@ export class PlacementComponent {
   }
 
   newTagSection() {
-    this.showButtons = true 
-    this.showSelectors = true
+    this.showButtons = true ;
+    this.showSelectors = true;
   }
 
   // Clears the selected options
   cancelInput() {
-    this.selectComponent.clearSelections('Tactic')
-    this.selectComponent.clearSelections('Episode Start')
-    this.selectComponent.clearSelections('Episode End')
-    this.selectComponent.clearSelections('Device')
-    this.selectComponent.clearSelections('Ad Type')
-    this.selectComponent.clearSelections('Targeting Type 1')
-    this.selectComponent.clearSelections('Targeting Type 2')
-    this.selectComponent.clearSelections('Targeting Type 3')
-    this.selectComponent.clearSelections('Targeting Type 4')
+    this.selectComponent.clearSelections('Tactic');
+    this.selectComponent.clearSelections('Episode Start');
+    this.selectComponent.clearSelections('Episode End');
+    this.selectComponent.clearSelections('Device');
+    this.selectComponent.clearSelections('Ad Type');
+    this.selectComponent.clearSelections('Targeting Type 1');
+    this.selectComponent.clearSelections('Targeting Type 2');
+    this.selectComponent.clearSelections('Targeting Type 3');
+    this.selectComponent.clearSelections('Targeting Type 4');
     this.placementInput.height = null;
     this.placementInput.width = null;
     this.placementInput.audience = null;
     this.placementInput.tentpole = null;
     this.placementInput.placementInputTag = null;
+  }
+
+  videoAdType() {
+    return (this.placementInput.adType && this.placementInput.adType.abbrev == 'SVD') || (this.placementInput.adType && this.placementInput.adType.abbrev == 'NSV')
+  }
+
+  mainAttributes() {
+    return (this.placementInput.tactic &&
+      this.placementInput.device &&
+      this.placementInput.adType &&
+      this.placementInput.audience)
+  }
+
+  createString() {
+    this.placementInput.placementInputTag = this._placement.createPlacementString(this.campaignInput, this.packageInput, this.placementInput)
+    if(this.placementInput.placementInputTag){
+      this.verifyTag();
+    }
+   this.invalid = false;
+
   }
 
 }

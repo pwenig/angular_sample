@@ -94,7 +94,7 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
   end
 
-  it 'cancels an ad input' do
+  it 'clears an ad input' do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -162,7 +162,7 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     expect(page).to have_field('customAd')
     fill_in('customAd', with: 'XX')
     select('Always On', from: 'Creative Group')
-    click_on('Cancel')
+    click_on('Clear')
     expect(page).to_not have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
   end
 end

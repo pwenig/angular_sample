@@ -112,7 +112,7 @@
 .select-container {
 
   section.select {
-    width: 585px;
+    width: 700px;;
     display: flex;
     flex-direction: row;
     margin: 0 auto;
@@ -127,6 +127,10 @@
 
     }
 
+    .second-column {
+      margin: 10px;
+    }
+
     .campaign-type-column, .inv-type-column {
       margin: 10px;
       width: 190px;
@@ -135,7 +139,7 @@
     .custom-column {
       margin-left: 10px;
       margin-top: 8px;
-      input#customCampaign, input#customPackage, input#customAd, input#customTentpole {
+      input#customCampaign, input#customPackage, input#customAd, input#customTentpole, input#creativeCustom {
         font-size: 16px;
         border: 1px solid lightgrey;
         border-radius: 5%;

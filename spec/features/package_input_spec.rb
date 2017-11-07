@@ -122,7 +122,7 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('CCL_BC_S01_SC_ABCX_CPA_PSD_xx')
   end
 
-  it 'cancels a package input' do
+  it 'clears a package input' do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -160,8 +160,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     fill_in('customPackage', with: 'XX')
     expect(page).to have_select('Inventory Type', options: ['Select Inventory Type', 'Partner Social Distribution'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    expect(page).to have_text('Cancel')
-    click_on('Cancel')
+    expect(page).to have_text('Clear')
+    click_on('Clear')
     expect(page).to_not have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
   end
 end
