@@ -1,7 +1,7 @@
 import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { PlacementInputService } from '../services/placement_input_service';
+import { AdTypeService } from '../services/ad_type_service';
 import {SelectComponent} from './select.component';
-
 
 @Component({
   selector: 'placement',
@@ -47,11 +47,11 @@ import {SelectComponent} from './select.component';
              <select-component [label]="deviceLabel" [options]="devices" (selected)="attributeUpdated($event, 'device')"></select-component>
             </div>
             <div class="column" *ngIf="adTypes && adTypes.length > 0">
-             <select-component [label]="adTypeLabel" [options]="adTypes" (selected)="attributeUpdated($event, 'adType')"></select-component>
+             <select-component [label]="adTypeLabel" [options]="adTypes" (selected)="attributeUpdated($event, 'ad_type')"></select-component>
             </div>
           </section>
 
-          <section class="select" *ngIf="placementInput.adType">
+          <section class="select" *ngIf="placementInput.ad_type">
             <div class="column" *ngIf="targetingTypes && targetingTypes.length > 0">
               <select-component [label]="targetingType1Label" [options]="targetingTypes" [default]="defaultTargetingType" (selected)="attributeUpdated($event, 'targetingType1')"></select-component>
             </div>
@@ -66,16 +66,16 @@ import {SelectComponent} from './select.component';
             </div>
           </section>
 
-          <section class="select" *ngIf="placementInput.adType">
+          <section class="select" *ngIf="placementInput.ad_type">
             <div class="custom-column"> 
               <label for="type">Audience Type</label><br>
               <input type="text" id="customAudience" [(ngModel)]="placementInput.audience" placeholder="Enter Type" (change)="checkAttributes()">
             </div>
-            <div class="custom-column" *ngIf="!videoAdType()"> 
+            <div class="custom-column" *ngIf="!_adtype.videoAdType(placementInput)"> 
               <label for="type">Width</label><br>
               <input type="text" id="customWidth" [(ngModel)]="placementInput.width" placeholder="Enter Width" (change)="checkAttributes()">
             </div>
-            <div class="custom-column" *ngIf="!videoAdType()"> 
+            <div class="custom-column" *ngIf="!_adtype.videoAdType(placementInput)"> 
               <label for="type">Height</label><br>
               <input type="text" id="customHeight" [(ngModel)]="placementInput.height" placeholder="Enter Width" (change)="checkAttributes()">
             </div>
@@ -118,7 +118,7 @@ export class PlacementComponent {
   invalid: boolean = true;
   defaultTargetingType: any = {};
 
-  constructor( private _placement: PlacementInputService) {}
+  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService) {}
 
   ngOnInit() {
     this.defaultTargetingType = this.targetingTypes.find(x => x['name'] == 'None')
@@ -144,7 +144,7 @@ export class PlacementComponent {
   // Checks to see if everything is selected before creating the tag
   checkAttributes(){
     // Not a tentpole and not video ad type
-    if(this.campaignInput['season']['name'] != 'Tentpole' && !this.videoAdType() && 
+    if(this.campaignInput['season']['name'] != 'Tentpole' && !this._adtype.videoAdType(this.placementInput) && 
       this.placementInput.episodeStartDate &&
       this.placementInput.episodeEndDate &&
       this.placementInput.height &&
@@ -154,7 +154,7 @@ export class PlacementComponent {
       this.createString();
 
     // Tentpole and not video ad type
-    }else if(this.campaignInput['season']['name'] == 'Tentpole' && !this.videoAdType() && this.mainAttributes() &&
+    }else if(this.campaignInput['season']['name'] == 'Tentpole' && !this._adtype.videoAdType(this.placementInput) && this.mainAttributes() &&
       this.placementInput.tentpole &&
       this.placementInput.height &&
       this.placementInput.width
@@ -162,7 +162,7 @@ export class PlacementComponent {
       this.createString();
 
     // Not a tentpole and is a video ad type
-    }else if(this.campaignInput['season']['name'] != 'Tentpole' && this.videoAdType() &&
+    }else if(this.campaignInput['season']['name'] != 'Tentpole' && this._adtype.videoAdType(this.placementInput) &&
       this.placementInput.episodeStartDate &&
       this.placementInput.episodeEndDate &&
       this.mainAttributes()
@@ -170,7 +170,7 @@ export class PlacementComponent {
       this.createString();
 
       // Tentpole and is a video ad type
-    }else if(this.campaignInput['season']['name'] == 'Tentpole' && this.videoAdType() &&
+    }else if(this.campaignInput['season']['name'] == 'Tentpole' && this._adtype.videoAdType(this.placementInput) &&
       this.placementInput.tentpole &&
       this.mainAttributes()
     ){
@@ -203,7 +203,7 @@ export class PlacementComponent {
         package_input_id: this.packageInput['id'],
         tactic_id: this.placementInput.tactic.id,
         device_id: this.placementInput.device.id,
-        ad_type_id: this.placementInput.adType.id,
+        ad_type_id: this.placementInput.ad_type.id,
         audience_type: this.placementInput.audience,
         width: this.placementInput.width,
         height: this.placementInput.height,
@@ -221,7 +221,7 @@ export class PlacementComponent {
         tentpole_details: this.placementInput.tentpole,
         tactic_id: this.placementInput.tactic.id,
         device_id: this.placementInput.device.id,
-        ad_type_id: this.placementInput.adType.id,
+        ad_type_id: this.placementInput.ad_type.id,
         audience_type: this.placementInput.audience,
         width: this.placementInput.width,
         height: this.placementInput.height,
@@ -278,14 +278,10 @@ export class PlacementComponent {
     this.placementInput.placementInputTag = null;
   }
 
-  videoAdType() {
-    return (this.placementInput.adType && this.placementInput.adType.abbrev == 'SVD') || (this.placementInput.adType && this.placementInput.adType.abbrev == 'NSV')
-  }
-
   mainAttributes() {
     return (this.placementInput.tactic &&
       this.placementInput.device &&
-      this.placementInput.adType &&
+      this.placementInput.ad_type &&
       this.placementInput.audience)
   }
 

@@ -1,5 +1,6 @@
 import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { CreativeInputService } from '../services/creative_input_service';
+import { AdTypeService } from '../services/ad_type_service';
 import {SelectComponent} from './select.component';
 import {MonthSelectComponent} from './monthselect.component';
 import {DaySelectComponent} from './dayselect.component';
@@ -43,7 +44,7 @@ import {DaySelectComponent} from './dayselect.component';
           <div class="first-column">
             <select-component [label]="abTestLabel" [options]="abtestLabels" [default]="defaultAbLabel" (selected)="attributeUpdated($event, 'abtestLabel')"></select-component>
           </div>
-          <div class="second-column" *ngIf="videoAdType()">
+          <div class="second-column" *ngIf="_adtype.videoAdType(placementInput)">
             <select-component [label]="videoLengthLabel" [options]="videoLengths" (selected)="attributeUpdated($event, 'videoLength')"></select-component>
           </div>
         </section>
@@ -98,7 +99,7 @@ export class CreativeComponent implements OnInit {
   invalid: boolean = true;
   defaultAbLabel: any = {};
 
-  constructor( private _creative: CreativeInputService) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService) {}
 
   ngOnInit() {
     this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');
@@ -123,7 +124,7 @@ export class CreativeComponent implements OnInit {
 
   saveInput() {
     let createParams = {};
-    if(this.placementInput['ad_type']['abbrev'] == 'SVD' || this.placementInput['ad_type']['abbrev'] == 'NSV'){
+    if(this._adtype.videoAdType(this.placementInput)){
       createParams = {
         ad_input_id: this.adInput['id'],
         creative_message_id: this.creativeInput.creativeMessage.id,
@@ -181,7 +182,7 @@ export class CreativeComponent implements OnInit {
   }
 
   checkAttributes() {
-    if(this.creativeInput.creativeMessage && this.videoAdType() &&
+    if(this.creativeInput.creativeMessage && this._adtype.videoAdType(this.placementInput) &&
       this.creativeInput.custom &&
       this.creativeInput.creativeVersion &&
       this.creativeInput.abtestLabel &&
@@ -232,10 +233,6 @@ export class CreativeComponent implements OnInit {
     this.daySelectComponent.clearSelections('Start Day');
     this.daySelectComponent.clearSelections('End Day');
     this.creativeInput.creativeInputTag = null;
-  }
-
-  videoAdType() {
-    return this.placementInput['ad_type']['abbrev'] == 'SVD' || this.placementInput['ad_type']['abbrev'] == 'NSV'
   }
   
 }
