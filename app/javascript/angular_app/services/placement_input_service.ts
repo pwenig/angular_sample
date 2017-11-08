@@ -2,11 +2,13 @@ import {Component, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
+import { AdTypeService } from '../services/ad_type_service';
+
 
 @Injectable()
 export class PlacementInputService {
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient, private _adtype: AdTypeService ){}
 
   // Placement String format
   // If tentpole season:
@@ -21,7 +23,7 @@ export class PlacementInputService {
       placementObj.device.abbrev + '_' +
       packageObj['publisher']['abbrev'] + '_' +
       packageObj['buy_method']['abbrev'] + '_' +
-      placementObj.adType.abbrev + '_' +
+      placementObj.ad_type.abbrev + '_' +
       placementObj.targetingType1.abbrev + '-' +
       placementObj.targetingType2.abbrev + '-' +
       placementObj.targetingType3.abbrev + '-' +
@@ -41,7 +43,7 @@ export class PlacementInputService {
       placementObj.device.abbrev + '_' +
       packageObj['publisher']['abbrev'] + '_' +
       packageObj['buy_method']['abbrev'] + '_' +
-      placementObj.adType.abbrev + '_' +
+      placementObj.ad_type.abbrev + '_' +
       placementObj.targetingType1.abbrev + '-' +
       placementObj.targetingType2.abbrev + '-' +
       placementObj.targetingType3.abbrev + '-' +
@@ -53,7 +55,7 @@ export class PlacementInputService {
       campaignObj['end_day']
 
     // Tentpole and not video
-    if( campaignObj['season']['abbrev'] == 'TPL' && (placementObj.adType.abbrev != 'SVD' && placementObj.adType.abbrev != 'NSV')) {
+    if( campaignObj['season']['abbrev'] == 'TPL' && !this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
@@ -62,7 +64,7 @@ export class PlacementInputService {
       return placementString;
 
       // Not Tentpole and not video
-    } else if (campaignObj['season']['abbrev'] != 'TPL' && (placementObj.adType.abbrev != 'SVD' &&  placementObj.adType.abbrev != 'NSV')) {
+    } else if (campaignObj['season']['abbrev'] != 'TPL' && !this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
@@ -72,7 +74,7 @@ export class PlacementInputService {
       return placementString;
 
     // Not tentpole and video
-    }else if(campaignObj['season']['abbrev'] != 'TPL' && (placementObj.adType.abbrev == 'SVD' || placementObj.adType.abbrev == 'NSV')) {
+    }else if(campaignObj['season']['abbrev'] != 'TPL' && this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       placementObj.episodeStartDate.abbrev + '-' +
@@ -81,7 +83,7 @@ export class PlacementInputService {
     return placementString;
 
     // Tentpole and video
-    }else if(campaignObj['season']['abbrev'] == 'TPL' && (placementObj.adType.abbrev == 'SVD' || placementObj.adType.abbrev == 'NSV')) {
+    }else if(campaignObj['season']['abbrev'] == 'TPL' && this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
