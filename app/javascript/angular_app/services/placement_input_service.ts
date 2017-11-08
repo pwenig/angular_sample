@@ -13,98 +13,80 @@ export class PlacementInputService {
   // Network_Program_Season_TentpoleDetails_Agency_Tactic_Device_Publisher_BuyMethod_AdType_
   // InventoryType_TargetingType_AudienceType-CustomDimension_Size_CampaignFlightDate
   createPlacementString(campaignObj, packageObj, placementObj){
-    // Check for tentpole season
-    if( campaignObj['season']['abbrev'] == 'TPL' && placementObj.adType.abbrev != 'SVD' && placementObj.adType.abbrev != 'NSV') {
+    
+    // Non-video ad type includes width and height 
+    let non_video_ad_type =
+      packageObj['agency']['abbrev'] + '_' +
+      placementObj.tactic.abbrev + '_' +
+      placementObj.device.abbrev + '_' +
+      packageObj['publisher']['abbrev'] + '_' +
+      packageObj['buy_method']['abbrev'] + '_' +
+      placementObj.adType.abbrev + '_' +
+      placementObj.targetingType1.abbrev + '-' +
+      placementObj.targetingType2.abbrev + '-' +
+      placementObj.targetingType3.abbrev + '-' +
+      placementObj.targetingType4.abbrev + '_' +
+      placementObj.audience + '_' +
+      placementObj.width + 'x' +
+      placementObj.height + '_' +
+      campaignObj['start_month'] +
+      campaignObj['start_day'] + '-' +
+      campaignObj['end_month'] +
+      campaignObj['end_day']
+
+    // Video ad type does not include width and height
+    let video_ad_type = 
+      packageObj['agency']['abbrev'] + '_' +
+      placementObj.tactic.abbrev + '_' +
+      placementObj.device.abbrev + '_' +
+      packageObj['publisher']['abbrev'] + '_' +
+      packageObj['buy_method']['abbrev'] + '_' +
+      placementObj.adType.abbrev + '_' +
+      placementObj.targetingType1.abbrev + '-' +
+      placementObj.targetingType2.abbrev + '-' +
+      placementObj.targetingType3.abbrev + '-' +
+      placementObj.targetingType4.abbrev + '_' +
+      placementObj.audience + '_' +
+      campaignObj['start_month'] +
+      campaignObj['start_day'] + '-' +
+      campaignObj['end_month'] +
+      campaignObj['end_day']
+
+    // Tentpole and not video
+    if( campaignObj['season']['abbrev'] == 'TPL' && (placementObj.adType.abbrev != 'SVD' && placementObj.adType.abbrev != 'NSV')) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
         placementObj.tentpole + '_' +
-        packageObj['agency']['abbrev'] + '_' +
-        placementObj.tactic.abbrev + '_' +
-        placementObj.device.abbrev + '_' +
-        packageObj['publisher']['abbrev'] + '_' +
-        packageObj['buy_method']['abbrev'] + '_' +
-        placementObj.adType.abbrev + '_' +
-        placementObj.targetingType1.abbrev + '-' +
-        placementObj.targetingType2.abbrev + '-' +
-        placementObj.targetingType3.abbrev + '-' +
-        placementObj.targetingType4.abbrev + '_' +
-        placementObj.audience + '_' +
-        placementObj.width + 'x' +
-        placementObj.height + '_' +
-        campaignObj['start_month'] +
-        campaignObj['start_day'] + '-' +
-        campaignObj['end_month'] +
-        campaignObj['end_day']
+        non_video_ad_type
       return placementString;
-      // If not a tentpole season:
-      // Network_Program_Season_Episode_Agency_Tactic_Device_Publisher_BuyMethod_AdType_
-      // InventoryType_TargetingType_AudienceType-CustomDimension_Size_CampaignFlightDate
-    } else if (campaignObj['season']['abbrev'] != 'TPL' && placementObj.adType.abbrev != 'SVD' && placementObj.adType.abbrev != 'NSV') {
+
+      // Not Tentpole and not video
+    } else if (campaignObj['season']['abbrev'] != 'TPL' && (placementObj.adType.abbrev != 'SVD' &&  placementObj.adType.abbrev != 'NSV')) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
         placementObj.episodeStartDate.abbrev + '-' +
         placementObj.episodeEndDate.abbrev + '_' +
-        packageObj['agency']['abbrev'] + '_' +
-        placementObj.tactic.abbrev + '_' +
-        placementObj.device.abbrev + '_' +
-        packageObj['publisher']['abbrev'] + '_' +
-        packageObj['buy_method']['abbrev'] + '_' +
-        placementObj.adType.abbrev + '_' +
-        placementObj.targetingType1.abbrev + '-' +
-        placementObj.targetingType2.abbrev + '-' +
-        placementObj.targetingType3.abbrev + '-' +
-        placementObj.targetingType4.abbrev + '_' +
-        placementObj.audience + '_' +
-        placementObj.width + 'x' +
-        placementObj.height + '_' +
-        campaignObj['start_month'] +
-        campaignObj['start_day'] + '-' +
-        campaignObj['end_month'] +
-        campaignObj['end_day']
+        non_video_ad_type
       return placementString;
-    }else if(campaignObj['season']['abbrev'] != 'TPL' && placementObj.adType.abbrev == 'SVD' || placementObj.adType.abbrev == 'NSV') {
+
+    // Not tentpole and video
+    }else if(campaignObj['season']['abbrev'] != 'TPL' && (placementObj.adType.abbrev == 'SVD' || placementObj.adType.abbrev == 'NSV')) {
       let placementString = campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       placementObj.episodeStartDate.abbrev + '-' +
       placementObj.episodeEndDate.abbrev + '_' +
-      packageObj['agency']['abbrev'] + '_' +
-      placementObj.tactic.abbrev + '_' +
-      placementObj.device.abbrev + '_' +
-      packageObj['publisher']['abbrev'] + '_' +
-      packageObj['buy_method']['abbrev'] + '_' +
-      placementObj.adType.abbrev + '_' +
-      placementObj.targetingType1.abbrev + '-' +
-      placementObj.targetingType2.abbrev + '-' +
-      placementObj.targetingType3.abbrev + '-' +
-      placementObj.targetingType4.abbrev + '_' +
-      placementObj.audience + '_' +
-      campaignObj['start_month'] +
-      campaignObj['start_day'] + '-' +
-      campaignObj['end_month'] +
-      campaignObj['end_day']
+      video_ad_type
     return placementString;
-    }else if(campaignObj['season']['abbrev'] == 'TPL' && placementObj.adType.abbrev == 'SVD' || placementObj.adType.abbrev == 'NSV') {
+
+    // Tentpole and video
+    }else if(campaignObj['season']['abbrev'] == 'TPL' && (placementObj.adType.abbrev == 'SVD' || placementObj.adType.abbrev == 'NSV')) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       placementObj.tentpole + '_' +
-      packageObj['agency']['abbrev'] + '_' +
-      placementObj.tactic.abbrev + '_' +
-      placementObj.device.abbrev + '_' +
-      packageObj['publisher']['abbrev'] + '_' +
-      packageObj['buy_method']['abbrev'] + '_' +
-      placementObj.adType.abbrev + '_' +
-      placementObj.targetingType1.abbrev + '-' +
-      placementObj.targetingType2.abbrev + '-' +
-      placementObj.targetingType3.abbrev + '-' +
-      placementObj.targetingType4.abbrev + '_' +
-      placementObj.audience + '_' +
-      campaignObj['start_month'] +
-      campaignObj['start_day'] + '-' +
-      campaignObj['end_month'] +
-      campaignObj['end_day']
+      video_ad_type
     return placementString;
     }
   }
