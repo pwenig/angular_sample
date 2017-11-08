@@ -1,6 +1,7 @@
 import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { PlacementInputService } from '../services/placement_input_service';
 import { AdTypeService } from '../services/ad_type_service';
+import { CampaignTypeService } from '../services/campaign_type_service';
 import {SelectComponent} from './select.component';
 
 @Component({
@@ -27,13 +28,13 @@ import {SelectComponent} from './select.component';
       <div class="select-container">
         <div class="row">
           <section class="select">
-            <div class="column" *ngIf="(episodes && episodes.length > 0) && campaignInput.season.name != 'Tentpole'">
+            <div class="column" *ngIf="(episodes && episodes.length > 0) && !_campaign.tentpole(campaignInput)">
               <select-component [label]="episodeStartLabel" [options]="episodes" (selected)="attributeUpdated($event, 'episodeStartDate')"></select-component>
             </div>
-            <div class="column" *ngIf="(episodes && episodes.length > 0) && campaignInput.season.name != 'Tentpole'">
+            <div class="column" *ngIf="(episodes && episodes.length > 0) && !_campaign.tentpole(campaignInput)">
               <select-component [label]="episodeEndLabel" [options]="episodes" (selected)="attributeUpdated($event, 'episodeEndDate')"></select-component>
             </div>
-            <div class="custom-column" *ngIf="campaignInput.season.name == 'Tentpole'"> 
+            <div class="custom-column" *ngIf="_campaign.tentpole(campaignInput)"> 
               <label for="customTentpole">Tentpole Details</label><br>
               <input type="text" id="customTentpole" [(ngModel)]="placementInput.tentpole" placeholder="Enter Details" (change)="checkAttributes()">
             </div>
@@ -118,7 +119,7 @@ export class PlacementComponent {
   invalid: boolean = true;
   defaultTargetingType: any = {};
 
-  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService) {}
+  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService) {}
 
   ngOnInit() {
     this.defaultTargetingType = this.targetingTypes.find(x => x['name'] == 'None')
@@ -144,7 +145,7 @@ export class PlacementComponent {
   // Checks to see if everything is selected before creating the tag
   checkAttributes(){
     // Not a tentpole and not video ad type
-    if(this.campaignInput['season']['name'] != 'Tentpole' && !this._adtype.videoAdType(this.placementInput) && 
+    if(!this._campaign.tentpole(this.campaignInput) && !this._adtype.videoAdType(this.placementInput) && 
       this.placementInput.episodeStartDate &&
       this.placementInput.episodeEndDate &&
       this.placementInput.height &&
@@ -154,7 +155,7 @@ export class PlacementComponent {
       this.createString();
 
     // Tentpole and not video ad type
-    }else if(this.campaignInput['season']['name'] == 'Tentpole' && !this._adtype.videoAdType(this.placementInput) && this.mainAttributes() &&
+    }else if(this._campaign.tentpole(this.campaignInput) && !this._adtype.videoAdType(this.placementInput) && this.mainAttributes() &&
       this.placementInput.tentpole &&
       this.placementInput.height &&
       this.placementInput.width
@@ -162,7 +163,7 @@ export class PlacementComponent {
       this.createString();
 
     // Not a tentpole and is a video ad type
-    }else if(this.campaignInput['season']['name'] != 'Tentpole' && this._adtype.videoAdType(this.placementInput) &&
+    }else if(!this._campaign.tentpole(this.campaignInput) && this._adtype.videoAdType(this.placementInput) &&
       this.placementInput.episodeStartDate &&
       this.placementInput.episodeEndDate &&
       this.mainAttributes()
@@ -170,7 +171,7 @@ export class PlacementComponent {
       this.createString();
 
       // Tentpole and is a video ad type
-    }else if(this.campaignInput['season']['name'] == 'Tentpole' && this._adtype.videoAdType(this.placementInput) &&
+    }else if(this._campaign.tentpole(this.campaignInput) && this._adtype.videoAdType(this.placementInput) &&
       this.placementInput.tentpole &&
       this.mainAttributes()
     ){
@@ -198,7 +199,7 @@ export class PlacementComponent {
   saveInput() {
     // Create the params
     let createParams = {};
-    if(this.campaignInput['season']['name'] != 'Tentpole'){
+    if(!this._campaign.tentpole(this.campaignInput)){
       createParams = {
         package_input_id: this.packageInput['id'],
         tactic_id: this.placementInput.tactic.id,

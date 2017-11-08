@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MetadataService } from '../services/metadata_service';
+import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 
 @Component({
   selector: 'app-component',
@@ -16,6 +17,9 @@ import { MetadataService } from '../services/metadata_service';
     </div>
     <div *ngIf="showCreativeInput">
       <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)"></creative>
+    </div>
+    <div *ngIf="showExport">
+      <button class="export" (click)="exportStrings()">Export</button>
     </div>
   `
 })
@@ -52,6 +56,8 @@ export class AppComponent implements OnInit {
   showPlacementInput: boolean = false;
   showAdInput: boolean = false;
   showCreativeInput: boolean = false;
+  showExport: boolean = false;
+  omnitureCode: any;
 
   constructor( private _metadata: MetadataService) {}
 
@@ -121,6 +127,29 @@ export class AppComponent implements OnInit {
 
   setCreativeTag(creativeTag) {
     this.creativeInput = creativeTag;
+    this.showExport = true;
+    this.createOmniCode();
+  }
+
+  createOmniCode() {
+    // Network_Program_Season_Publisher
+    this.omnitureCode = '/?xrs=crm_' + this.campaignInput.network.abbrev + '_' 
+      + this.campaignInput.program.abbrev + '_' + 
+      this.campaignInput.season.abbrev + '_' + 
+      this.packageInput.publisher.abbrev
+  }
+
+  exportStrings() {
+    var data = [{
+      'CAMPAIGN ID': this.campaignInput.campaign_input_tag,
+      'PACKAGE ID': this.packageInput.package_input_tag,
+      'PLACEMENT ID': this.placementInput.placement_input_tag,
+      'AD ID': this.adInput.ad_input_tag,
+      'CREATIVE ID': this.creativeInput.creative_input_tag,
+      'OMNITURE CODE': this.omnitureCode
+      }];
+
+    new Angular2Csv(data, 'Output', { headers: Object.keys(data[0])} );
   }
 
 }

@@ -215,3 +215,15 @@ p.final-string {
   text-align: left;
 }
 
+button.export {
+  background-color: $primary-color;
+  border: none;
+  border-radius: 5%;
+  font-size: 14px;
+  color: white;
+  width: 100px;
+  margin: 20px;
+  height: 34px;
+  cursor: pointer;
+}
+
