@@ -17,7 +17,7 @@ import {SelectComponent} from './select.component';
         <input [ngModel]="adInput.adInputTag" class="form-control" [disabled]=true>
         <button class="new-tag" *ngIf="!existingAdInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Ad String</button>
         <button class="new-tag" *ngIf="existingAdInput && showButtons" type="submit" (click)="selectInput(adInput.adInputTag)">Select Ad String</button>
-        <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Cancel</button>
+        <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
       </section>
     </div>
   </div>
@@ -103,7 +103,6 @@ export class AdComponent implements OnInit {
         console.log('ERROR', error);
       }
     );
-
   }
 
    // Updates the attribute when it is selected from child components
@@ -121,17 +120,14 @@ export class AdComponent implements OnInit {
       }
       this.invalid = false;
     }
-
   }
-
-  
 
   selectInput(tag) {
     this.adInput.adInputTag = tag;
     this.showFinal = true;
     this.showSelectors = false;
     this.showButtons = false;
-    this.adTagFinal.emit(this.adInput.adInputTag);
+    this.verifyTag();
   }
 
   newTagSection() {
@@ -144,6 +140,5 @@ export class AdComponent implements OnInit {
     this.adInput.custom = null;
     this.adInput.adInputTag = null;
   }
-
 
 }

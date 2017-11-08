@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Placement Input', type: :feature, js: true do
+RSpec.feature 'Creative Input', type: :feature, js: true do
   before do
     visit('/')
     @user = FactoryGirl.create(:user)
@@ -19,9 +19,13 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     TargetingType.create!(name: 'None', abbrev: 'XX')
     Episode.create!(name: 'E01', abbrev: 'E01')
     Episode.create!(name: 'E02', abbrev: 'E02')
+    CreativeGroup.create!(name: 'Always On', abbrev: 'AON')
+    CreativeMessage.create!(name: 'Coming Soon', abbrev: 'CS')
+    AbtestLabel.create!(name: 'Copy', abbrev: 'CP')
+    VideoLength.create!(name: '05s')
   end
 
-  it 'creates a placement input' do
+  it 'creates a creative input' do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -84,9 +88,30 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     select('Behavioral', from: 'Targeting Type 1')
     click_on('Create Placement String')
     expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_0101-0202')
+    expect(page).to have_text('Ad Input')
+    expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On'])
+    expect(page).to have_field('customAd')
+    fill_in('customAd', with: 'XX')
+    select('Always On', from: 'Creative Group')
+    click_on('Create Ad String')
+    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to have_text('Creative Input')
+    click_on('New Creative String')
+    expect(page).to have_select('Creative Message', options: ['Select Creative Message', 'Coming Soon'])
+    select('Coming Soon', from: 'Creative Message')
+    expect(page).to have_field('creativeCustom')
+    fill_in('creativeCustom', with: 'President')
+    select('01', from: 'Creative Version Number')
+    select('Copy', from: 'A/B Test Label')
+    select('01', from: 'Start Month')
+    select('01', from: 'Start Day')
+    select('02', from: 'End Month')
+    select('02', from: 'End Day')
+    click_on('Create Creative String')
+    expect(page).to have_text('CCL_CLTF_S00_AON_CS_President_01_CP_100x300_0101-0202')
   end
 
-  it 'clears a placement input' do
+  it 'clears a creative input' do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -147,8 +172,28 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     expect(page).to have_text('Create Placement String')
     expect(page).to have_select('Targeting Type 1', options: ['Select Targeting Type 1', 'Behavioral', 'None'])
     select('Behavioral', from: 'Targeting Type 1')
-    expect(page).to have_text('Clear')
+    click_on('Create Placement String')
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_0101-0202')
+    expect(page).to have_text('Ad Input')
+    expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On'])
+    expect(page).to have_field('customAd')
+    fill_in('customAd', with: 'XX')
+    select('Always On', from: 'Creative Group')
+    click_on('Create Ad String')
+    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to have_text('Creative Input')
+    click_on('New Creative String')
+    expect(page).to have_select('Creative Message', options: ['Select Creative Message', 'Coming Soon'])
+    select('Coming Soon', from: 'Creative Message')
+    expect(page).to have_field('creativeCustom')
+    fill_in('creativeCustom', with: 'President')
+    select('01', from: 'Creative Version Number')
+    select('Copy', from: 'A/B Test Label')
+    select('01', from: 'Start Month')
+    select('01', from: 'Start Day')
+    select('02', from: 'End Month')
+    select('02', from: 'End Day')
     click_on('Clear')
-    expect(page).to_not have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_0101-0202')
+    expect(page).to_not have_text('CCL_CLTF_S00_AON_CS_President_01_CP_100x300_0101-0202')
   end
 end

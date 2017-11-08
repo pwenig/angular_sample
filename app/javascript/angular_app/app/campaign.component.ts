@@ -16,12 +16,12 @@ import {DaySelectComponent} from './dayselect.component';
           <input [ngModel]="campaignInput.campaignInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="saveInput()" [disabled]="invalid">Create Campaign String</button>
           <button class="new-tag" *ngIf="existingCampaignInput && showButtons" type="submit" (click)="selectInput()">Select Campaign String</button>
-          <button class="cancel-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="cancelInput()">Cancel</button>
+          <button class="cancel-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="cancelInput()">Clear</button>
           </section>
       </div>
     </div>
 
-    <div *ngIf="showSelectors || campaignTags.length == 0 ">
+    <div *ngIf="showSelectors">
       <div class="select-container">
         <div class="row">
         

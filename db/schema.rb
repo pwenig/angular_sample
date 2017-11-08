@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171106171324) do
+ActiveRecord::Schema.define(version: 20171107155500) do
 
   create_table "abtest_labels", force: :cascade do |t|
     t.string "name", null: false
@@ -107,6 +107,26 @@ ActiveRecord::Schema.define(version: 20171106171324) do
     t.index ["name"], name: "index_creative_groups_on_name", unique: true
   end
 
+  create_table "creative_inputs", force: :cascade do |t|
+    t.integer "ad_input_id"
+    t.integer "creative_message_id"
+    t.integer "abtest_label_id"
+    t.integer "video_length_id"
+    t.string "start_month", null: false
+    t.string "start_day", null: false
+    t.string "end_month", null: false
+    t.string "end_day", null: false
+    t.string "creative_input_tag", null: false
+    t.string "custom"
+    t.string "creative_version_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abtest_label_id"], name: "index_creative_inputs_on_abtest_label_id"
+    t.index ["ad_input_id"], name: "index_creative_inputs_on_ad_input_id"
+    t.index ["creative_message_id"], name: "index_creative_inputs_on_creative_message_id"
+    t.index ["video_length_id"], name: "index_creative_inputs_on_video_length_id"
+  end
+
   create_table "creative_messages", force: :cascade do |t|
     t.string "name", null: false
     t.string "abbrev", null: false
@@ -176,8 +196,8 @@ ActiveRecord::Schema.define(version: 20171106171324) do
     t.integer "device_id", null: false
     t.integer "ad_type_id", null: false
     t.string "audience_type", null: false
-    t.integer "width", null: false
-    t.integer "height", null: false
+    t.integer "width"
+    t.integer "height"
     t.integer "package_input_id", null: false
     t.integer "targeting_type_1_id"
     t.integer "targeting_type_2_id"

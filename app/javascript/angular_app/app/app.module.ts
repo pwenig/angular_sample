@@ -10,6 +10,7 @@ import { CampaignComponent } from './campaign.component';
 import { PackageComponent } from './package.component';
 import { PlacementComponent } from './placement.component';
 import { AdComponent } from './ad.component';
+import { CreativeComponent } from './creative.component';
 import {SelectComponent} from './select.component';
 import {SelectStringComponent} from './selectString.component';
 import {YearSelectComponent} from './yearselect.component';
@@ -22,6 +23,8 @@ import { CampaignInputService } from '../services/campaign_input_service';
 import { PackageInputService } from '../services/package_input_service';
 import { PlacementInputService } from '../services/placement_input_service';
 import { AdInputService } from '../services/ad_input_service';
+import { CreativeInputService } from '../services/creative_input_service';
+import { AdTypeService } from '../services/ad_type_service';
 import {RangePipe} from '../shared/range.pipe'
 
 
@@ -32,6 +35,7 @@ import {RangePipe} from '../shared/range.pipe'
     PackageComponent,
     PlacementComponent,
     AdComponent,
+    CreativeComponent,
     SelectComponent,
     SelectStringComponent,
     YearSelectComponent,
@@ -47,7 +51,7 @@ import {RangePipe} from '../shared/range.pipe'
     TypeaheadModule.forRoot(),
     TimepickerModule.forRoot()
   ],
-  providers: [MetadataService, CampaignInputService, PackageInputService, PlacementInputService, AdInputService],
+  providers: [MetadataService, CampaignInputService, PackageInputService, PlacementInputService, AdInputService, CreativeInputService, AdTypeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

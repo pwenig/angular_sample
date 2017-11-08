@@ -18,7 +18,7 @@ import {SelectComponent} from './select.component';
           <input [ngModel]="packageInput.packageInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="!existingPackageInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Package String</button>
           <button class="new-tag" *ngIf="existingPackageInput && showButtons" type="submit" (click)="selectInput(packageInput.packageInputTag)">Select Package String</button>
-          <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Cancel</button>
+          <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
           </section>
       </div>
     </div>

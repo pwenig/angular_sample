@@ -7,8 +7,8 @@ class CreatePlacementInputs < ActiveRecord::Migration[5.1]
       t.references :device, foreign_key: true, null: false
       t.references :ad_type, foreign_key: true, null: false
       t.string :audience_type, null: false
-      t.integer :width, null: false
-      t.integer :height, null: false
+      t.integer :width, null: true
+      t.integer :height, null: true
       t.references :package_input, foreign_key: true, null: false
       t.references :targeting_type_1, foreign_key: { to_table: :targeting_types }, index: true
       t.references :targeting_type_2, foreign_key: { to_table: :targeting_types }, index: true

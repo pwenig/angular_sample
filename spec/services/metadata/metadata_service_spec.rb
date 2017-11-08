@@ -16,6 +16,9 @@ RSpec.describe MetadataService do
     Device.create!(name: 'Over the Top', abbrev: 'OTT')
     Episode.create!(name: 'E01', abbrev: 'E01')
     CreativeGroup.create!(name: 'Always On', abbrev: 'AON')
+    CreativeMessage.create!(name: 'Coming Soon', abbrev: 'CS')
+    AbtestLabel.create!(name: 'Copy', abbrev: 'CP')
+    VideoLength.create!(name: '05s')
     CampaignInput.create!(
       network: network,
       program: program,
@@ -48,6 +51,9 @@ RSpec.describe MetadataService do
     expect(metadata[:devices].length).to eq(1)
     expect(metadata[:episodes].length).to eq(1)
     expect(metadata[:creative_groups].length).to eq(1)
+    expect(metadata[:creative_messages].length).to eq(1)
+    expect(metadata[:abtest_labels].length).to eq(1)
+    expect(metadata[:video_lengths].length).to eq(1)
     expect(metadata[:campaign_tags].length).to eq(1)
   end
 
