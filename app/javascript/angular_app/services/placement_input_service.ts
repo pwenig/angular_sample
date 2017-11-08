@@ -3,12 +3,12 @@ import {HttpClient} from '@angular/common/http';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
 import { AdTypeService } from '../services/ad_type_service';
-
+import { CampaignTypeService } from '../services/campaign_type_service';
 
 @Injectable()
 export class PlacementInputService {
 
-  constructor(private http: HttpClient, private _adtype: AdTypeService ){}
+  constructor(private http: HttpClient, private _adtype: AdTypeService, private _campaign: CampaignTypeService ){}
 
   // Placement String format
   // If tentpole season:
@@ -55,7 +55,7 @@ export class PlacementInputService {
       campaignObj['end_day']
 
     // Tentpole and not video
-    if( campaignObj['season']['abbrev'] == 'TPL' && !this._adtype.videoAdType(placementObj)) {
+    if( this._campaign.tentpole(campaignObj) && !this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
@@ -64,7 +64,7 @@ export class PlacementInputService {
       return placementString;
 
       // Not Tentpole and not video
-    } else if (campaignObj['season']['abbrev'] != 'TPL' && !this._adtype.videoAdType(placementObj)) {
+    } else if (!this._campaign.tentpole(campaignObj) && !this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
@@ -74,7 +74,7 @@ export class PlacementInputService {
       return placementString;
 
     // Not tentpole and video
-    }else if(campaignObj['season']['abbrev'] != 'TPL' && this._adtype.videoAdType(placementObj)) {
+    }else if(!this._campaign.tentpole(campaignObj) && this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       placementObj.episodeStartDate.abbrev + '-' +
@@ -83,7 +83,7 @@ export class PlacementInputService {
     return placementString;
 
     // Tentpole and video
-    }else if(campaignObj['season']['abbrev'] == 'TPL' && this._adtype.videoAdType(placementObj)) {
+    }else if(this._campaign.tentpole(campaignObj) && this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
