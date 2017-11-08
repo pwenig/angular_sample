@@ -9,6 +9,7 @@
     "@angular/platform-browser": "^4.4.3",
     "@angular/platform-browser-dynamic": "^4.4.3",
     "@rails/webpacker": "^3.0.1",
+    "angular2-csv": "^0.2.5",
     "core-js": "^2.5.1",
     "ngx-bootstrap": "^1.9.3",
     "rxjs": "^5.4.3",
