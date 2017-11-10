@@ -111,7 +111,7 @@ export class CreativeComponent implements OnInit {
   defaultEndDay: string;
   creativeInputObject: any = {};
 
-  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector : ChangeDetectorRef) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');

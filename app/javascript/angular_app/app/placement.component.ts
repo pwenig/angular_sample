@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { PlacementInputService } from '../services/placement_input_service';
 import { AdTypeService } from '../services/ad_type_service';
 import { CampaignTypeService } from '../services/campaign_type_service';
@@ -8,7 +8,7 @@ import {SelectComponent} from './select.component';
   selector: 'placement',
   template: `
     <h2 class="campaign-title">Placement Input</h2>
-    <p *ngIf="showFinal" class="final-string">{{ placementInput.placementInputTag }} </p>
+    <p *ngIf="showFinal" class="final-string">{{ placementInput.placementInputTag }}<button class="duplicate" id="duplicatePlacement" type="submit" (click)="duplicate()">Duplicate</button></p>
     <div class="input-tag-container">
       <div class="row">
         <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
@@ -29,10 +29,10 @@ import {SelectComponent} from './select.component';
         <div class="row">
           <section class="select">
             <div class="column" *ngIf="(episodes && episodes.length > 0) && !_campaign.tentpole(campaignInput)">
-              <select-component [label]="episodeStartLabel" [options]="episodes" (selected)="attributeUpdated($event, 'episodeStartDate')"></select-component>
+              <select-component [label]="episodeStartLabel" [default]="defaultEpisodeStart" [options]="episodes" (selected)="attributeUpdated($event, 'episodeStartDate')"></select-component>
             </div>
             <div class="column" *ngIf="(episodes && episodes.length > 0) && !_campaign.tentpole(campaignInput)">
-              <select-component [label]="episodeEndLabel" [options]="episodes" (selected)="attributeUpdated($event, 'episodeEndDate')"></select-component>
+              <select-component [label]="episodeEndLabel" [default]="defaultEpisodeEnd" [options]="episodes" (selected)="attributeUpdated($event, 'episodeEndDate')"></select-component>
             </div>
             <div class="custom-column" *ngIf="_campaign.tentpole(campaignInput)"> 
               <label for="customTentpole">Tentpole Details</label><br>
@@ -42,28 +42,28 @@ import {SelectComponent} from './select.component';
 
           <section class="select">
             <div class="column" *ngIf="tactics && tactics.length > 0">
-              <select-component [label]="tacticLabel" [options]="tactics" (selected)="attributeUpdated($event, 'tactic')"></select-component>
+              <select-component [label]="tacticLabel" [default]="defaultTactic" [options]="tactics" (selected)="attributeUpdated($event, 'tactic')"></select-component>
             </div>
             <div class="column" *ngIf="devices && devices.length > 0">
-             <select-component [label]="deviceLabel" [options]="devices" (selected)="attributeUpdated($event, 'device')"></select-component>
+             <select-component [label]="deviceLabel" [default]="defaultDevice" [options]="devices" (selected)="attributeUpdated($event, 'device')"></select-component>
             </div>
             <div class="column" *ngIf="adTypes && adTypes.length > 0">
-             <select-component [label]="adTypeLabel" [options]="adTypes" (selected)="attributeUpdated($event, 'ad_type')"></select-component>
+             <select-component [label]="adTypeLabel" [default]="defaultAdType" [options]="adTypes" (selected)="attributeUpdated($event, 'ad_type')"></select-component>
             </div>
           </section>
 
           <section class="select" *ngIf="placementInput.ad_type">
             <div class="column" *ngIf="targetingTypes && targetingTypes.length > 0">
-              <select-component [label]="targetingType1Label" [options]="targetingTypes" [default]="defaultTargetingType" (selected)="attributeUpdated($event, 'targetingType1')"></select-component>
+              <select-component [label]="targetingType1Label" [options]="targetingTypes" [default]="defaultTargetingType1" (selected)="attributeUpdated($event, 'targetingType1')"></select-component>
             </div>
             <div class="column" *ngIf="targetingTypes && targetingTypes.length > 0">
-              <select-component [label]="targetingType2Label" [options]="targetingTypes" [default]="defaultTargetingType" (selected)="attributeUpdated($event, 'targetingType2')"></select-component>
+              <select-component [label]="targetingType2Label" [options]="targetingTypes" [default]="defaultTargetingType2" (selected)="attributeUpdated($event, 'targetingType2')"></select-component>
             </div>
             <div class="column" *ngIf="targetingTypes && targetingTypes.length > 0">
-              <select-component [label]="targetingType3Label" [options]="targetingTypes" [default]="defaultTargetingType" (selected)="attributeUpdated($event, 'targetingType3')"></select-component>
+              <select-component [label]="targetingType3Label" [options]="targetingTypes" [default]="defaultTargetingType3" (selected)="attributeUpdated($event, 'targetingType3')"></select-component>
             </div>
             <div class="column" *ngIf="targetingTypes && targetingTypes.length > 0">
-              <select-component [label]="targetingType4Label" [options]="targetingTypes" [default]="defaultTargetingType" (selected)="attributeUpdated($event, 'targetingType4')"></select-component>
+              <select-component [label]="targetingType4Label" [options]="targetingTypes" [default]="defaultTargetingType4" (selected)="attributeUpdated($event, 'targetingType4')"></select-component>
             </div>
           </section>
 
@@ -90,7 +90,8 @@ import {SelectComponent} from './select.component';
 })
 
 export class PlacementComponent {
-  @ViewChild(SelectComponent) selectComponent:SelectComponent;
+  @ViewChild(SelectComponent) 
+  private selectComponent:SelectComponent;
   
   @Input() campaignInput: {};
   @Input() packageInput: {};
@@ -117,16 +118,25 @@ export class PlacementComponent {
   showButtons: boolean = false;
   showFinal: boolean = false;
   invalid: boolean = true;
-  defaultTargetingType: any = {};
+  defaultTargetingType1: any = {};
+  defaultTargetingType2: any = {};
+  defaultTargetingType3: any = {};
+  defaultTargetingType4: any = {};
+  defaultEpisodeStart: any;
+  defaultEpisodeEnd: any;
+  defaultTactic: any;
+  defaultDevice: any;
+  defaultAdType: any;
+  placementObject: any = {};
 
-  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService) {}
+  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService,  private changeDetector: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.defaultTargetingType = this.targetingTypes.find(x => x['name'] == 'None')
-    this.placementInput.targetingType1 = this.defaultTargetingType;
-    this.placementInput.targetingType2 = this.defaultTargetingType;
-    this.placementInput.targetingType3 = this.defaultTargetingType;
-    this.placementInput.targetingType4 = this.defaultTargetingType;
+    this.defaultTargetingType1 = this.defaultTargetingType2 = this.defaultTargetingType3 = this.defaultTargetingType4 = this.targetingTypes.find(x => x['name'] == 'None')
+    this.placementInput.targetingType1 = this.defaultTargetingType1;
+    this.placementInput.targetingType2 = this.defaultTargetingType2;
+    this.placementInput.targetingType3 = this.defaultTargetingType3;
+    this.placementInput.targetingType4 = this.defaultTargetingType4;
     this.placementInput.tentpole = null;
 
     if(!this.placementTags || this.placementTags.length == 0) {
@@ -186,6 +196,7 @@ export class PlacementComponent {
       (result) => {
         this.existingPlacementInput = result;
         if(result) {
+          this.placementObject = result;
           this.placementTagFinal.emit(result)
         }
         
@@ -239,6 +250,7 @@ export class PlacementComponent {
         this.showSelectors = false;
         this.showButtons = false;
         this.showFinal = true;
+        this.placementObject = result;
         this.placementTagFinal.emit(result);
       },
       (error) => {
@@ -263,9 +275,14 @@ export class PlacementComponent {
 
   // Clears the selected options
   cancelInput() {
+    if(this._campaign.tentpole(this.campaignInput)) {
+      this.placementInput.tentpole = null;
+    }
+    if(!this._campaign.tentpole(this.campaignInput)) {
+      this.selectComponent.setSelections(this.episodeStartLabel);
+      this.selectComponent.setSelections(this.episodeEndLabel);
+    }
     this.selectComponent.setSelections(this.tacticLabel);
-    this.selectComponent.setSelections(this.episodeStartLabel);
-    this.selectComponent.setSelections(this.episodeEndLabel);
     this.selectComponent.setSelections(this.deviceLabel);
     this.selectComponent.setSelections(this.adTypeLabel);
     this.selectComponent.setSelections(this.targetingType1Label);
@@ -275,7 +292,6 @@ export class PlacementComponent {
     this.placementInput.height = null;
     this.placementInput.width = null;
     this.placementInput.audience = null;
-    this.placementInput.tentpole = null;
     this.placementInput.placementInputTag = null;
   }
 
@@ -293,6 +309,48 @@ export class PlacementComponent {
     }
    this.invalid = false;
 
+  }
+
+  duplicate() {
+    this.showButtons = true;
+    this.showFinal = false;
+    this.existingPlacementInput = false;
+    this.invalid = true;
+    // Hide the Ad input section
+    this.placementTagFinal.emit(null);
+    // Set default values
+    if(this._campaign.tentpole(this.campaignInput)) {
+      this.placementInput.tentpole = this.placementObject.tentpole;
+    }
+    if(!this._campaign.tentpole(this.campaignInput)) {
+      this.defaultEpisodeStart = this.placementInput.episodeStartDate = this.episodes.find(x => x['name'] == this.placementObject.episode_start.name);
+      this.defaultEpisodeEnd = this.placementInput.episodeEndDate = this.episodes.find(x => x['name'] == this.placementObject.episode_end.name);
+    }
+    this.defaultTactic = this.placementInput.tactic = this.tactics.find(x => x['name'] == this.placementObject.tactic.name);
+    this.defaultDevice = this.placementInput.device = this.devices.find(x => x['name'] == this.placementObject.device.name);
+    this.defaultAdType = this.placementInput.ad_type = this.adTypes.find(x => x['name'] == this.placementObject.ad_type.name);
+    this.placementInput.audience = this.placementObject.audience_type;
+    this.placementInput.height = this.placementObject.height;
+    this.placementInput.width = this.placementObject.width;
+    this.defaultTargetingType1 = this.placementInput.targeting_type_1 = this.targetingTypes.find(x => x['name'] == this.placementObject.targeting_type_1.name);
+    this.defaultTargetingType2 = this.placementInput.targeting_type_2 = this.targetingTypes.find(x => x['name'] == this.placementObject.targeting_type_2.name);
+    this.defaultTargetingType3 = this.placementInput.targeting_type_3 = this.targetingTypes.find(x => x['name'] == this.placementObject.targeting_type_3.name);
+    this.defaultTargetingType4 = this.placementInput.targeting_type_4 = this.targetingTypes.find(x => x['name'] == this.placementObject.targeting_type_4.name);
+    this.showSelectors = true;
+    // Checks to see if the ngIf has changed and the selectors are showing.
+    this.changeDetector.detectChanges();
+    // Set selectors
+    this.selectComponent.setSelections(this.tacticLabel);
+    this.selectComponent.setSelections(this.deviceLabel);
+    this.selectComponent.setSelections(this.adTypeLabel);
+    this.selectComponent.setSelections(this.targetingType1Label);
+    this.selectComponent.setSelections(this.targetingType2Label);
+    this.selectComponent.setSelections(this.targetingType3Label);
+    this.selectComponent.setSelections(this.targetingType4Label);
+    if(!this._campaign.tentpole(this.campaignInput)) {
+      this.selectComponent.setSelections(this.episodeStartLabel);
+      this.selectComponent.setSelections(this.episodeEndLabel);
+    }
   }
 
 }

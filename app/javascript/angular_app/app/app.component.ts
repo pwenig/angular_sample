@@ -110,11 +110,16 @@ export class AppComponent implements OnInit {
   }
 
   setPlacementTag(placementTag) {
-    this.placementInput = placementTag;
-    if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
-      this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
+    if(placementTag == null) {
+      this.showAdInput = false;
+      this.showCreativeInput = false;
+    } else {
+      this.placementInput = placementTag;
+      if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
+        this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
+      }
+      this.showAdInput = true;
     }
-    this.showAdInput = true;
   }
 
   setAdTag(adTag) {

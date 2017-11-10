@@ -62,7 +62,7 @@ export class AdComponent implements OnInit {
   defaultCreativeGroup: any;
   adInputObject: any = {};
 
-  constructor( private _ad: AdInputService, private changeDetector : ChangeDetectorRef) {}
+  constructor( private _ad: AdInputService, private changeDetector: ChangeDetectorRef) {}
 
   ngOnInit() {
     if(!this.adTags || this.adTags.length == 0) {
