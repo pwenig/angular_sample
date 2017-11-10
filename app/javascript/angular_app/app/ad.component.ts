@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import {AdInputService} from '../services/ad_input_service';
 import {SelectComponent} from './select.component';
 
@@ -6,7 +6,7 @@ import {SelectComponent} from './select.component';
   selector: 'ad',
   template: `
   <h2 class="campaign-title">Ad Input</h2>
-  <p *ngIf="showFinal" class="final-string">{{ adInput.adInputTag }}</p>
+  <p *ngIf="showFinal" class="final-string">{{ adInput.adInputTag }}<button class="duplicate" id="duplicateAd" type="submit" (click)="duplicate()">Duplicate</button></p>
   <div class="input-tag-container">
     <div class="row">
       <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
@@ -27,7 +27,7 @@ import {SelectComponent} from './select.component';
       <div class="row">
         <section class="select">
           <div class="column" *ngIf="creativeGroups && creativeGroups.length > 0">
-            <select-component [label]="creativeGroupLabel" [options]="creativeGroups" (selected)="attributeUpdated($event, 'creativeGroup')"></select-component>
+            <select-component [label]="creativeGroupLabel" [default]="defaultCreativeGroup" [options]="creativeGroups" (selected)="attributeUpdated($event, 'creativeGroup')"></select-component>
           </div>
           <div class="custom-column">
             <label for="customAd">Ad Custom</label><br>
@@ -42,7 +42,8 @@ import {SelectComponent} from './select.component';
 })
 
 export class AdComponent implements OnInit {
-  @ViewChild(SelectComponent) selectComponent:SelectComponent;
+  @ViewChild(SelectComponent) 
+  private selectComponent:SelectComponent;
 
   @Input() campaignInput: {};
   @Input() packageInput: {};
@@ -58,8 +59,10 @@ export class AdComponent implements OnInit {
   showButtons: boolean = false;
   showFinal: boolean = false;
   invalid: boolean = true;
+  defaultCreativeGroup: any;
+  adInputObject: any = {};
 
-  constructor( private _ad: AdInputService) {}
+  constructor( private _ad: AdInputService, private changeDetector : ChangeDetectorRef) {}
 
   ngOnInit() {
     if(!this.adTags || this.adTags.length == 0) {
@@ -72,8 +75,11 @@ export class AdComponent implements OnInit {
     this._ad.verifyInput(this.adInput.adInputTag).subscribe(
 
       (result) => {
+        // This is the object that sets the create/select button
         this.existingAdInput = result;
         if(result) {
+          // This is the object that will be used to copy
+          this.adInputObject = result;
           this.adTagFinal.emit(result)
         }
 
@@ -97,6 +103,7 @@ export class AdComponent implements OnInit {
         this.showSelectors = false;
         this.showButtons = false;
         this.showFinal = true;
+        this.adInputObject = result;
         this.adTagFinal.emit(result);
       },
       (error) => {
@@ -136,9 +143,25 @@ export class AdComponent implements OnInit {
   }
 
   cancelInput() {
-    this.selectComponent.clearSelections('Creative Group');
+    this.selectComponent.setSelections(this.creativeGroupLabel);
     this.adInput.custom = null;
     this.adInput.adInputTag = null;
+  }
+
+  duplicate() {
+    this.showButtons = true;
+    this.showFinal = false;
+    this.existingAdInput = false;
+    this.invalid = true;
+    // Hide the creative input section
+    this.adTagFinal.emit(null);
+    // Set default values
+    this.defaultCreativeGroup = this.adInput.creativeGroup = this.creativeGroups.find(x => x['name'] == this.adInputObject.creative_group.name);
+    this.adInput.custom = this.adInputObject.custom;
+    this.showSelectors = true;
+    // Checks to see if the ngIf has changed and the selectors are showing.
+    this.changeDetector.detectChanges();
+    this.selectComponent.setSelections(this.creativeGroupLabel);
   }
 
 }

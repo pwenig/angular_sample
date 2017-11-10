@@ -25,11 +25,6 @@ export class MonthSelectComponent implements OnInit {
     this.selected.emit(this.chosenOption);
   }
 
-  clearSelections(label) {
-    var selectElement = document.getElementById(label);
-    selectElement['value'] = null;
-  }
-
   setSelections(label) {
     var selectElement = document.getElementById(label);
     selectElement['value'] = this.default;

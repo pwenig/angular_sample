@@ -263,15 +263,15 @@ export class PlacementComponent {
 
   // Clears the selected options
   cancelInput() {
-    this.selectComponent.clearSelections('Tactic');
-    this.selectComponent.clearSelections('Episode Start');
-    this.selectComponent.clearSelections('Episode End');
-    this.selectComponent.clearSelections('Device');
-    this.selectComponent.clearSelections('Ad Type');
-    this.selectComponent.clearSelections('Targeting Type 1');
-    this.selectComponent.clearSelections('Targeting Type 2');
-    this.selectComponent.clearSelections('Targeting Type 3');
-    this.selectComponent.clearSelections('Targeting Type 4');
+    this.selectComponent.setSelections(this.tacticLabel);
+    this.selectComponent.setSelections(this.episodeStartLabel);
+    this.selectComponent.setSelections(this.episodeEndLabel);
+    this.selectComponent.setSelections(this.deviceLabel);
+    this.selectComponent.setSelections(this.adTypeLabel);
+    this.selectComponent.setSelections(this.targetingType1Label);
+    this.selectComponent.setSelections(this.targetingType2Label);
+    this.selectComponent.setSelections(this.targetingType3Label);
+    this.selectComponent.setSelections(this.targetingType4Label);
     this.placementInput.height = null;
     this.placementInput.width = null;
     this.placementInput.audience = null;

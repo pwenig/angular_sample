@@ -285,7 +285,7 @@ RSpec.feature 'Creative Input', type: :feature, js: true do
     select('02', from: 'End Day')
     click_on('Create Creative String')
     expect(page).to have_text('CCL_CLTF_S00_AON_CS_President_01_CP_100x300_0101-0202')
-    click_on('Duplicate')
+    click_on('duplicateCreative')
     select('For Your Consideration', from: 'Creative Message')
     click_on('Create Creative String')
     expect(page).to have_text('CCL_CLTF_S00_AON_FC_President_01_CP_100x300_0101-0202')

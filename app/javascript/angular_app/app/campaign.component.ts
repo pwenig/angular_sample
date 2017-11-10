@@ -37,7 +37,7 @@ import {DaySelectComponent} from './dayselect.component';
             </div>
           </section>
 
-          <section class="select" *ngIf="campaignInput.season">
+          <section class="select">
             <div class="campaign-type-column"> 
               <select-component [label]="campaignTypeLabel" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component>
             </div>
@@ -47,7 +47,7 @@ import {DaySelectComponent} from './dayselect.component';
             </div>
           </section>
 
-          <section class="select" *ngIf="campaignInput.custom">
+          <section class="select">
             <div class="year-column">
                <year-select-component [label]="startYearLabel" (selected)="attributeUpdated($event, 'startYear')"></year-select-component>
             </div>
@@ -59,7 +59,7 @@ import {DaySelectComponent} from './dayselect.component';
             </div>
           </section>
 
-          <section class="select" *ngIf="campaignInput.startDay">
+          <section class="select">
             <div class="year-column">
               <year-select-component [label]="endYearLabel" (selected)="attributeUpdated($event, 'endYear')"></year-select-component>
             </div>
@@ -210,14 +210,14 @@ export class CampaignComponent implements OnInit {
 
   // Clears the selected options
   cancelInput(){
-    this.selectComponent.clearSelections('Network');
-    this.selectComponent.clearSelections('Program');
-    this.selectComponent.clearSelections('Season');
-    this.selectComponent.clearSelections('Campaign Type');
-    this.monthSelectComponent.clearSelections('Start Month');
-    this.daySelectComponent.clearSelections('Start Day');
-    this.monthSelectComponent.clearSelections('End Month');
-    this.daySelectComponent.clearSelections('End Day');
+    this.selectComponent.setSelections(this.networkLabel);
+    this.selectComponent.setSelections(this.programLabel);
+    this.selectComponent.setSelections(this.seasonLabel);
+    this.selectComponent.setSelections(this.campaignTypeLabel);
+    this.monthSelectComponent.setSelections(this.startMonthLabel);
+    this.daySelectComponent.setSelections(this.startDayLabel);
+    this.monthSelectComponent.setSelections(this.endMonthLabel);
+    this.daySelectComponent.setSelections(this.endDayLabel);
     this.campaignInput.campaignInputTag = null;
     this.campaignInput.custom = null;
     this.campaignInput.startYear = 2017;
