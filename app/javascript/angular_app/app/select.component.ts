@@ -37,4 +37,9 @@ export class SelectComponent implements OnInit {
     }
   }
 
+  setSelections(label) {
+    var selectElement = document.getElementById(label);
+    selectElement['value'] = this.default;
+  }
+
 }

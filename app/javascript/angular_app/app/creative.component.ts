@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import { CreativeInputService } from '../services/creative_input_service';
 import { AdTypeService } from '../services/ad_type_service';
 import {SelectComponent} from './select.component';
@@ -9,7 +9,7 @@ import {DaySelectComponent} from './dayselect.component';
   selector: 'creative',
   template: `
   <h2 class="campaign-title">Creative Input</h2>
-  <p *ngIf="showFinal" class="final-string">{{creativeInput.creativeInputTag}}</p>
+  <p *ngIf="showFinal" class="final-string">{{creativeInput.creativeInputTag}}<button class="duplicate" type="submit" (click)="duplicate()">Duplicate</button></p>
   <div class="input-tag-container">
     <div class="row">
     <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
@@ -30,14 +30,14 @@ import {DaySelectComponent} from './dayselect.component';
       <div class="row">
         <section class="select">
           <div class="first-column" *ngIf="creativeMessages && creativeMessages.length > 0">
-            <select-component [label]="creativeMessageLabel" [options]="creativeMessages" (selected)="attributeUpdated($event, 'creativeMessage')"></select-component>
+            <select-component [label]="creativeMessageLabel" [default]="defaultCreativeMessage" [options]="creativeMessages" (selected)="attributeUpdated($event, 'creativeMessage')"></select-component>
           </div>
           <div class="custom-column">
             <label for="creativeCustom">Creative Version Custom</label>
             <input type="text" id="creativeCustom" [(ngModel)]="creativeInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
           </div>
           <div class="column">
-            <month-select-component [label]="creativeVersionLabel" (selected)="attributeUpdated($event, 'creativeVersion')"></month-select-component>
+            <month-select-component [label]="creativeVersionLabel" [default]="defaultCreativeVersion" (selected)="attributeUpdated($event, 'creativeVersion')"></month-select-component>
           </div>
         </section>
         <section class="select">
@@ -45,21 +45,21 @@ import {DaySelectComponent} from './dayselect.component';
             <select-component [label]="abTestLabel" [options]="abtestLabels" [default]="defaultAbLabel" (selected)="attributeUpdated($event, 'abtestLabel')"></select-component>
           </div>
           <div class="second-column" *ngIf="_adtype.videoAdType(placementInput)">
-            <select-component [label]="videoLengthLabel" [options]="videoLengths" (selected)="attributeUpdated($event, 'videoLength')"></select-component>
+            <select-component [label]="videoLengthLabel" [options]="videoLengths" [default]="defaultVideoLength" (selected)="attributeUpdated($event, 'videoLength')"></select-component>
           </div>
         </section>
         <section class="select">
           <div class="first-column">
-            <month-select-component [label]="startMonthLabel" (selected)="attributeUpdated($event, 'startMonth')"></month-select-component>
+            <month-select-component [label]="startMonthLabel" [default]="defaultStartMonth" (selected)="attributeUpdated($event, 'startMonth')"></month-select-component>
           </div>
           <div class="column">
-            <day-select-component [label]="startDayLabel" (selected)="attributeUpdated($event, 'startDay')"></day-select-component>
+            <day-select-component [label]="startDayLabel" [default]="defaultStartDay" (selected)="attributeUpdated($event, 'startDay')"></day-select-component>
           </div>
           <div class="column">
-          <month-select-component [label]="endMonthLabel" (selected)="attributeUpdated($event, 'endMonth')"></month-select-component>
+          <month-select-component [label]="endMonthLabel" [default]="defaultEndMonth" (selected)="attributeUpdated($event, 'endMonth')"></month-select-component>
           </div>
           <div class="column">
-            <day-select-component [label]="endDayLabel" (selected)="attributeUpdated($event, 'endDay')"></day-select-component>
+            <day-select-component [label]="endDayLabel" [default]="defaultEndDay" (selected)="attributeUpdated($event, 'endDay')"></day-select-component>
           </div>
         </section>
       </div>
@@ -69,9 +69,13 @@ import {DaySelectComponent} from './dayselect.component';
 })
 
 export class CreativeComponent implements OnInit {
-  @ViewChild(SelectComponent) selectComponent:SelectComponent;
-  @ViewChild(MonthSelectComponent) monthSelectComponent:MonthSelectComponent;
-  @ViewChild(DaySelectComponent) daySelectComponent:DaySelectComponent;
+  @ViewChild(SelectComponent) 
+  private selectComponent: SelectComponent;
+  @ViewChild(MonthSelectComponent)
+  private monthSelectComponent: MonthSelectComponent;
+  @ViewChild(DaySelectComponent) 
+  private daySelectComponent: DaySelectComponent;
+
 
   @Input() campaignInput: {};
   @Input() adInput: {};
@@ -97,9 +101,17 @@ export class CreativeComponent implements OnInit {
   showButtons: boolean = false;
   showSearch: boolean = true;
   invalid: boolean = true;
-  defaultAbLabel: any = {};
+  defaultAbLabel: any;
+  defaultCreativeMessage: any;
+  defaultCreativeVersion: string;
+  defaultVideoLength: any;
+  defaultStartMonth: string;
+  defaultStartDay: string;
+  defaultEndMonth: string;
+  defaultEndDay: string;
+  creativeInputObject: any = {};
 
-  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector : ChangeDetectorRef) {}
 
   ngOnInit() {
     this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');
@@ -110,8 +122,12 @@ export class CreativeComponent implements OnInit {
     this._creative.verifyInput(this.creativeInput.creativeInputTag).subscribe(
 
       (result) => {
+        // This is the object that sets the create/select button
         this.existingCreativeInput = result;
+
         if(result) {
+          // This is the object that will be used to copy
+          this.creativeInputObject = result;
           this.creativeTagFinal.emit(result);
         }
       },
@@ -158,6 +174,7 @@ export class CreativeComponent implements OnInit {
         this.showSelectors = false;
         this.showButtons = false;
         this.showFinal = true;
+        this.creativeInputObject = result;
         this.creativeTagFinal.emit(result);
       },
       (error) => {
@@ -218,21 +235,59 @@ export class CreativeComponent implements OnInit {
   }
 
   newTagSection() {
-    this.showButtons = true 
-    this.showSelectors = true
+    this.showButtons = true;
+    this.showSelectors = true;
   }
 
   cancelInput() {
-    this.selectComponent.clearSelections('Creative Message');
+    this.selectComponent.clearSelections(this.creativeMessageLabel);
     this.creativeInput.custom = null;
-    this.monthSelectComponent.clearSelections('Creative Version Number');
-    this.selectComponent.clearSelections('Video Length');
-    this.selectComponent.clearSelections('A/B Test Label');
-    this.monthSelectComponent.clearSelections('Start Month');
-    this.monthSelectComponent.clearSelections('End Month');
-    this.daySelectComponent.clearSelections('Start Day');
-    this.daySelectComponent.clearSelections('End Day');
+    this.monthSelectComponent.clearSelections(this.creativeVersionLabel);
+    this.selectComponent.clearSelections(this.videoLengthLabel);
+    this.selectComponent.clearSelections(this.abTestLabel);
+    this.monthSelectComponent.clearSelections(this.startMonthLabel);
+    this.monthSelectComponent.clearSelections(this.endMonthLabel);
+    this.daySelectComponent.clearSelections(this.startDayLabel);
+    this.daySelectComponent.clearSelections(this.endDayLabel);
     this.creativeInput.creativeInputTag = null;
+  }
+
+  duplicate() {
+    this.showButtons = true;
+    this.showFinal = false;
+    this.existingCreativeInput = false;
+    this.invalid = true;
+    // Hide Export Button
+    this.creativeTagFinal.emit(null);
+
+    if(this._adtype.videoAdType(this.placementInput)) {
+      this.defaultVideoLength = this.creativeInput.videoLength = this.videoLengths.find(x => x['name'] == this.creativeInputObject.video_length.name);
+    }
+     // Set the default values for each of the selectors and set the object attributes
+     this.defaultCreativeMessage = this.creativeInput.creativeMessage = this.creativeMessages.find(x => x['name'] == this.creativeInputObject.creative_message.name);
+     this.creativeInput.custom = this.creativeInputObject.custom;
+     this.defaultCreativeVersion = this.creativeInput.creativeVersion = this.creativeInputObject.creative_version_number;
+     this.defaultAbLabel = this.creativeInput.abtestLabel = this.abtestLabels.find(x => x['name'] == this.creativeInputObject.abtest_label.name);
+     this.defaultStartMonth = this.creativeInput.startMonth = this.creativeInputObject.start_month;
+     this.defaultEndMonth = this.creativeInput.endMonth = this.creativeInputObject.end_month;
+     this.defaultEndDay = this.creativeInput.endDay = this.creativeInputObject.end_day;
+     this.defaultStartDay = this.creativeInput.startDay = this.creativeInputObject.start_day;
+
+    this.showSelectors = true;
+    // Checks to see if the ngIf has changed and the selectors are showing.
+    this.changeDetector.detectChanges();
+
+     // Set the selectors to the current value
+    if(this._adtype.videoAdType(this.placementInput)) {
+      this.selectComponent.setSelections(this.videoLengthLabel);
+    }
+    this.selectComponent.setSelections(this.creativeMessageLabel);
+    this.selectComponent.setSelections(this.abTestLabel);
+    this.monthSelectComponent.setSelections(this.creativeVersionLabel);
+    this.monthSelectComponent.setSelections(this.startMonthLabel);
+    this.monthSelectComponent.setSelections(this.endMonthLabel);
+    this.daySelectComponent.setSelections(this.startDayLabel);
+    this.daySelectComponent.setSelections(this.endDayLabel);
   }
   
 }
