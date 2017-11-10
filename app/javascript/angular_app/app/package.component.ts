@@ -167,10 +167,10 @@ export class PackageComponent implements OnInit {
 
   // Clears the selected options
   cancelInput() {
-    this.selectComponent.clearSelections('Agency');
-    this.selectComponent.clearSelections('Publisher');
-    this.selectComponent.clearSelections('Buy Method');
-    this.selectComponent.clearSelections('Inventory Type');
+    this.selectComponent.setSelections('Agency');
+    this.selectComponent.setSelections('Publisher');
+    this.selectComponent.setSelections('Buy Method');
+    this.selectComponent.setSelections('Inventory Type');
     this.packageInput.custom = null;
     this.packageInput.packageInputTag = null;
   }

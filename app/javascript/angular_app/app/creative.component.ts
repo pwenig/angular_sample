@@ -9,7 +9,7 @@ import {DaySelectComponent} from './dayselect.component';
   selector: 'creative',
   template: `
   <h2 class="campaign-title">Creative Input</h2>
-  <p *ngIf="showFinal" class="final-string">{{creativeInput.creativeInputTag}}<button class="duplicate" type="submit" (click)="duplicate()">Duplicate</button></p>
+  <p *ngIf="showFinal" class="final-string">{{creativeInput.creativeInputTag}}<button class="duplicate" id="duplicateCreative" type="submit" (click)="duplicate()">Duplicate</button></p>
   <div class="input-tag-container">
     <div class="row">
     <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
@@ -240,15 +240,17 @@ export class CreativeComponent implements OnInit {
   }
 
   cancelInput() {
-    this.selectComponent.clearSelections(this.creativeMessageLabel);
+    if(this._adtype.videoAdType(this.placementInput)) {
+      this.selectComponent.setSelections(this.videoLengthLabel);
+    }
+    this.selectComponent.setSelections(this.creativeMessageLabel);
     this.creativeInput.custom = null;
-    this.monthSelectComponent.clearSelections(this.creativeVersionLabel);
-    this.selectComponent.clearSelections(this.videoLengthLabel);
-    this.selectComponent.clearSelections(this.abTestLabel);
-    this.monthSelectComponent.clearSelections(this.startMonthLabel);
-    this.monthSelectComponent.clearSelections(this.endMonthLabel);
-    this.daySelectComponent.clearSelections(this.startDayLabel);
-    this.daySelectComponent.clearSelections(this.endDayLabel);
+    this.monthSelectComponent.setSelections(this.creativeVersionLabel);
+    this.selectComponent.setSelections(this.abTestLabel);
+    this.monthSelectComponent.setSelections(this.startMonthLabel);
+    this.monthSelectComponent.setSelections(this.endMonthLabel);
+    this.daySelectComponent.setSelections(this.startDayLabel);
+    this.daySelectComponent.setSelections(this.endDayLabel);
     this.creativeInput.creativeInputTag = null;
   }
 
