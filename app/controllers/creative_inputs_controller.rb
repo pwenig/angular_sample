@@ -1,18 +1,31 @@
 class CreativeInputsController < ApplicationController
   def create
-    @creative_input = CreativeInput.find_by(creative_input_tag: params['creative_input_tag'])
+    @creative_input = CreativeInput.includes(:ad_input, :creative_message,
+                                             :abtest_label, :video_length)
+                                   .find_by(creative_input_tag: params['creative_input_tag'])
     if @creative_input
-      render json: @creative_input, status: 200
+      render json: @creative_input,
+             except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
+             include: %i[ad_input creative_message abtest_label video_length],
+             status: 200
     else
-      @creative_input = CreativeInput.create!(permitted_params)
-      render json: @creative_input, status: 201
+      @creative_input = CreativeInput.includes(:ad_input, :creative_message,
+                                               :abtest_label, :video_length).create!(permitted_params)
+      render json: @creative_input,
+             except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
+             include: %i[ad_input creative_message abtest_label video_length],
+             status: 201
     end
   end
 
   def show
-    @creative_input = CreativeInput.find_by(creative_input_tag: params[:id])
+    @creative_input = CreativeInput.includes(:ad_input, :creative_message,
+                                             :abtest_label, :video_length).find_by(creative_input_tag: params[:id])
     if @creative_input
-      render json: @creative_input, status: 200
+      render json: @creative_input,
+             except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
+             include: %i[ad_input creative_message abtest_label video_length],
+             status: 200
     else
       head :no_content
     end

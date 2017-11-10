@@ -11,10 +11,15 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 export class DaySelectComponent {
   @Input() label: string;
+  @Input() default: string;
   @Output() selected = new EventEmitter();
 
   private chosenOption: any;
   private placeholder: any;
+
+  ngOnInit() {
+    this.chosenOption = this.default;
+  }
 
   optionSelected() {
     this.selected.emit(this.chosenOption);
@@ -23,6 +28,11 @@ export class DaySelectComponent {
   clearSelections(label) {
     var selectElement = document.getElementById(label);
     selectElement['value'] = null;
+  }
+
+  setSelections(label) {
+    var selectElement = document.getElementById(label);
+    selectElement['value'] = this.default;
   }
 
 }

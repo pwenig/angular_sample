@@ -127,8 +127,13 @@ export class AppComponent implements OnInit {
 
   setCreativeTag(creativeTag) {
     this.creativeInput = creativeTag;
-    this.showExport = true;
-    this.createOmniCode();
+    if(creativeTag == null) {
+      this.showExport = false;
+    } else {
+      this.showExport = true;
+      this.createOmniCode();
+    }
+    
   }
 
   createOmniCode() {

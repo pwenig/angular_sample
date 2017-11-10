@@ -9,12 +9,17 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
   `
 })
 
-export class MonthSelectComponent {
+export class MonthSelectComponent implements OnInit {
   @Input() label: string;
+  @Input() default: string;
   @Output() selected = new EventEmitter();
 
   private chosenOption: any;
   private placeholder: any;
+
+  ngOnInit() {
+    this.chosenOption = this.default;
+  }
 
   optionSelected() {
     this.selected.emit(this.chosenOption);
@@ -23,6 +28,11 @@ export class MonthSelectComponent {
   clearSelections(label) {
     var selectElement = document.getElementById(label);
     selectElement['value'] = null;
+  }
+
+  setSelections(label) {
+    var selectElement = document.getElementById(label);
+    selectElement['value'] = this.default;
   }
 
 }

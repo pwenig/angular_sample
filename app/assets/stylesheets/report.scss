@@ -227,3 +227,14 @@ button.export {
   cursor: pointer;
 }
 
+button.duplicate {
+  background-color: $primary-color;
+  border: none;
+  border-radius: 5%;
+  font-size: 14px;
+  color: white;
+  width: 70px;
+  margin: 20px;
+  height: 25px;
+  cursor: pointer;
+}
