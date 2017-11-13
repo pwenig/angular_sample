@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { PackageInputService } from '../services/package_input_service';
 import {SelectComponent} from './select.component';
 
@@ -6,7 +6,7 @@ import {SelectComponent} from './select.component';
   selector: 'package',
   template: `
     <h2 class="campaign-title">Package Input</h2>
-    <p *ngIf="showFinal" class="final-string">{{ packageInput.packageInputTag }}</p>
+    <p *ngIf="showFinal" class="final-string">{{ packageInput.packageInputTag }}<button class="duplicate" id="duplicatePackage" type="submit" (click)="duplicate()">Duplicate</button></p>
     <div class="input-tag-container">
       <div class="row">
         <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
@@ -28,19 +28,19 @@ import {SelectComponent} from './select.component';
         <div class="row">
           <section class="select">
             <div class="first-column" *ngIf="agencies && agencies.length > 0">
-              <select-component [label]="agencyLabel" [options]="agencies" (selected)="attributeUpdated($event, 'agency')"></select-component>
+              <select-component [label]="agencyLabel" [default]="defaultAgency" [options]="agencies" (selected)="attributeUpdated($event, 'agency')"></select-component>
             </div>
             <div class="column" *ngIf="publishers && publishers.length > 0">
-              <select-component [label]="publisherLabel" [options]="publishers" (selected)="attributeUpdated($event, 'publisher')"></select-component>
+              <select-component [label]="publisherLabel"[default]="defaultPublisher" [options]="publishers" (selected)="attributeUpdated($event, 'publisher')"></select-component>
             </div>
             <div class="column" *ngIf="buyMethods && buyMethods.length > 0">
-              <select-component [label]="buyMethodLabel" [options]="buyMethods" (selected)="attributeUpdated($event, 'buyMethod')"></select-component>
+              <select-component [label]="buyMethodLabel" [default]="defaultBuyMethod" [options]="buyMethods" (selected)="attributeUpdated($event, 'buyMethod')"></select-component>
             </div>
           </section>
 
           <section class="select">  
             <div class="inv-type-column" *ngIf="inventoryTypes && inventoryTypes.length > 0">
-              <select-component [label]="inventoryTypeLabel" [options]="inventoryTypes" (selected)="attributeUpdated($event, 'inventoryType')"></select-component>
+              <select-component [label]="inventoryTypeLabel" [default]="defaultInventoryType" [options]="inventoryTypes" (selected)="attributeUpdated($event, 'inventoryType')"></select-component>
             </div>
             <div class="custom-column"> 
               <label for="customPackage">Package Custom</label><br>
@@ -54,7 +54,8 @@ import {SelectComponent} from './select.component';
 })
 
 export class PackageComponent implements OnInit {
-  @ViewChild(SelectComponent) selectComponent:SelectComponent;
+  @ViewChild(SelectComponent) 
+  private selectComponent:SelectComponent;
   
   @Input() campaignInput: {};
   @Input() agencies: any[];
@@ -76,8 +77,13 @@ export class PackageComponent implements OnInit {
   showButtons: boolean = false;
   showFinal: boolean = false;
   invalid: boolean = true;
+  defaultAgency: any;
+  defaultPublisher: any;
+  defaultBuyMethod: any;
+  defaultInventoryType: any;
+  packageObject: any = {};
 
-  constructor( private _package: PackageInputService) {}
+  constructor( private _package: PackageInputService, private changeDetector: ChangeDetectorRef) {}
 
   ngOnInit() {
     if(!this.packageTags || this.packageTags.length == 0) {
@@ -116,7 +122,8 @@ export class PackageComponent implements OnInit {
       (result) => {
         this.existingPackageInput = result;
         if(result) {
-          this.packageInputTagFinal.emit(result)
+          this.packageObject = result;
+          this.packageInputTagFinal.emit(result);
         }
         
       },
@@ -143,6 +150,7 @@ export class PackageComponent implements OnInit {
         this.showSelectors = false;
         this.showButtons = false;
         this.showFinal = true;
+        this.packageObject = result;
         this.packageInputTagFinal.emit(result);
       },
       (error) => {
@@ -167,12 +175,35 @@ export class PackageComponent implements OnInit {
 
   // Clears the selected options
   cancelInput() {
-    this.selectComponent.setSelections('Agency');
-    this.selectComponent.setSelections('Publisher');
-    this.selectComponent.setSelections('Buy Method');
-    this.selectComponent.setSelections('Inventory Type');
+    this.selectComponent.setSelections(this.agencyLabel);
+    this.selectComponent.setSelections(this.publisherLabel);
+    this.selectComponent.setSelections(this.buyMethodLabel);
+    this.selectComponent.setSelections(this.inventoryTypeLabel);
     this.packageInput.custom = null;
     this.packageInput.packageInputTag = null;
+  }
+
+  duplicate() {
+    this.showButtons = true;
+    this.showFinal = false;
+    this.existingPackageInput = false;
+    this.invalid = true;
+    // Hide the Ad input section
+    this.packageInputTagFinal.emit(null);
+    // Set default values
+    this.defaultAgency = this.packageInput.agency = this.agencies.find(x => x['name'] == this.packageObject.agency.name);
+    this.defaultPublisher = this.packageInput.publisher = this.publishers.find(x => x['name'] == this.packageObject.publisher.name);
+    this.defaultBuyMethod = this.packageInput.buyMethod = this.buyMethods.find(x => x['name'] == this.packageObject.buy_method.name);
+    this.defaultInventoryType = this.packageInput.inventoryType = this.inventoryTypes.find(x => x['name'] == this.packageObject.inventory_type.name);
+    this.packageInput.custom = this.packageObject.custom;
+    this.showSelectors = true;
+    // Checks to see if the ngIf has changed and the selectors are showing.
+    this.changeDetector.detectChanges();
+    // Set selectors
+    this.selectComponent.setSelections(this.agencyLabel);
+    this.selectComponent.setSelections(this.publisherLabel);
+    this.selectComponent.setSelections(this.buyMethodLabel);
+    this.selectComponent.setSelections(this.inventoryTypeLabel);
   }
 
 }
