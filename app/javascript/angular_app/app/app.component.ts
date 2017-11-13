@@ -93,20 +93,33 @@ export class AppComponent implements OnInit {
   }
 
   setCampaignTag(campaignTag) {
-    this.campaignInput = campaignTag;
-    if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
-      this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
+    if(campaignTag == null) {
+      this.showPackageInput = false;
+      this.showPlacementInput = false;
+      this.showAdInput = false;
+      this.showCreativeInput = false;
+    } else {
+      this.campaignInput = campaignTag;
+      if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
+        this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
+      }
+      this.showPackageInput = true;
     }
-    this.showPackageInput = true;
+   
   }
 
   setPackageTag(packageTag) {
-    this.packageInput = packageTag;
-    if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
-      this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
+    if(packageTag == null) {
+      this.showPlacementInput = false;
+      this.showAdInput = false;
+      this.showCreativeInput = false;
+    } else {
+      this.packageInput = packageTag;
+      if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
+        this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
+      }
+      this.showPlacementInput = true;
     }
-    this.showPlacementInput = true;
-
   }
 
   setPlacementTag(placementTag) {

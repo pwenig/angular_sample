@@ -5,23 +5,26 @@ class CampaignInputsController < ApplicationController
   end
 
   def create
-    @campaign_input = CampaignInput.includes(:package_inputs).find_by(campaign_input_tag: params['campaign_input_tag'])
+    @campaign_input = CampaignInput.includes(:package_inputs, :network, :program, :season, :campaign_type)
+                                   .find_by(campaign_input_tag: params['campaign_input_tag'])
     if @campaign_input
       render json: @campaign_input, except: %i[network_id program_id season_id],
-             include: %i[network season program package_inputs], status: 200
+             include: %i[network season program package_inputs campaign_type], status: 200
     else
-      @campaign_input = CampaignInput.create!(permitted_params)
+      @campaign_input = CampaignInput.includes(:package_inputs, :network, :program, :season, :campaign_type)
+                                     .create!(permitted_params)
       render json: @campaign_input, except: %i[network_id program_id season_id],
-             include: %i[network season program], status: 201
+             include: %i[network season program package_inputs campaign_type], status: 201
     end
   end
 
   def show
-    @campaign_input = CampaignInput.includes(:package_inputs).find_by(campaign_input_tag: params[:id])
+    @campaign_input = CampaignInput.includes(:package_inputs, :network, :program, :season, :campaign_type)
+                                   .find_by(campaign_input_tag: params[:id])
     if @campaign_input
       render json: @campaign_input,
              except: %i[network_id program_id season_id],
-             include: %i[network season program package_inputs],
+             include: %i[network season program package_inputs campaign_type],
              status: 200
     else
       head :no_content
