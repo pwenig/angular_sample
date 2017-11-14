@@ -17,6 +17,9 @@
         <% if current_user && current_user.admin %>
           <span class="logout-link"><%= link_to 'Admin', admin_root_path %></span>
        <% end %>
+       <% if !current_user %>
+        <script>localStorage.clear('inputs')</script>
+       <% end %>
       </section>
         <% if notice %>
           <p class="notice"><%= notice %></p>
