@@ -26,6 +26,7 @@ import { AdInputService } from '../services/ad_input_service';
 import { CreativeInputService } from '../services/creative_input_service';
 import { AdTypeService } from '../services/ad_type_service';
 import { CampaignTypeService } from '../services/campaign_type_service';
+import { HistoryService } from '../services/history_service';
 import {RangePipe} from '../shared/range.pipe'
 
 
@@ -52,7 +53,11 @@ import {RangePipe} from '../shared/range.pipe'
     TypeaheadModule.forRoot(),
     TimepickerModule.forRoot()
   ],
-  providers: [MetadataService, CampaignInputService, PackageInputService, PlacementInputService, AdInputService, CreativeInputService, AdTypeService, CampaignTypeService],
+  providers: [MetadataService, CampaignInputService, 
+              PackageInputService, PlacementInputService, 
+              AdInputService, CreativeInputService, 
+              AdTypeService, CampaignTypeService,
+              HistoryService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

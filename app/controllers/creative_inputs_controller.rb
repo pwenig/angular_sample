@@ -6,15 +6,18 @@ class CreativeInputsController < ApplicationController
     if @creative_input
       render json: @creative_input,
              except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
-             include: %i[ad_input creative_message abtest_label video_length],
+             include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
+                      [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
+                       :creative_message, :abtest_label, :video_length],
              status: 200
     else
       @creative_input = CreativeInput.includes(:ad_input, :creative_message,
                                                :abtest_label, :video_length).create!(permitted_params)
       render json: @creative_input,
              except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
-             include: %i[ad_input creative_message abtest_label video_length],
-             status: 201
+             include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
+                      [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
+                       :creative_message, :abtest_label, :video_length], status: 201
     end
   end
 
@@ -24,8 +27,9 @@ class CreativeInputsController < ApplicationController
     if @creative_input
       render json: @creative_input,
              except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
-             include: %i[ad_input creative_message abtest_label video_length],
-             status: 200
+             include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
+                      [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
+                       :creative_message, :abtest_label, :video_length], status: 200
     else
       head :no_content
     end

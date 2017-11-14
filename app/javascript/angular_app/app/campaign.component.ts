@@ -11,7 +11,7 @@ import {DaySelectComponent} from './dayselect.component';
     <p *ngIf="showFinal" class="final-string">{{campaignInput.campaignInputTag }}<button class="duplicate" id="duplicateCampaign" type="submit" (click)="duplicate()">Duplicate</button></p>
     <div class="input-tag-container">
       <div class="row">
-        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch" (newTag)="showSelectors=true && showButtons=true" (tagChosen)="tagSelected($event)"></search>
+        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch" (newTag)="newInput()" (tagChosen)="tagSelected($event)"></search>
         <section class="input-tag" *ngIf="showButtons">
           <input [ngModel]="campaignInput.campaignInputTag" class="form-control" [disabled]=true>
           <button class="new-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="saveInput()" [disabled]="invalid">Create Campaign String</button>
@@ -129,6 +129,23 @@ export class CampaignComponent implements OnInit {
     this.campaignInput.startYear = 2017;
     this.campaignInput.endYear = 2017;
   };
+
+  newInput() {
+    this.showSearch = false;
+    this.showButtons = true;
+    this.showSelectors = true;
+    this.campaignInput = {};
+    this.campaignInput.startYear = 2017;
+    this.campaignInput.endYear = 2017;
+  }
+
+  newCampaign() {
+    this.campaignInput = {};
+    this.showSearch = true;
+    this.campaignInput.startYear = 2017;
+    this.campaignInput.endYear = 2017;
+    this.showFinal = false;
+  }
 
   // Updates the attribute when it is selected from child components
   attributeUpdated(value, attribute) {

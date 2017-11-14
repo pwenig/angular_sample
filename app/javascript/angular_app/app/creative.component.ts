@@ -4,6 +4,7 @@ import { AdTypeService } from '../services/ad_type_service';
 import {SelectComponent} from './select.component';
 import {MonthSelectComponent} from './monthselect.component';
 import {DaySelectComponent} from './dayselect.component';
+import {HistoryService} from '../services/history_service';
 
 @Component({
   selector: 'creative',
@@ -111,7 +112,7 @@ export class CreativeComponent implements OnInit {
   defaultEndDay: string;
   creativeInputObject: any = {};
 
-  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService) {}
 
   ngOnInit() {
     this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');
@@ -128,6 +129,8 @@ export class CreativeComponent implements OnInit {
         if(result) {
           // This is the object that will be used to copy
           this.creativeInputObject = result;
+          // Store the creativeInput for exporting
+          this._history.storeInput(result);
           this.creativeTagFinal.emit(result);
         }
       },
@@ -176,6 +179,9 @@ export class CreativeComponent implements OnInit {
         this.showFinal = true;
         this.creativeInputObject = result;
         this.creativeTagFinal.emit(result);
+        // Store the creativeInput for exporting
+        this._history.storeInput(result);
+
       },
       (error) => {
         console.log('ERROR', error)

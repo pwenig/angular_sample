@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MetadataService } from '../services/metadata_service';
 import { Angular2Csv } from 'angular2-csv/Angular2-csv';
+import {CampaignComponent} from './campaign.component';
 
 @Component({
   selector: 'app-component',
@@ -19,12 +20,14 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
       <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)"></creative>
     </div>
     <div *ngIf="showExport">
-      <button class="export" (click)="exportStrings()">Export</button>
+      <button class="export" (click)="exportStrings()">Export</button><button class="export" (click)="newCampaign()">New</button>
     </div>
   `
 })
 
 export class AppComponent implements OnInit {
+  @ViewChild(CampaignComponent)
+  private campaignComponent:CampaignComponent;
 
   networks: any = [];
   seasons: any = [];
@@ -153,7 +156,6 @@ export class AppComponent implements OnInit {
       this.showExport = false;
     } else {
       this.showExport = true;
-      this.createOmniCode();
     }
     
   }
@@ -167,16 +169,40 @@ export class AppComponent implements OnInit {
   }
 
   exportStrings() {
-    var data = [{
-      'CAMPAIGN ID': this.campaignInput.campaign_input_tag,
-      'PACKAGE ID': this.packageInput.package_input_tag,
-      'PLACEMENT ID': this.placementInput.placement_input_tag,
-      'AD ID': this.adInput.ad_input_tag,
-      'CREATIVE ID': this.creativeInput.creative_input_tag,
-      'OMNITURE CODE': this.omnitureCode
-      }];
+    var inputs = JSON.parse(localStorage.getItem('inputs'));
+    var data = [];
+    var inputObject = {};
+    for (let input of inputs ) {
+       var omnitureCode = '/?xrs=crm_' + input.ad_input.placement_input.package_input.campaign_input.network.abbrev + '_'
+        + input.ad_input.placement_input.package_input.campaign_input.program.abbrev + '_' +
+        input.ad_input.placement_input.package_input.campaign_input.season.abbrev + '_' +
+        input.ad_input.placement_input.package_input.publisher.abbrev
 
+       inputObject = {
+        'CAMPAIGN ID': input.ad_input.placement_input.package_input.campaign_input.campaign_input_tag,
+        'PACKAGE ID': input.ad_input.placement_input.package_input.package_input_tag,
+        'PLACEMENT ID': input.ad_input.placement_input.placement_input_tag,
+        'AD ID': input.ad_input.ad_input_tag,
+        'CREATIVE ID': input.creative_input_tag,
+        'OMNITURE CODE': omnitureCode
+       }
+       data.push(inputObject);
+        
+      }
     new Angular2Csv(data, 'Output', { headers: Object.keys(data[0])} );
+  }
+
+  newCampaign(){
+    this.campaignComponent.newCampaign();
+    this.showAdInput = false;
+    this.adInput = {};
+    this.showCreativeInput = false;
+    this.creativeInput = {};
+    this.showPlacementInput = false;
+    this.placementInput = {};
+    this.showPackageInput = false;
+    this.packageInput = {};
+    this.showExport = false;
   }
 
 }
