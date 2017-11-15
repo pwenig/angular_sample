@@ -3,4 +3,5 @@ class Agency < ApplicationRecord
   validates_uniqueness_of :name
   validates_presence_of :abbrev
   validates_uniqueness_of :abbrev
+  has_many :users
 end

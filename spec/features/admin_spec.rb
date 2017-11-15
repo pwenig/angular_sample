@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.feature 'Admin', type: :feature do
   before do
     visit('/')
-    @admin = User.create(email: 'admin@admin.com', password: 'password', admin: true)
+    @admin = User.create(email: 'admin@admin.com', password: 'password',
+                         admin: true,
+                         agency: Agency.create!(name: 'Foo', abbrev: 'foo'))
     @user = FactoryGirl.create(:user)
   end
 

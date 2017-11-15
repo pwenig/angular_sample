@@ -31,7 +31,6 @@ Rails.application.routes.draw do
   resources :creative_inputs
 
   devise_for :users
-
   # Cleaning up devise routes
   as :user do
     get 'signin' => 'pages#index'

@@ -6,4 +6,8 @@ RSpec.describe User, type: :model do
     expect(user.email).to include('test@test.com')
     expect(user.admin).to be(true)
   end
+
+  it 'should belong to an agency' do
+    should belong_to(:agency)
+  end
 end
