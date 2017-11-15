@@ -20,4 +20,8 @@ RSpec.describe Agency, type: :model do
   it 'should validate :name uniqueness' do
     should validate_uniqueness_of :name
   end
+
+  it 'should have many users' do
+    should have_many(:users)
+  end
 end

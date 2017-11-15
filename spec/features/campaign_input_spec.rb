@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Campaign Input', type: :feature, js: true do
   before do
     visit('/')
-    @user = User.create(email: 'user@user.com', password: 'password')
+    @user = FactoryGirl.create(:user)
     network = Network.create(name: 'Comedy Central', abbrev: 'CCL')
     Program.create(name: 'Clusterfest', abbrev: 'CLTF', network_id: network.id)
     Season.create!(name: 'S00', abbrev: 's00')

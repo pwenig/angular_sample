@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :user do
     email 'testuser@example.com'
     password 'MyPassword'
+    agency Agency.create!(name: 'Foo', abbrev: 'foo')
   end
 
   factory :network do
