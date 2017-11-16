@@ -1,0 +1,23 @@
+<div class='request-container'>
+      <div class='row'>
+        <section class='request'>
+          <h3>Naming Convention Value Request</h3>
+          <p>Please submit request for each new value.</p>
+          <p class="required">* Required</p>
+          <%= form_for :request, url: requests_path do |f| %>
+            <p>Name<span style="color: red">*</span><p>
+            <%= f.text_field :name, placeholder: "Your name", :required => true %>
+            <p>Brand<span style="color: red">*</span><p>
+            <%= f.select :brand, Network.all.map{ |a| [a.name] }, :prompt => "Choose", :required => true %>
+            <p>Dimension Selection<span style="color: red">*</span><p>
+            <%= f.select :dimension, @sorted_dimensions, :prompt => "Choose", :required => true %>
+            <p>Requested Dimension Value<span style="color: red">*</span><p>
+            <%= f.text_field :dimension_value, placeholder: "Your answer", :required => true %>
+            <p>Additional Information or Feedback<p>
+            <%= f.text_field :additional, placeholder: "Your answer"%>
+            <p>A copy of your responses will be emailed to the address you provided.</p>
+            <%= f.submit 'Submit', id: 'request-submit'  %>
+          <% end  %>
+        </section>
+      </div>
+    </div>
