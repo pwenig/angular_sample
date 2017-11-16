@@ -9,7 +9,7 @@
           <p>Enter email address<br />
           <%= f.text_field field, id: 'email' %></p>
           <p>Select agency <br />
-         <%= f.select :agency_id, Agency.all.map{ |a| [a.name, a.id] } %>
+         <%= f.select :agency_id, Agency.all.map{ |a| [a.name, a.id] }, :prompt => "Choose" %>
         <% end %>
           <p><%= f.submit t("devise.invitations.new.submit_button"), :class => 'submit-button' %></p>
         <% end %>
