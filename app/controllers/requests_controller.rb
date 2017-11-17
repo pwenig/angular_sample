@@ -8,7 +8,6 @@ class RequestsController < ApplicationController
                  package_inputs creative_inputs].include?(model)
       model.sub!('_', ' ')
       dimensions << model.capitalize.singularize
-      # end
     end
     @sorted_dimensions = dimensions.sort_by { |f| f.class == Array ? f.first : f }
     @sorted_dimensions << 'If Other, indicate in the Feedback/Additional Information Section'
