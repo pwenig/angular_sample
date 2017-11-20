@@ -1,4 +1,14 @@
 class CreativeInputsController < ApplicationController
+  def index
+    @creative_inputs = CreativeInput.all
+    render json: @creative_inputs,
+           except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
+           include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
+                    [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
+                     :creative_message, :abtest_label, :video_length],
+           status: 200
+  end
+
   def create
     @creative_input = CreativeInput.includes(:ad_input, :creative_message,
                                              :abtest_label, :video_length)

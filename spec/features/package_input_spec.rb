@@ -117,8 +117,10 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     fill_in('password-login', with: @user.password)
     click_on('Log In')
     expect(page).to have_field('Search Campaign Strings')
-    fill_in('Search Campaign Strings', with: 'CCL_BC')
-    find('li a').click
+    within find('.input-tag') do
+      fill_in('Search Campaign Strings', with: 'CCL_BC')
+      find('li a').click
+    end
     expect(page).to have_text('CCL_BC_S01_AW_xx_20170121-20170221')
     expect(page).to have_select('Package Strings')
     select('CCL_BC_S01_SC_ABCX_CPA_PSD_xx', from: 'Package Strings')

@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MetadataService } from '../services/metadata_service';
-import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 import {CampaignComponent} from './campaign.component';
+import {CreativeInputService} from '../services/creative_input_service';
 
 @Component({
   selector: 'app-component',
   template: `
+    <tree [current_created_inputs]="current_created_inputs" [created_count]="created_count" [all_inputs]="all_inputs" [all_count]="all_count"></tree>
     <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
     <div *ngIf="showPackageInput">
       <package [campaignInput]="campaignInput" [packageTags]="packageTags" [agencies]="agencies" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
@@ -19,8 +20,8 @@ import {CampaignComponent} from './campaign.component';
     <div *ngIf="showCreativeInput">
       <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)"></creative>
     </div>
-    <div *ngIf="showExport">
-      <button class="export" (click)="exportStrings()">Export</button><button class="export" (click)="newCampaign()">New</button>
+    <div *ngIf="showNew">
+      <button class="new" (click)="newCampaign()">New</button>
     </div>
   `
 })
@@ -59,10 +60,13 @@ export class AppComponent implements OnInit {
   showPlacementInput: boolean = false;
   showAdInput: boolean = false;
   showCreativeInput: boolean = false;
-  showExport: boolean = false;
-  omnitureCode: any;
+  showNew: boolean = false;
+  current_created_inputs: any = [];
+  created_count: any;
+  all_inputs: any = [];
+  all_count: any;
 
-  constructor( private _metadata: MetadataService) {}
+  constructor( private _metadata: MetadataService, private _creative: CreativeInputService) {}
 
   ngOnInit() {
     // Call MetadataService
@@ -92,7 +96,25 @@ export class AppComponent implements OnInit {
       }
 
     )
-
+    // Get the input strings that have been created and stored in localStorage
+    if(!JSON.parse(localStorage.getItem('inputs'))) {
+      this.current_created_inputs = [];
+    } else {
+      this.current_created_inputs = JSON.parse(localStorage.getItem('inputs')).reverse();
+      this.created_count = this.current_created_inputs.length;
+    }
+    
+    // Get all of the input strings that have been created
+    this._creative.getInputs().subscribe(
+      (data) => {
+        this.all_inputs = data.reverse();
+        this.all_count = this.all_inputs.length;
+      },
+      (error) => {
+        console.log('Error', error);
+      }
+    )
+    
   }
 
   setCampaignTag(campaignTag) {
@@ -153,43 +175,16 @@ export class AppComponent implements OnInit {
   setCreativeTag(creativeTag) {
     this.creativeInput = creativeTag;
     if(creativeTag == null) {
-      this.showExport = false;
+      this.showNew = false;
     } else {
-      this.showExport = true;
+      // Add the new creative tag to the input arrays
+      this.current_created_inputs.unshift(creativeTag);
+      this.created_count = this.current_created_inputs.length;
+      this.all_inputs.unshift(creativeTag);
+      this.all_count = this.all_inputs.length;
+      this.showNew= true;
     }
     
-  }
-
-  createOmniCode() {
-    // Network_Program_Season_Publisher
-    this.omnitureCode = '/?xrs=crm_' + this.campaignInput.network.abbrev + '_' 
-      + this.campaignInput.program.abbrev + '_' + 
-      this.campaignInput.season.abbrev + '_' + 
-      this.packageInput.publisher.abbrev
-  }
-
-  exportStrings() {
-    var inputs = JSON.parse(localStorage.getItem('inputs'));
-    var data = [];
-    var inputObject = {};
-    for (let input of inputs ) {
-       var omnitureCode = '/?xrs=crm_' + input.ad_input.placement_input.package_input.campaign_input.network.abbrev + '_'
-        + input.ad_input.placement_input.package_input.campaign_input.program.abbrev + '_' +
-        input.ad_input.placement_input.package_input.campaign_input.season.abbrev + '_' +
-        input.ad_input.placement_input.package_input.publisher.abbrev
-
-       inputObject = {
-        'CAMPAIGN ID': input.ad_input.placement_input.package_input.campaign_input.campaign_input_tag,
-        'PACKAGE ID': input.ad_input.placement_input.package_input.package_input_tag,
-        'PLACEMENT ID': input.ad_input.placement_input.placement_input_tag,
-        'AD ID': input.ad_input.ad_input_tag,
-        'CREATIVE ID': input.creative_input_tag,
-        'OMNITURE CODE': omnitureCode
-       }
-       data.push(inputObject);
-        
-      }
-    new Angular2Csv(data, 'Output', { headers: Object.keys(data[0])} );
   }
 
   newCampaign(){
@@ -202,7 +197,7 @@ export class AppComponent implements OnInit {
     this.placementInput = {};
     this.showPackageInput = false;
     this.packageInput = {};
-    this.showExport = false;
+    this.showNew = false;
   }
 
 }
