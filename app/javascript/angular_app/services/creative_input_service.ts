@@ -79,5 +79,19 @@ export class CreativeInputService {
     return subject.asObservable();
   }
 
+  getInputs(): Observable<any>{
+    let subject: Subject<any> = new Subject;
+    this.http.get('/creative_inputs').subscribe(
+
+      (res) => {
+        subject.next(res);
+      },
+      (error) => {
+        console.log('Error', error);
+        subject.error(error);
+      }
+    )
+    return subject.asObservable();
+  }
 
 }

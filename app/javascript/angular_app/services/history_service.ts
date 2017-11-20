@@ -11,12 +11,12 @@ export class HistoryService {
     stored = JSON.parse(localStorage.getItem('inputs'));
     if(stored && stored.length > 0) {
       stored.push(inputObj);
-      localStorage.setItem('inputs', JSON.stringify(stored))
+      localStorage.setItem('inputs', JSON.stringify(stored));
     }
     else {
       var stored = [];
       stored.push(inputObj);
-      localStorage.setItem('inputs', JSON.stringify(stored))
+      localStorage.setItem('inputs', JSON.stringify(stored));
     
     }
   }
