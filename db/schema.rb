@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 20171114202117) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "abtest_labels", force: :cascade do |t|
     t.string "name", null: false
     t.string "abbrev", null: false
@@ -22,8 +25,8 @@ ActiveRecord::Schema.define(version: 20171114202117) do
   end
 
   create_table "ad_inputs", force: :cascade do |t|
-    t.integer "placement_input_id"
-    t.integer "creative_group_id"
+    t.bigint "placement_input_id"
+    t.bigint "creative_group_id"
     t.string "custom", null: false
     t.string "ad_input_tag", null: false
     t.datetime "created_at", null: false
@@ -60,10 +63,10 @@ ActiveRecord::Schema.define(version: 20171114202117) do
   end
 
   create_table "campaign_inputs", force: :cascade do |t|
-    t.integer "program_id", null: false
-    t.integer "network_id", null: false
-    t.integer "season_id", null: false
-    t.integer "campaign_type_id", null: false
+    t.bigint "program_id", null: false
+    t.bigint "network_id", null: false
+    t.bigint "season_id", null: false
+    t.bigint "campaign_type_id", null: false
     t.string "custom", null: false
     t.string "start_month", null: false
     t.string "start_day", null: false
@@ -108,10 +111,10 @@ ActiveRecord::Schema.define(version: 20171114202117) do
   end
 
   create_table "creative_inputs", force: :cascade do |t|
-    t.integer "ad_input_id"
-    t.integer "creative_message_id"
-    t.integer "abtest_label_id"
-    t.integer "video_length_id"
+    t.bigint "ad_input_id"
+    t.bigint "creative_message_id"
+    t.bigint "abtest_label_id"
+    t.bigint "video_length_id"
     t.string "start_month", null: false
     t.string "start_day", null: false
     t.string "end_month", null: false
@@ -173,11 +176,11 @@ ActiveRecord::Schema.define(version: 20171114202117) do
   end
 
   create_table "package_inputs", force: :cascade do |t|
-    t.integer "campaign_input_id", null: false
-    t.integer "agency_id", null: false
-    t.integer "publisher_id", null: false
-    t.integer "buy_method_id", null: false
-    t.integer "inventory_type_id", null: false
+    t.bigint "campaign_input_id", null: false
+    t.bigint "agency_id", null: false
+    t.bigint "publisher_id", null: false
+    t.bigint "buy_method_id", null: false
+    t.bigint "inventory_type_id", null: false
     t.string "custom", null: false
     t.string "package_input_tag", null: false
     t.datetime "created_at", null: false
@@ -192,19 +195,19 @@ ActiveRecord::Schema.define(version: 20171114202117) do
   create_table "placement_inputs", force: :cascade do |t|
     t.string "placement_input_tag", null: false
     t.string "tentpole_details"
-    t.integer "tactic_id", null: false
-    t.integer "device_id", null: false
-    t.integer "ad_type_id", null: false
+    t.bigint "tactic_id", null: false
+    t.bigint "device_id", null: false
+    t.bigint "ad_type_id", null: false
     t.string "audience_type", null: false
     t.integer "width"
     t.integer "height"
-    t.integer "package_input_id", null: false
-    t.integer "targeting_type_1_id"
-    t.integer "targeting_type_2_id"
-    t.integer "targeting_type_3_id"
-    t.integer "targeting_type_4_id"
-    t.integer "episode_start_id"
-    t.integer "episode_end_id"
+    t.bigint "package_input_id", null: false
+    t.bigint "targeting_type_1_id"
+    t.bigint "targeting_type_2_id"
+    t.bigint "targeting_type_3_id"
+    t.bigint "targeting_type_4_id"
+    t.bigint "episode_start_id"
+    t.bigint "episode_end_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ad_type_id"], name: "index_placement_inputs_on_ad_type_id"
@@ -222,7 +225,7 @@ ActiveRecord::Schema.define(version: 20171114202117) do
   create_table "programs", force: :cascade do |t|
     t.string "name", null: false
     t.string "abbrev", null: false
-    t.integer "network_id", null: false
+    t.bigint "network_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["network_id", "abbrev"], name: "index_programs_on_network_id_and_abbrev", unique: true
@@ -288,7 +291,7 @@ ActiveRecord::Schema.define(version: 20171114202117) do
     t.string "invited_by_type"
     t.integer "invited_by_id"
     t.integer "invitations_count", default: 0
-    t.integer "agency_id"
+    t.bigint "agency_id"
     t.index ["agency_id"], name: "index_users_on_agency_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -305,4 +308,31 @@ ActiveRecord::Schema.define(version: 20171114202117) do
     t.index ["name"], name: "index_video_lengths_on_name", unique: true
   end
 
+  add_foreign_key "ad_inputs", "creative_groups"
+  add_foreign_key "ad_inputs", "placement_inputs"
+  add_foreign_key "campaign_inputs", "campaign_types"
+  add_foreign_key "campaign_inputs", "networks"
+  add_foreign_key "campaign_inputs", "programs"
+  add_foreign_key "campaign_inputs", "seasons"
+  add_foreign_key "creative_inputs", "abtest_labels"
+  add_foreign_key "creative_inputs", "ad_inputs"
+  add_foreign_key "creative_inputs", "creative_messages"
+  add_foreign_key "creative_inputs", "video_lengths"
+  add_foreign_key "package_inputs", "agencies"
+  add_foreign_key "package_inputs", "buy_methods"
+  add_foreign_key "package_inputs", "campaign_inputs"
+  add_foreign_key "package_inputs", "inventory_types"
+  add_foreign_key "package_inputs", "publishers"
+  add_foreign_key "placement_inputs", "ad_types"
+  add_foreign_key "placement_inputs", "devices"
+  add_foreign_key "placement_inputs", "episodes", column: "episode_end_id"
+  add_foreign_key "placement_inputs", "episodes", column: "episode_start_id"
+  add_foreign_key "placement_inputs", "package_inputs"
+  add_foreign_key "placement_inputs", "tactics"
+  add_foreign_key "placement_inputs", "targeting_types", column: "targeting_type_1_id"
+  add_foreign_key "placement_inputs", "targeting_types", column: "targeting_type_2_id"
+  add_foreign_key "placement_inputs", "targeting_types", column: "targeting_type_3_id"
+  add_foreign_key "placement_inputs", "targeting_types", column: "targeting_type_4_id"
+  add_foreign_key "programs", "networks"
+  add_foreign_key "users", "agencies"
 end

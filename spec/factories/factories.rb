@@ -1,8 +1,13 @@
 FactoryGirl.define do
+  factory :agency do
+    name 'Sterling Cooper'
+    abbrev 'SC'
+  end
+  
   factory :user do
     email 'testuser@example.com'
     password 'MyPassword'
-    agency Agency.create!(name: 'Foo', abbrev: 'foo')
+    agency
   end
 
   factory :network do
@@ -18,11 +23,6 @@ FactoryGirl.define do
   factory :season do
     name 'S00'
     abbrev 's00'
-  end
-
-  factory :agency do
-    name 'Sterling Cooper'
-    abbrev 'SC'
   end
 
   factory :publisher do

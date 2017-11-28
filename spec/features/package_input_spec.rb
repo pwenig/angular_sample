@@ -22,7 +22,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
       end_year: 2017,
       campaign_input_tag: 'CCL_BC_S01_AW_xx_20170121-20170221'
     )
-    agency = Agency.create(name: 'Sterling Cooper', abbrev: 'SC')
+    agency = @user.agency
+
     buy_method = BuyMethod.create!(name: 'CPA', abbrev: 'CPA')
     publisher = Publisher.create!(name: 'ABC', abbrev: 'ABCX')
     inventory_type = InventoryType.create!(name: 'Partner Social Distribution', abbrev: 'PSD')

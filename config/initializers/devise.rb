@@ -12,7 +12,11 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
+  if Rails.env.test?
+    config.mailer_sender = 'test@example.com'
+  else
+    config.mailer_sender = ENV['EMAIL_SENDER']
+  end
 
   config.warden do |manager|
     manager.failure_app = CustomFailure

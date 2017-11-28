@@ -35,7 +35,7 @@ end
 group :test do
   gem 'capybara', '~> 2.13'
   gem 'database_cleaner'
-  gem 'factory_girl_rails'
+  gem 'factory_girl_rails', require: false
   gem 'selenium-webdriver'
   gem 'shoulda', '~> 3.5'
 end

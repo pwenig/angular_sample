@@ -6,7 +6,7 @@ RSpec.describe PackageInputsController do
   let(:program) { Program.create!(name: 'Clusterfest', abbrev: 'CLTF', network: network) }
   let(:campaign_type) { FactoryGirl.create(:campaign_type) }
   let(:season) { FactoryGirl.create(:season) }
-  let(:agency) { FactoryGirl.create(:agency) }
+  let(:agency) { user.agency }
   let(:publisher) { FactoryGirl.create(:publisher) }
   let(:buy_method) { FactoryGirl.create(:buy_method) }
   let(:inventory_type) { FactoryGirl.create(:inventory_type) }
