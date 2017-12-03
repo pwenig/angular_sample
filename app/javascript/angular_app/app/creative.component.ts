@@ -5,6 +5,8 @@ import {SelectComponent} from './select.component';
 import {MonthSelectComponent} from './monthselect.component';
 import {DaySelectComponent} from './dayselect.component';
 import {HistoryService} from '../services/history_service';
+import {CampaignInputService} from '../services/campaign_input_service';
+import {TreeService} from '../services/tree_service';
 
 @Component({
   selector: 'creative',
@@ -14,7 +16,7 @@ import {HistoryService} from '../services/history_service';
   <div class="input-tag-container">
     <div class="row">
     <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
-      <select-string-component  [options]="creativeTags" (selected)="selectInput($event)"></select-string-component>
+      <select-string-component [options]="creativeTags" (selected)="selectInput($event)"></select-string-component>
       <button class="new-tag" type="submit" (click)="newTagSection()">New Creative String</button>
     </section>
       <section class="input-tag" *ngIf="showButtons">
@@ -86,6 +88,7 @@ export class CreativeComponent implements OnInit {
   @Input() videoLengths: any[];
   @Input() creativeTags: any[];
   @Output() creativeTagFinal = new EventEmitter();
+  @Output() campaignObject = new EventEmitter();
 
   creativeInput: any = {};
   existingCreativeInput: any;
@@ -112,7 +115,7 @@ export class CreativeComponent implements OnInit {
   defaultEndDay: string;
   creativeInputObject: any = {};
 
-  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService) {}
 
   ngOnInit() {
     this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');
@@ -129,8 +132,12 @@ export class CreativeComponent implements OnInit {
         if(result) {
           // This is the object that will be used to copy
           this.creativeInputObject = result;
-          // Store the creativeInput for exporting
-          this._history.storeInput(result);
+           // Store the object for exporting
+          this._history.storeCreativeInput(result);
+          // Add to the heiarchy tree
+          this._tree.createTree(result);
+          // Send it to the app comp so the tree comp is updated
+          this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.creativeTagFinal.emit(result);
         }
       },
@@ -178,13 +185,14 @@ export class CreativeComponent implements OnInit {
         this.showButtons = false;
         this.showFinal = true;
         this.creativeInputObject = result;
+        // Store the object for exporting
+        this._history.storeCreativeInput(result);
+        this._tree.createTree(result);
+        this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
         this.creativeTagFinal.emit(result);
-        // Store the creativeInput for exporting
-        this._history.storeInput(result);
-
       },
       (error) => {
-        console.log('ERROR', error)
+        console.log('ERROR', error);
       }
     );
 
@@ -265,8 +273,9 @@ export class CreativeComponent implements OnInit {
     this.showFinal = false;
     this.existingCreativeInput = false;
     this.invalid = true;
+    // VERIFY AND REMOVE
     // Hide Export Button
-    this.creativeTagFinal.emit(null);
+    // this.creativeTagFinal.emit(null);
 
     if(this._adtype.videoAdType(this.placementInput)) {
       this.defaultVideoLength = this.creativeInput.videoLength = this.videoLengths.find(x => x['name'] == this.creativeInputObject.video_length.name);

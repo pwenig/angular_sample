@@ -19,7 +19,6 @@ gem 'webpacker'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'angular_rails_csrf'
 gem 'jbuilder', '~> 2.5'
-
 group :production do
   gem 'pg'
 end
@@ -29,7 +28,6 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'pry'
   gem 'rspec-rails', '~> 3.6', '>= 3.6.1'
-  gem 'sqlite3'
 end
 
 group :test do

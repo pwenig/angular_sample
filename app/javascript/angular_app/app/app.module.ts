@@ -28,6 +28,7 @@ import { CreativeInputService } from '../services/creative_input_service';
 import { AdTypeService } from '../services/ad_type_service';
 import { CampaignTypeService } from '../services/campaign_type_service';
 import { HistoryService } from '../services/history_service';
+import { TreeService } from '../services/tree_service';
 import {RangePipe} from '../shared/range.pipe'
 
 
@@ -60,7 +61,7 @@ import {RangePipe} from '../shared/range.pipe'
               PackageInputService, PlacementInputService, 
               AdInputService, CreativeInputService, 
               AdTypeService, CampaignTypeService,
-              HistoryService],
+              HistoryService, TreeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

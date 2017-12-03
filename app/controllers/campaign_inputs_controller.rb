@@ -1,7 +1,9 @@
 class CampaignInputsController < ApplicationController
   def index
-    @campaign_inputs = CampaignInput.all
-    render json: @campaign_inputs
+    @campaign_inputs = CampaignInput.includes(:package_inputs).all
+    render json: @campaign_inputs, include: [{ package_inputs:
+    { include: { placement_inputs: { include:
+    { ad_inputs: { include: :creative_inputs } } } } } }], status: 200
   end
 
   def create

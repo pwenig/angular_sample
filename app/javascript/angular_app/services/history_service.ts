@@ -6,18 +6,16 @@ export class HistoryService {
   constructor() {}
 
   // Stores the input so it can be exported
-  storeInput(inputObj) {
-    var stored = [];
-    stored = JSON.parse(localStorage.getItem('inputs'));
-    if(stored && stored.length > 0) {
-      stored.push(inputObj);
-      localStorage.setItem('inputs', JSON.stringify(stored));
-    }
-    else {
-      var stored = [];
-      stored.push(inputObj);
-      localStorage.setItem('inputs', JSON.stringify(stored));
-    
+  storeCreativeInput(creativeObj) {
+    var storedCreative = [];
+    storedCreative = JSON.parse(localStorage.getItem('creative_inputs'));
+    if(storedCreative && storedCreative.length > 0) {
+      storedCreative.push(creativeObj);
+      localStorage.setItem('creative_inputs', JSON.stringify(storedCreative));
+    } else {
+      var storedCreative = [];
+      storedCreative.push(creativeObj);
+      localStorage.setItem('creative_inputs', JSON.stringify(storedCreative));
     }
   }
 

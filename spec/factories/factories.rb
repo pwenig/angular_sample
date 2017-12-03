@@ -3,7 +3,7 @@ FactoryGirl.define do
     name 'Sterling Cooper'
     abbrev 'SC'
   end
-  
+
   factory :user do
     email 'testuser@example.com'
     password 'MyPassword'
