@@ -47,9 +47,6 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
               </div>
             </tab>
             <tab heading="All Inputs">
-              <div *ngIf="all_inputs.length == 0">
-                <p>Loading...</p>
-              </div>
               <div *ngIf="all_inputs && all_inputs.length > 0">
                 <button class="export" (click)="export(all_exports)">Export All ({{all_count }})</button>
                 <ul *ngFor="let input of all_inputs">

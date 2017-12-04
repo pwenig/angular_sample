@@ -151,6 +151,7 @@ export class AppComponent implements OnInit {
       this.showCreativeInput = false;
     } else {
       this.campaignInput = campaignTag;
+      this.campaignTags.push(campaignTag.campaign_input_tag);
       if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
         this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
       } else {
@@ -171,7 +172,7 @@ export class AppComponent implements OnInit {
       if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
         this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
       } else {
-        this.placementInput = [];
+        this.placementTags = [];
       }
       this.showPlacementInput = true;
     }
