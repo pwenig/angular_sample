@@ -15,7 +15,6 @@ namespace :admin do
     puts 'COMPLETE: admin:create_user'
   end
 
-
   task change_password: :environment do
     puts 'START: admin:change_password'
     puts ''

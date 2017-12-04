@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MetadataService } from '../services/metadata_service';
 import {CampaignComponent} from './campaign.component';
+import {CampaignInputService} from '../services/campaign_input_service';
 import {CreativeInputService} from '../services/creative_input_service';
 
 @Component({
   selector: 'app-component',
   template: `
-    <tree [current_created_inputs]="current_created_inputs" [created_count]="created_count" [all_inputs]="all_inputs" [all_count]="all_count"></tree>
+    <tree [current_created_input]="current_created_input" [created_count]="created_count" [all_inputs]="all_inputs" [all_count]="all_count" [all_exports]="all_exports" [current_exports]="current_exports"></tree>
     <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
     <div *ngIf="showPackageInput">
       <package [campaignInput]="campaignInput" [packageTags]="packageTags" [agencies]="agencies" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
@@ -18,7 +19,7 @@ import {CreativeInputService} from '../services/creative_input_service';
       <ad [campaignInput]="campaignInput" [packageInput]="packageInput" [placementInput]="placementInput" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)"></ad>
     </div>
     <div *ngIf="showCreativeInput">
-      <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)"></creative>
+      <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (campaignObject)="createdCampaign($event)"></creative>
     </div>
     <div *ngIf="showNew">
       <button class="new" (click)="newCampaign()">New</button>
@@ -61,12 +62,18 @@ export class AppComponent implements OnInit {
   showAdInput: boolean = false;
   showCreativeInput: boolean = false;
   showNew: boolean = false;
-  current_created_inputs: any = [];
+  // Object that has current campaign object arrays for the current heirarchy
+  current_created_input: any = {};
+  // Current array of mamestrings that can be exported
+  current_exports: any = [];
   created_count: any;
+  // All of the campaign objects for the heirarchy
   all_inputs: any = [];
+  // All namestrings that have been created
+  all_exports: any = [];
   all_count: any;
 
-  constructor( private _metadata: MetadataService, private _creative: CreativeInputService) {}
+  constructor( private _metadata: MetadataService, private _campaign: CampaignInputService, private _creative: CreativeInputService) {}
 
   ngOnInit() {
     // Call MetadataService
@@ -96,25 +103,44 @@ export class AppComponent implements OnInit {
       }
 
     )
-    // Get the input strings that have been created and stored in localStorage
+
+    // Get the current input objects that have been created and stored in localStorage
     if(!JSON.parse(localStorage.getItem('inputs'))) {
-      this.current_created_inputs = [];
+      // If it does not exist, create an empty object
+      this.current_created_input = {};
     } else {
-      this.current_created_inputs = JSON.parse(localStorage.getItem('inputs')).reverse();
-      this.created_count = this.current_created_inputs.length;
+      this.current_created_input = JSON.parse(localStorage.getItem('inputs'));
     }
-    
-    // Get all of the input strings that have been created
-    this._creative.getInputs().subscribe(
+
+    // Get all of the input objects that have been created
+    this._campaign.getInputs().subscribe(
       (data) => {
         this.all_inputs = data.reverse();
-        this.all_count = this.all_inputs.length;
       },
       (error) => {
         console.log('Error', error);
       }
     )
-    
+
+    // Get all of the current input strings
+    if(!JSON.parse(localStorage.getItem('creative_inputs'))) {
+      this.current_exports = [];
+    } else {
+      this.current_exports = JSON.parse(localStorage.getItem('creative_inputs')).reverse();
+      this.created_count = this.current_exports.length;
+    }
+
+    // Get all of the input strings that have been created
+    this._creative.getInputs().subscribe(
+      (data) => {
+        this.all_exports = data.reverse();
+        this.all_count = this.all_exports.length;
+      },
+      (error) => {
+        console.log('Error', error);
+      }
+    )
+
   }
 
   setCampaignTag(campaignTag) {
@@ -125,8 +151,11 @@ export class AppComponent implements OnInit {
       this.showCreativeInput = false;
     } else {
       this.campaignInput = campaignTag;
+      this.campaignTags.push(campaignTag.campaign_input_tag);
       if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
         this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
+      } else {
+        this.packageTags = [];
       }
       this.showPackageInput = true;
     }
@@ -142,6 +171,8 @@ export class AppComponent implements OnInit {
       this.packageInput = packageTag;
       if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
         this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
+      } else {
+        this.placementTags = [];
       }
       this.showPlacementInput = true;
     }
@@ -155,6 +186,8 @@ export class AppComponent implements OnInit {
       this.placementInput = placementTag;
       if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
         this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
+      } else {
+        this.adTags = [];
       }
       this.showAdInput = true;
     }
@@ -167,6 +200,8 @@ export class AppComponent implements OnInit {
       this.adInput = adTag;
       if(this.adInput.creative_inputs && this.adInput.creative_inputs.length > 0) {
         this.creativeTags = this.adInput.creative_inputs.map(n=> n['creative_input_tag']);
+      } else {
+        this.creativeTags = [];
       }
       this.showCreativeInput = true;
     }
@@ -177,14 +212,30 @@ export class AppComponent implements OnInit {
     if(creativeTag == null) {
       this.showNew = false;
     } else {
-      // Add the new creative tag to the input arrays
-      this.current_created_inputs.unshift(creativeTag);
-      this.created_count = this.current_created_inputs.length;
-      this.all_inputs.unshift(creativeTag);
-      this.all_count = this.all_inputs.length;
+      // A new tag has been created. Update the arrays and counts.
+      this.current_exports.unshift(creativeTag);
+      this.created_count = this.current_exports.length;
+      this.all_exports.unshift(creativeTag);
+      this.all_count = this.all_exports.length;
       this.showNew= true;
     }
     
+  }
+
+
+  createdCampaign(campaign) {
+    // Current object of campaign object arrays
+    this.current_created_input = campaign;
+
+     // Get all of the input strings that have been created
+     this._campaign.getInputs().subscribe(
+      (data) => {
+        this.all_inputs = data.reverse();
+      },
+      (error) => {
+        console.log('Error', error);
+      }
+    )
   }
 
   newCampaign(){

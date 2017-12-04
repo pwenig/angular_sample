@@ -126,8 +126,8 @@ export class CampaignComponent implements OnInit {
   constructor( private _campaign: CampaignInputService, private changeDetector: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.campaignInput.startYear = 2017;
-    this.campaignInput.endYear = 2017;
+    this.campaignInput.startYear = new Date().getFullYear();
+    this.campaignInput.endYear = new Date().getFullYear();
   };
 
   newInput() {
@@ -135,15 +135,15 @@ export class CampaignComponent implements OnInit {
     this.showButtons = true;
     this.showSelectors = true;
     this.campaignInput = {};
-    this.campaignInput.startYear = 2017;
-    this.campaignInput.endYear = 2017;
+    this.campaignInput.startYear = new Date().getFullYear();
+    this.campaignInput.endYear = new Date().getFullYear();
   }
 
   newCampaign() {
     this.campaignInput = {};
     this.showSearch = true;
-    this.campaignInput.startYear = 2017;
-    this.campaignInput.endYear = 2017;
+    this.campaignInput.startYear = new Date().getFullYear();
+    this.campaignInput.endYear = new Date().getFullYear();
     this.showFinal = false;
   }
 
@@ -252,8 +252,8 @@ export class CampaignComponent implements OnInit {
     this.daySelectComponent.setSelections(this.endDayLabel);
     this.campaignInput.campaignInputTag = null;
     this.campaignInput.custom = null;
-    this.campaignInput.startYear = 2017;
-    this.campaignInput.endYear = 2017;
+    this.campaignInput.startYear = new Date().getFullYear();
+    this.campaignInput.endYear = new Date().getFullYear();
   }
 
   duplicate() {

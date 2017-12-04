@@ -62,4 +62,20 @@ export class CampaignInputService {
     return subject.asObservable();
   }
 
+  // Get all of the input objects for the heiarchy tree.
+  getInputs(): Observable<any>{
+    let subject: Subject<any> = new Subject;
+    this.http.get('/campaign_inputs').subscribe(
+
+      (res) => {
+        subject.next(res);
+      },
+      (error) => {
+        console.log('Error', error);
+        subject.error(error);
+      }
+    )
+    return subject.asObservable();
+  }
+
 }
