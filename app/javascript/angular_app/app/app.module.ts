@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+import { BsDatepickerModule } from 'ngx-bootstrap';
 import { TypeaheadModule, TabsModule } from 'ngx-bootstrap';
 
 import { AppComponent } from './app.component';
@@ -55,7 +56,8 @@ import {RangePipe} from '../shared/range.pipe'
     FormsModule,
     TabsModule.forRoot(),
     TypeaheadModule.forRoot(),
-    TimepickerModule.forRoot()
+    TimepickerModule.forRoot(),
+    BsDatepickerModule.forRoot()
   ],
   providers: [MetadataService, CampaignInputService, 
               PackageInputService, PlacementInputService, 

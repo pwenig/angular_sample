@@ -40,6 +40,7 @@ RSpec.feature 'Package Input', type: :feature, js: true do
   end
 
   it 'creates a campaign input tag and shows the package input section' do
+    date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -58,18 +59,14 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_select('Start Month')
-    select('01', from: 'Start Month')
-    select('01', from: 'Start Day')
-    select('02', from: 'End Month')
-    select('02', from: 'End Day')
-    expect(page).to have_text('Create Campaign String')
-    click_on('Create Campaign String')
-    expect(page).to have_text('CCL_CLTF_S00_BG_XX_20170101-20170202')
+    expect(page).to have_text('Save Campaign String')
+    click_on('Save Campaign String')
+    expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('Package Input')
   end
 
   it 'creates a package input' do
+    date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -88,17 +85,10 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_select('Start Month')
-    select('01', from: 'Start Month')
-    select('01', from: 'Start Day')
-    select('02', from: 'End Month')
-    select('02', from: 'End Day')
-    expect(page).to have_text('Create Campaign String')
-    click_on('Create Campaign String')
-    expect(page).to have_text('CCL_CLTF_S00_BG_XX_20170101-20170202')
+    expect(page).to have_text('Save Campaign String')
+    click_on('Save Campaign String')
+    expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('Package Input')
-    expect(page).to have_select('Agency', options: ['Select Agency', 'Sterling Cooper'])
-    select('Sterling Cooper', from: 'Agency')
     expect(page).to have_select('Publisher', options: ['Select Publisher', 'ABC'])
     select('ABC', from: 'Publisher')
     expect(page).to have_select('Buy Method', options: ['Select Buy Method', 'CPA'])
@@ -109,7 +99,7 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    click_on('Create Package String')
+    click_on('Save Package String')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
   end
 
@@ -129,6 +119,7 @@ RSpec.feature 'Package Input', type: :feature, js: true do
   end
 
   it 'clears a package input' do
+    date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -147,17 +138,10 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_select('Start Month')
-    select('01', from: 'Start Month')
-    select('01', from: 'Start Day')
-    select('02', from: 'End Month')
-    select('02', from: 'End Day')
-    expect(page).to have_text('Create Campaign String')
-    click_on('Create Campaign String')
-    expect(page).to have_text('CCL_CLTF_S00_BG_XX_20170101-20170202')
+    expect(page).to have_text('Save Campaign String')
+    click_on('Save Campaign String')
+    expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('Package Input')
-    expect(page).to have_select('Agency', options: ['Select Agency', 'Sterling Cooper'])
-    select('Sterling Cooper', from: 'Agency')
     expect(page).to have_select('Publisher', options: ['Select Publisher', 'ABC'])
     select('ABC', from: 'Publisher')
     expect(page).to have_select('Buy Method', options: ['Select Buy Method', 'CPA'])
@@ -174,6 +158,7 @@ RSpec.feature 'Package Input', type: :feature, js: true do
   end
 
   it 'duplicates a package input' do
+    date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -192,17 +177,10 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_select('Start Month')
-    select('01', from: 'Start Month')
-    select('01', from: 'Start Day')
-    select('02', from: 'End Month')
-    select('02', from: 'End Day')
-    expect(page).to have_text('Create Campaign String')
-    click_on('Create Campaign String')
-    expect(page).to have_text('CCL_CLTF_S00_BG_XX_20170101-20170202')
+    expect(page).to have_text('Save Campaign String')
+    click_on('Save Campaign String')
+    expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('Package Input')
-    expect(page).to have_select('Agency', options: ['Select Agency', 'Sterling Cooper'])
-    select('Sterling Cooper', from: 'Agency')
     expect(page).to have_select('Publisher', options: ['Select Publisher', 'ABC'])
     select('ABC', from: 'Publisher')
     expect(page).to have_select('Buy Method', options: ['Select Buy Method', 'CPA'])
@@ -213,11 +191,11 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    click_on('Create Package String')
+    click_on('Save Package String')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
     click_on('duplicatePackage')
     select('Custom Program', from: 'Inventory Type')
-    click_on('Create Package String')
+    click_on('Save Package String')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_CSP_XX')
   end
 end

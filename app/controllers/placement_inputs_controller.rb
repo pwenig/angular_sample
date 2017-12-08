@@ -8,8 +8,9 @@ class PlacementInputsController < ApplicationController
       render json: @placement_input, except: %i[ad_type_id tactic_id device_id ad_type_id targeting_type_1_id
                                                 targeting_type_2_id targeting_type_3_id targeting_type_4_id
                                                 episode_start_id episode_end_id],
-             include: %i[ad_type ad_inputs tactic device ad_type targeting_type_1 targeting_type_2
-                         targeting_type_3 targeting_type_4 episode_start episode_end], status: 200
+             include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
+                       :targeting_type_3, :targeting_type_4, :episode_start, :episode_end,
+                       package_input: { include: [:campaign_input] }], status: 200
     else
       @placement_input = PlacementInput.includes(:ad_inputs, :tactic, :device, :ad_type, :targeting_type_1,
                                                  :targeting_type_2, :targeting_type_3, :targeting_type_4,
@@ -17,8 +18,9 @@ class PlacementInputsController < ApplicationController
       render json: @placement_input, except: %i[ad_type_id tactic_id device_id ad_type_id targeting_type_1_id
                                                 targeting_type_2_id targeting_type_3_id targeting_type_4_id
                                                 episode_start_id episode_end_id],
-             include: %i[ad_type ad_inputs tactic device ad_type targeting_type_1 targeting_type_2
-                         targeting_type_3 targeting_type_4 episode_start episode_end], status: 201
+             include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
+                       :targeting_type_3, :targeting_type_4, :episode_start, :episode_end,
+                       package_input: { include: [:campaign_input] }], status: 201
     end
   end
 
@@ -31,8 +33,9 @@ class PlacementInputsController < ApplicationController
       render json: @placement_input, except: %i[ad_type_id tactic_id device_id ad_type_id
                                                 targeting_type_1_id targeting_type_2_id targeting_type_3_id
                                                 targeting_type_4_id episode_start_id episode_end_id],
-             include: %i[ad_type ad_inputs tactic device ad_type targeting_type_1
-                         targeting_type_2 targeting_type_3 targeting_type_4 episode_start episode_end],
+             include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1,
+                       :targeting_type_2, :targeting_type_3, :targeting_type_4, :episode_start, :episode_end,
+                       package_input: { include: [:campaign_input] }],
              status: 200
     else
       head :no_content

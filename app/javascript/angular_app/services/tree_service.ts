@@ -1,5 +1,4 @@
 import {Component, Injectable, Inject} from '@angular/core';
-import { stagger } from '@angular/core/src/animation/dsl';
 
 @Injectable()
 export class TreeService {
@@ -7,94 +6,111 @@ export class TreeService {
   createdObject: any = {};
   constructor() {}
 
-  createTree(creativeTag) {
+  createCampaignTree(campaignTag) {
     // Check to see if stored in localStorage
     var storedObject = JSON.parse(localStorage.getItem('inputs'));
-    // Check to see if anything is stored. If not, create new
     if(storedObject && storedObject['campaignInputs'] && storedObject['campaignInputs'].length > 0) {
-      var campaignIndex = storedObject['campaignInputs'].findIndex(x => x['input'] == creativeTag.ad_input.placement_input.package_input.campaign_input.campaign_input_tag);
-      // Check to see if the campaign input already exists in the array.
+      var campaignIndex = storedObject['campaignInputs'].findIndex(x => x['input'] == campaignTag.campaign_input_tag);
       if(campaignIndex == -1) {
-        // Does not exist. Create new.
-        this.newTree(creativeTag);
-        } else {
-          // It exists. Find the difference.
-        var packageIndex = storedObject['campaignInputs'][campaignIndex]['packageInputs'].findIndex(x => x['input'] == creativeTag.ad_input.placement_input.package_input.package_input_tag);
-        // Check to see if package input already exists in the array.
-        if(packageIndex == -1) {
-          // Does not exist. Push it in.
-          storedObject['campaignInputs'][campaignIndex]['packageInputs'].unshift(
-            { input: creativeTag.ad_input.placement_input.package_input.package_input_tag,
-              placementInputs: [
-                {
-                  input: creativeTag.ad_input.placement_input.placement_input_tag,
-                  adInputs: [
-                    {
-                      input: creativeTag.ad_input.ad_input_tag,
-                      creativeInputs: [
-                        {
-                          input: creativeTag.creative_input_tag
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          );
-          localStorage.setItem('inputs', JSON.stringify(storedObject));
-        } else {
-          var placementIndex = storedObject['campaignInputs'][campaignIndex]['packageInputs'][packageIndex]['placementInputs'].findIndex(x => x['input'] == creativeTag.ad_input.placement_input.placement_input_tag);
-          // Check to see if placement input already exists in the array.
-          if(placementIndex == -1) {
-            storedObject['campaignInputs'][campaignIndex]['packageInputs'][packageIndex]['placementInputs'].unshift(
-              {
-                input: creativeTag.ad_input.placement_input.placement_input_tag,
-                adInputs: [
-                  {
-                    input: creativeTag.ad_input.ad_input_tag,
-                    creativeInputs: [
-                      {
-                        input: creativeTag.creative_input_tag
-                      }
-                    ] 
-                  }
-                ] 
-              }
-            );
-            localStorage.setItem('inputs', JSON.stringify(storedObject));
-          } else {
-            var adIndex = storedObject['campaignInputs'][campaignIndex]['packageInputs'][packageIndex]['placementInputs'][placementIndex]['adInputs'].findIndex(x => x['input'] == creativeTag.ad_input.ad_input_tag);
-            // Check to see if ad input already exists in the array.
-            if(adIndex == -1) {
-              storedObject['campaignInputs'][campaignIndex]['packageInputs'][packageIndex]['placementInputs'][placementIndex]['adInputs'].unshift(
-                {
-                  input: creativeTag.ad_input.ad_input_tag,
-                  creativeInputs: [
-                    {
-                      input: creativeTag.creative_input_tag
-                    }
-                  ]
-                }
-              );
-              localStorage.setItem('inputs', JSON.stringify(storedObject));
-            } else {
-              var creativeIndex = storedObject['campaignInputs'][campaignIndex]['packageInputs'][packageIndex]['placementInputs'][placementIndex]['adInputs'][adIndex]['creativeInputs'].findIndex(x => x['input'] == creativeTag.creative_input_tag);
-              // Check to see if creative input already exists in the array.
-              if(creativeIndex == -1) {
-                storedObject['campaignInputs'][campaignIndex]['packageInputs'][packageIndex]['placementInputs'][placementIndex]['adInputs'][adIndex]['creativeInputs'].unshift(
-                  {
-                    input: creativeTag.creative_input_tag
-                  }
-                );
-                localStorage.setItem('inputs', JSON.stringify(storedObject));
-              }
-            }
-          }
-        }
+        this.newCampaignTree(campaignTag);
       }
     } else {
-      this.newTree(creativeTag);
+      this.newCampaignTree(campaignTag);
+    } 
+  }
+
+  newCampaignTree(campaignTag) {
+    this.createdObject = {
+      campaignInputs: [
+        {
+          input: campaignTag.campaign_input_tag,
+          package_inputs: []
+        }
+      ]
+    }
+    var storedObject = JSON.parse(localStorage.getItem('inputs'));
+    if(storedObject) {
+      storedObject['campaignInputs'].unshift(this.createdObject['campaignInputs'][0]);
+      localStorage.setItem('inputs', JSON.stringify(storedObject));
+      
+    } else {
+      localStorage.setItem('inputs', JSON.stringify(this.createdObject));
+    }
+  }
+
+  createPackageTree(packageTag) {
+    var storedObject = JSON.parse(localStorage.getItem('inputs'));
+    var campaignIndex = storedObject['campaignInputs'].findIndex(x => x['input'] == packageTag.campaign_input.campaign_input_tag);
+    var packageIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'].findIndex(x => x['input'] == packageTag.package_input_tag);
+    if(packageIndex == -1) {
+      var packageObject = {
+        input: packageTag.package_input_tag,
+        placement_inputs: []
+      }
+      storedObject['campaignInputs'][campaignIndex]['package_inputs'].unshift(packageObject);
+      var updatedObject = storedObject['campaignInputs'][campaignIndex];
+      storedObject['campaignInputs'].splice([campaignIndex], 1);
+      storedObject['campaignInputs'].unshift(updatedObject);
+      localStorage.setItem('inputs', JSON.stringify(storedObject));
+    }
+
+  }
+
+  createPlacementTree(placementTag) {
+    var storedObject = JSON.parse(localStorage.getItem('inputs'));
+    var campaignIndex = storedObject['campaignInputs'].findIndex(x => x['input'] == placementTag.package_input.campaign_input.campaign_input_tag);
+    var packageIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'].findIndex(x => x['input'] == placementTag.package_input.package_input_tag);
+    var placementIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'].findIndex(x => x['input'] == placementTag.placement_input_tag);
+    if(placementIndex == -1) {
+      var placementObject = {
+        input: placementTag.placement_input_tag,
+        ad_inputs: []
+      }
+      storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'].unshift(placementObject);
+      var updatedObject = storedObject['campaignInputs'][campaignIndex];
+      storedObject['campaignInputs'].splice([campaignIndex], 1);
+      storedObject['campaignInputs'].unshift(updatedObject);
+      localStorage.setItem('inputs', JSON.stringify(storedObject));
+    }
+  }
+
+  createAdTree(adTag) {
+    var storedObject = JSON.parse(localStorage.getItem('inputs'));
+    var campaignIndex = storedObject['campaignInputs'].findIndex(x => x['input'] == adTag.placement_input.package_input.campaign_input.campaign_input_tag);
+    var packageIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'].findIndex(x => x['input'] == adTag.placement_input.package_input.package_input_tag);
+    var placementIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'].findIndex(x => x['input'] == adTag.placement_input.placement_input_tag);
+    var adIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'][placementIndex]['ad_inputs'].findIndex(x => x['input'] == adTag.ad_input_tag);
+    if(adIndex == -1) {
+      var adObject = {
+        input: adTag.ad_input_tag,
+        creative_inputs: []
+      }
+      storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'][placementIndex]['ad_inputs'].unshift(adObject);
+      var updatedObject = storedObject['campaignInputs'][campaignIndex];
+      storedObject['campaignInputs'].splice([campaignIndex], 1);
+      storedObject['campaignInputs'].unshift(updatedObject);
+      localStorage.setItem('inputs', JSON.stringify(storedObject));
+    }
+  }
+
+  createCreativeTree(creativeTag) {
+    var storedObject = JSON.parse(localStorage.getItem('inputs'));
+    var campaignIndex = storedObject['campaignInputs'].findIndex(x => x['input'] == creativeTag.ad_input.placement_input.package_input.campaign_input.campaign_input_tag);
+    var packageIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'].findIndex(x => x['input'] == creativeTag.ad_input.placement_input.package_input.package_input_tag);
+    var placementIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'].findIndex(x => x['input'] == creativeTag.ad_input.placement_input.placement_input_tag);
+    var adIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'][placementIndex]['ad_inputs'].findIndex(x => x['input'] == creativeTag.ad_input.ad_input_tag);
+    var creativeIndex = storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'][placementIndex]['ad_inputs'][adIndex]['creative_inputs'].findIndex(x => x['input'] == creativeTag.creative_input_tag);
+    // Need the entire creativeTag object to create the omniture code
+    if(creativeIndex == -1) {
+      var creativeObject = {
+        input: creativeTag.creative_input_tag,
+        object: creativeTag
+      }
+      storedObject['campaignInputs'][campaignIndex]['package_inputs'][packageIndex]['placement_inputs'][placementIndex]['ad_inputs'][adIndex]['creative_inputs'].unshift(creativeObject);
+      var updatedObject = storedObject['campaignInputs'][campaignIndex];
+      storedObject['campaignInputs'].splice([campaignIndex], 1);
+      storedObject['campaignInputs'].unshift(updatedObject);
+      localStorage.setItem('inputs', JSON.stringify(storedObject));
     }
   }
 
@@ -104,16 +120,16 @@ export class TreeService {
       campaignInputs: [
         {
           input: creativeTag.ad_input.placement_input.package_input.campaign_input.campaign_input_tag,
-          packageInputs: [
+          package_inputs: [
             {
               input: creativeTag.ad_input.placement_input.package_input.package_input_tag,
-              placementInputs: [
+              placement_inputs: [
                 {
                   input: creativeTag.ad_input.placement_input.placement_input_tag,
-                  adInputs: [
+                  ad_inputs: [
                     {
                       input: creativeTag.ad_input.ad_input_tag,
-                      creativeInputs: [
+                      creative_inputs: [
                         {
                           input: creativeTag.creative_input_tag
                         }

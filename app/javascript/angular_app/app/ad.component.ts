@@ -1,6 +1,8 @@
 import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import {AdInputService} from '../services/ad_input_service';
 import {SelectComponent} from './select.component';
+import {TreeService} from '../services/tree_service';
+import {HistoryService} from '../services/history_service';
 
 @Component({
   selector: 'ad',
@@ -15,8 +17,8 @@ import {SelectComponent} from './select.component';
       </section>
       <section class="input-tag" *ngIf="showButtons">
         <input [ngModel]="adInput.adInputTag" class="form-control" [disabled]=true>
-        <button class="new-tag" *ngIf="!existingAdInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Ad String</button>
-        <button class="new-tag" *ngIf="existingAdInput && showButtons" type="submit" (click)="selectInput(adInput.adInputTag)">Select Ad String</button>
+        <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Ad String</button>
+        <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput(adInput.adInputTag)">Select Ad String</button>
         <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
       </section>
     </div>
@@ -51,6 +53,7 @@ export class AdComponent implements OnInit {
   @Input() adTags: any[];
   @Input() creativeGroups: any[];
   @Output() adTagFinal = new EventEmitter();
+  @Output() adObjectCreated = new EventEmitter();
 
   creativeGroupLabel: string = 'Creative Group';
   adInput: any = {};
@@ -61,14 +64,17 @@ export class AdComponent implements OnInit {
   invalid: boolean = true;
   defaultCreativeGroup: any;
   adInputObject: any = {};
+  showSave: boolean = false;
+  showSelect: boolean = false;
 
-  constructor( private _ad: AdInputService, private changeDetector: ChangeDetectorRef) {}
+  constructor( private _ad: AdInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
   ngOnInit() {
     if(!this.adTags || this.adTags.length == 0) {
       this.showButtons = true;
       this.showSelectors = true;
     }
+    this.adInput.custom = "XX";
   }
 
   verifyTag() {
@@ -77,9 +83,14 @@ export class AdComponent implements OnInit {
       (result) => {
         // This is the object that sets the create/select button
         this.existingAdInput = result;
+        this.showSave = true;
         if(result) {
           // This is the object that will be used to copy
           this.adInputObject = result;
+          this.showSelect = true;
+          this._history.storeInput(result);
+          this._tree.createAdTree(result);
+          this.adObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
           this.adTagFinal.emit(result)
         }
 
@@ -104,6 +115,9 @@ export class AdComponent implements OnInit {
         this.showButtons = false;
         this.showFinal = true;
         this.adInputObject = result;
+        this._history.storeInput(result);
+        this._tree.createAdTree(result);
+        this.adObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
         this.adTagFinal.emit(result);
       },
       (error) => {
@@ -138,13 +152,14 @@ export class AdComponent implements OnInit {
   }
 
   newTagSection() {
-    this.showButtons = true 
-    this.showSelectors = true
+    this.showButtons = true ;
+    this.showSelectors = true;
+    this.adInput.custom = "XX";
   }
 
   cancelInput() {
     this.selectComponent.setSelections(this.creativeGroupLabel);
-    this.adInput.custom = null;
+    this.adInput.custom = "XX";
     this.adInput.adInputTag = null;
   }
 

@@ -3,6 +3,8 @@ import { PlacementInputService } from '../services/placement_input_service';
 import { AdTypeService } from '../services/ad_type_service';
 import { CampaignTypeService } from '../services/campaign_type_service';
 import {SelectComponent} from './select.component';
+import {TreeService} from '../services/tree_service';
+import {HistoryService} from '../services/history_service';
 
 @Component({
   selector: 'placement',
@@ -17,8 +19,8 @@ import {SelectComponent} from './select.component';
         </section>
         <section class="input-tag" *ngIf="showButtons">
           <input [ngModel]="placementInput.placementInputTag" class="form-control" [disabled]=true>
-          <button class="new-tag" *ngIf="!existingPlacementInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Placement String</button>
-          <button class="new-tag" *ngIf="existingPlacementInput && showButtons" type="submit" (click)="selectInput(placementInput.placementInputTag)">Select Placement String</button>
+          <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Placement String</button>
+          <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput(placementInput.placementInputTag)">Select Placement String</button>
           <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
         </section>
       </div>
@@ -102,6 +104,7 @@ export class PlacementComponent {
   @Input() adTypes: any[];
   @Input() targetingTypes: any[];
   @Output() placementTagFinal = new EventEmitter();
+  @Output() placementObjectCreated = new EventEmitter();
 
   episodeStartLabel: string = 'Episode Start';
   episodeEndLabel: string = 'Episode End';
@@ -128,8 +131,10 @@ export class PlacementComponent {
   defaultDevice: any;
   defaultAdType: any;
   placementObject: any = {};
+  showSave: boolean = false;
+  showSelect: boolean = false;
 
-  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService,  private changeDetector: ChangeDetectorRef) {}
+  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService,  private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
   ngOnInit() {
     this.defaultTargetingType1 = this.defaultTargetingType2 = this.defaultTargetingType3 = this.defaultTargetingType4 = this.targetingTypes.find(x => x['name'] == 'None')
@@ -195,8 +200,13 @@ export class PlacementComponent {
 
       (result) => {
         this.existingPlacementInput = result;
+        this.showSave = true;
         if(result) {
           this.placementObject = result;
+          this.showSelect = true;
+          this._history.storeInput(result);
+          this._tree.createPlacementTree(result);
+          this.placementObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
           this.placementTagFinal.emit(result)
         }
         
@@ -251,6 +261,9 @@ export class PlacementComponent {
         this.showButtons = false;
         this.showFinal = true;
         this.placementObject = result;
+        this._history.storeInput(result);
+        this._tree.createPlacementTree(result);
+        this.placementObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
         this.placementTagFinal.emit(result);
       },
       (error) => {

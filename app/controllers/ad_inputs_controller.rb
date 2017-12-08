@@ -3,11 +3,13 @@ class AdInputsController < ApplicationController
     @ad_input = AdInput.includes(:creative_inputs).find_by(ad_input_tag: params[:ad_input_tag])
     if @ad_input
       render json: @ad_input, except: %i[creative_group_id],
-             include: %i[creative_group creative_inputs], status: 200
+             include: [:creative_group, :creative_inputs, placement_input:
+             { include: [package_input: { include: [:campaign_input] }] }], status: 200
     else
       @ad_input = AdInput.create!(permitted_params)
       render json: @ad_input, except: %i[creative_group_id],
-             include: %i[creative_group], status: 201
+             include: [:creative_group, placement_input: { include: [package_input:
+             { include: [:campaign_input] }] }], status: 201
     end
   end
 
@@ -15,7 +17,8 @@ class AdInputsController < ApplicationController
     @ad_input = AdInput.includes(:creative_inputs).find_by(ad_input_tag: params[:id])
     if @ad_input
       render json: @ad_input, except: %i[creative_group_id],
-             include: %i[creative_group creative_inputs], status: 200
+             include: [:creative_group, :creative_inputs, placement_input:
+             { include: [package_input: { include: [:campaign_input] }] }], status: 200
     else
       head :no_content
     end

@@ -20,6 +20,7 @@ export class SearchComponent {
 
   private selected: any;
   private createNew: boolean = true;
+  inputTag: any;
 
   newInput() {
     this.newTag.emit();
@@ -27,8 +28,9 @@ export class SearchComponent {
   }
 
   tagSelected(inputTag) {
-    if(inputTag.length > 20) {
-      this.tagChosen.emit(inputTag)
+    if(inputTag.length > 20 && this.inputTag != inputTag) {
+      this.inputTag = inputTag;
+      this.tagChosen.emit(inputTag);
     }
     
   }

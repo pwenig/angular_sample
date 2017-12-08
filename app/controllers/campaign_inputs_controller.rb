@@ -1,9 +1,12 @@
 class CampaignInputsController < ApplicationController
   def index
-    @campaign_inputs = CampaignInput.includes(:package_inputs).all
-    render json: @campaign_inputs, include: [{ package_inputs:
-    { include: { placement_inputs: { include:
-    { ad_inputs: { include: :creative_inputs } } } } } }], status: 200
+    # Only get the pacakges that belong to the current user's agency
+    # This only returns campaigns that have pacakge_inputs
+    @campaign_inputs = CampaignInput.includes(:package_inputs)
+                                    .where(package_inputs: { agency_id: current_user.agency.id })
+    render json: @campaign_inputs, include: [:network, :season, :program, { package_inputs:
+    { include: [:publisher, { placement_inputs: { include:
+    { ad_inputs: { include: :creative_inputs } } } }] } }], status: 200
   end
 
   def create
@@ -36,6 +39,7 @@ class CampaignInputsController < ApplicationController
   private
 
   def permitted_params
+    # merge(user_id: current_user.id)
     params.permit(:network_id, :program_id, :season_id, :campaign_type_id, :custom,
                   :start_month, :start_year, :start_day, :end_month, :end_year, :end_day,
                   :campaign_input_tag)
