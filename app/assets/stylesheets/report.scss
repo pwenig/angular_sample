@@ -59,7 +59,7 @@
   }
 
   section.input-tag {
-  width: 900px;
+  width: 930px;
   display: flex;
   flex-direction: row;
   margin: 0 auto;
@@ -71,7 +71,7 @@
     border-radius: 5%;
     font-size: 14px;
     color: white;
-    width: 300px;
+    width: 215px;
     margin-left: 10px;
     height: 34px;
     cursor: pointer;
@@ -83,7 +83,7 @@
     border-radius: 5%;
     font-size: 14px;
     color: white;
-    width: 300px;
+    width: 100px;
     margin-left: 10px;
     height: 34px;
     cursor: pointer;
@@ -110,6 +110,36 @@
 }
 
 .select-container {
+
+  // datepicker {
+    section.select-date {
+      width: 700px;;
+      display: flex;
+      flex-direction: row;
+      margin: 0 auto;
+
+      .first-column {
+        margin: 10px;
+        width: 200px;
+      }
+      .second-column {
+        margin: 10px;
+        button.date-button {
+          background-color: #2CACD9;
+          border: none;
+          border-radius: 5%;
+          font-size: 14px;
+          color: white;
+          width: 300px;
+          margin-left: 10px;
+          height: 34px;
+          cursor: pointer;
+        }
+      }
+
+    }
+
+  // }
 
   section.select {
     width: 700px;;
@@ -151,9 +181,9 @@
     .year-column {
       margin: 10px;
 
-     select.form-control {
-       width: 190px;
-     }
+      select.form-control {
+        width: 190px;
+      }
 
     }
 
@@ -260,16 +290,13 @@
   margin-top: 20px;
   width: 100%;
   display: flex;
-  // align-items: center;
-
 
   section.tree {
     padding: 10px;
     font-size: 13px;
-    // text-align: center;
     height: auto;
-    height: 200px;
-    width: 850px;
+    height: 400px;
+    width: 950px;
     overflow: auto;
     overflow-x: hidden;
     border: 2px solid #2CACD9;

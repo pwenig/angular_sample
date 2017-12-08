@@ -5,7 +5,7 @@ class MetadataService
     metaobject = {
       networks: fetch_table_data(Network), seasons: fetch_table_data(Season),
       campaigns: fetch_table_data(Campaign), campaign_types: fetch_table_data(CampaignType),
-      agencies: fetch_table_data(Agency), buy_methods: fetch_table_data(BuyMethod),
+      buy_methods: fetch_table_data(BuyMethod),
       publishers: fetch_table_data(Publisher), inventory_types: fetch_table_data(InventoryType),
       ad_types: fetch_table_data(AdType), targeting_types: fetch_table_data(TargetingType),
       tactics: fetch_table_data(Tactic), devices: fetch_table_data(Device), episodes: fetch_table_data(Episode),

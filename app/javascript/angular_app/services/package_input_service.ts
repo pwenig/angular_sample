@@ -11,11 +11,11 @@ export class PackageInputService {
   // Package String format
   // Network_Program_Season_Agency_Publisher_BuyMethod_
   // InventoryType_CustomDimension
-  createPackageString(campaignObj, packageObj){
+  createPackageString(campaignObj, packageObj, agency){
     let packageString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
-      packageObj.agency.abbrev + '_' +
+      agency['abbrev'] + '_' +
       packageObj.publisher.abbrev + '_' +
       packageObj.buyMethod.abbrev + '_' +
       packageObj.inventoryType.abbrev + '_' +

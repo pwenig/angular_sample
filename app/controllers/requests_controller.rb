@@ -5,7 +5,7 @@ class RequestsController < ApplicationController
     models.each do |model|
       next if %w[schema_migrations ar_internal_metadata
                  users networks ad_inputs campaign_inputs placement_inputs
-                 package_inputs creative_inputs].include?(model)
+                 package_inputs creative_inputs campaigns].include?(model)
       model.sub!('_', ' ')
       dimensions << model.capitalize.singularize
     end

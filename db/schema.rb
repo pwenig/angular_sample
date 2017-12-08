@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171114202117) do
+ActiveRecord::Schema.define(version: 20171206234115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,6 +124,8 @@ ActiveRecord::Schema.define(version: 20171114202117) do
     t.string "creative_version_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "start_year", default: 2017, null: false
+    t.integer "end_year", default: 2017, null: false
     t.index ["abtest_label_id"], name: "index_creative_inputs_on_abtest_label_id"
     t.index ["ad_input_id"], name: "index_creative_inputs_on_ad_input_id"
     t.index ["creative_message_id"], name: "index_creative_inputs_on_creative_message_id"

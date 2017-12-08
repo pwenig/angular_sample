@@ -49,7 +49,7 @@ class CreativeInputsController < ApplicationController
 
   def permitted_params
     params.permit(:ad_input_id, :creative_message_id, :abtest_label_id,
-                  :video_length_id, :start_month, :start_day, :end_month,
+                  :video_length_id, :start_year, :start_month, :start_day, :end_year, :end_month,
                   :end_day, :creative_input_tag, :custom,
                   :creative_version_number)
   end

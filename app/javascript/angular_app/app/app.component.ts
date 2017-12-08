@@ -7,19 +7,19 @@ import {CreativeInputService} from '../services/creative_input_service';
 @Component({
   selector: 'app-component',
   template: `
-    <tree [current_created_input]="current_created_input" [created_count]="created_count" [all_inputs]="all_inputs" [all_count]="all_count" [all_exports]="all_exports" [current_exports]="current_exports"></tree>
-    <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
+    <tree [current_created_input]="current_created_input" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports"></tree>
+    <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignObject)="createdCampaign($event)"></campaign>
     <div *ngIf="showPackageInput">
-      <package [campaignInput]="campaignInput" [packageTags]="packageTags" [agencies]="agencies" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
+      <package [campaignInput]="campaignInput" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)" (packageObjectCreated)="createdCampaign($event)"></package>
     </div>
     <div *ngIf="showPlacementInput">
-      <placement [campaignInput]="campaignInput" [placementTags]="placementTags" [packageInput]="packageInput" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)"></placement>
+      <placement [campaignInput]="campaignInput" [placementTags]="placementTags" [packageInput]="packageInput" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)" (placementObjectCreated)="createdCampaign($event)"></placement>
     </div>
     <div *ngIf="showAdInput">
-      <ad [campaignInput]="campaignInput" [packageInput]="packageInput" [placementInput]="placementInput" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)"></ad>
+      <ad [campaignInput]="campaignInput" [packageInput]="packageInput" [placementInput]="placementInput" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adObjectCreated)="createdCampaign($event)"></ad>
     </div>
     <div *ngIf="showCreativeInput">
-      <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (campaignObject)="createdCampaign($event)"></creative>
+      <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeObject)="createdCampaign($event)"></creative>
     </div>
     <div *ngIf="showNew">
       <button class="new" (click)="newCampaign()">New</button>
@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
   networks: any = [];
   seasons: any = [];
   campaignTypes: any = [];
-  agencies: any = [];
+  agency: any = {};
   publishers: any = [];
   buyMethods: any = [];
   inventoryTypes: any = [];
@@ -66,12 +66,9 @@ export class AppComponent implements OnInit {
   current_created_input: any = {};
   // Current array of mamestrings that can be exported
   current_exports: any = [];
-  created_count: any;
-  // All of the campaign objects for the heirarchy
   all_inputs: any = [];
   // All namestrings that have been created
   all_exports: any = [];
-  all_count: any;
 
   constructor( private _metadata: MetadataService, private _campaign: CampaignInputService, private _creative: CreativeInputService) {}
 
@@ -83,7 +80,7 @@ export class AppComponent implements OnInit {
         this.networks = data['networks'];
         this.seasons = data['seasons'];
         this.campaignTypes = data['campaign_types'];
-        this.agencies = data['agencies'];
+        this.agency = data['agency'];
         this.publishers = data['publishers'];
         this.buyMethods = data['buy_methods'];
         this.inventoryTypes = data['inventory_types'];
@@ -123,23 +120,21 @@ export class AppComponent implements OnInit {
     )
 
     // Get all of the current input strings
-    if(!JSON.parse(localStorage.getItem('creative_inputs'))) {
+    if(!JSON.parse(localStorage.getItem('inputs'))) {
       this.current_exports = [];
     } else {
-      this.current_exports = JSON.parse(localStorage.getItem('creative_inputs')).reverse();
-      this.created_count = this.current_exports.length;
+      this.current_exports = JSON.parse(localStorage.getItem('inputs'));
     }
 
-    // Get all of the input strings that have been created
-    this._creative.getInputs().subscribe(
-      (data) => {
-        this.all_exports = data.reverse();
-        this.all_count = this.all_exports.length;
-      },
-      (error) => {
-        console.log('Error', error);
-      }
-    )
+    // // Get all of the input strings that have been created
+    // this._creative.getInputs().subscribe(
+    //   (data) => {
+    //     this.all_exports = data.reverse();
+    //   },
+    //   (error) => {
+    //     console.log('Error', error);
+    //   }
+    // )
 
   }
 
@@ -212,11 +207,6 @@ export class AppComponent implements OnInit {
     if(creativeTag == null) {
       this.showNew = false;
     } else {
-      // A new tag has been created. Update the arrays and counts.
-      this.current_exports.unshift(creativeTag);
-      this.created_count = this.current_exports.length;
-      this.all_exports.unshift(creativeTag);
-      this.all_count = this.all_exports.length;
       this.showNew= true;
     }
     
@@ -226,6 +216,7 @@ export class AppComponent implements OnInit {
   createdCampaign(campaign) {
     // Current object of campaign object arrays
     this.current_created_input = campaign;
+    this.current_exports = campaign;
 
      // Get all of the input strings that have been created
      this._campaign.getInputs().subscribe(

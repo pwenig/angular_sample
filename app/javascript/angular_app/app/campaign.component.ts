@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, EventEmitter, Output, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CampaignInputService } from '../services/campaign_input_service';
 import {SelectComponent} from './select.component';
-import {MonthSelectComponent} from './monthselect.component';
-import {DaySelectComponent} from './dayselect.component';
+import {TreeService} from '../services/tree_service';
+import {HistoryService} from '../services/history_service';
 
 @Component({
   selector: 'campaign',
@@ -14,10 +14,10 @@ import {DaySelectComponent} from './dayselect.component';
         <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch" (newTag)="newInput()" (tagChosen)="tagSelected($event)"></search>
         <section class="input-tag" *ngIf="showButtons">
           <input [ngModel]="campaignInput.campaignInputTag" class="form-control" [disabled]=true>
-          <button class="new-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="saveInput()" [disabled]="invalid">Create Campaign String</button>
-          <button class="new-tag" *ngIf="existingCampaignInput && showButtons" type="submit" (click)="selectInput()">Select Campaign String</button>
+          <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Campaign String</button>
+          <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput()">Select Campaign String</button>
           <button class="cancel-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="cancelInput()">Clear</button>
-          </section>
+        </section>
       </div>
     </div>
 
@@ -46,28 +46,12 @@ import {DaySelectComponent} from './dayselect.component';
               <input type="text" id="customCampaign" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
             </div>
           </section>
-
-          <section class="select">
-            <div class="year-column">
-               <year-select-component [label]="startYearLabel" (selected)="attributeUpdated($event, 'startYear')"></year-select-component>
+          <section class="select-date">
+            <div class="first-column">
+              <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="campaignRange" (ngModelChange)="dateChange($event)">
             </div>
-            <div class="column">
-              <month-select-component [label]="startMonthLabel" [default]="defaultStartMonth" (selected)="attributeUpdated($event, 'startMonth')"></month-select-component>
-            </div>
-            <div class="column">
-             <day-select-component [label]="startDayLabel" [default]="defaultStartDay" (selected)="attributeUpdated($event, 'startDay')"></day-select-component>
-            </div>
-          </section>
-
-          <section class="select">
-            <div class="year-column">
-              <year-select-component [label]="endYearLabel" (selected)="attributeUpdated($event, 'endYear')"></year-select-component>
-            </div>
-            <div class="column">
-              <month-select-component [label]="endMonthLabel" [default]="defaultEndMonth" (selected)="attributeUpdated($event, 'endMonth')"></month-select-component>
-            </div>
-            <div class="column">
-              <day-select-component [label]="endDayLabel" [default]="defaultEndDay" (selected)="attributeUpdated($event, 'endDay')"></day-select-component>
+            <div class="second-column">
+              <button class="date-button" (click)="drp.toggle()">Campaign Start / End Date</button>
             </div>
           </section>
 
@@ -79,19 +63,16 @@ import {DaySelectComponent} from './dayselect.component';
   `
 })
 
-export class CampaignComponent implements OnInit {
+export class CampaignComponent {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
-  @ViewChild(MonthSelectComponent) 
-  private monthSelectComponent:MonthSelectComponent;
-  @ViewChild(DaySelectComponent) 
-  private daySelectComponent:DaySelectComponent;
 
   @Input() networks: any[];
   @Input() seasons: any[];
   @Input() campaignTypes: any[];
   @Input() campaignTags: any[];
   @Output() campaignInputTagFinal = new EventEmitter();
+  @Output() campaignObject = new EventEmitter();
 
   campaignInput: any = {};
   campaignInputTag: any;
@@ -116,34 +97,66 @@ export class CampaignComponent implements OnInit {
   defaultProgram: any;
   defaultSeason: any;
   defaultCampaignType: any;
-  defaultStartMonth: any;
-  defaultStartDay: any;
-  defaultEndMonth: any;
-  defaultEndDay: any;
+  // defaultStartMonth: any;
+  // defaultStartDay: any;
+  // defaultEndMonth: any;
+  // defaultEndDay: any;
   campaignInputObject: any;
+  campaignRange: any = [new Date(), new Date()];
+  showSave: boolean = false;
+  showSelect: boolean = false;
 
   
-  constructor( private _campaign: CampaignInputService, private changeDetector: ChangeDetectorRef) {}
+  constructor( private _campaign: CampaignInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
-  ngOnInit() {
-    this.campaignInput.startYear = new Date().getFullYear();
-    this.campaignInput.endYear = new Date().getFullYear();
-  };
+  dateChange(date) {
+    // Format the start date
+    var start_date = date[0];
+    this.campaignInput.startYear = start_date.getFullYear();
+    var startMonth  = start_date.getMonth() + 1;
+    if(startMonth < 10) {
+      this.campaignInput.startMonth = "0" + startMonth.toString();
+    } else {
+      this.campaignInput.startMonth = startMonth.toString();
+    }
+    var startDay = start_date.getDate();
+    if(startDay < 10) {
+      this.campaignInput.startDay = "0" + startDay.toString();
+    } else {
+      this.campaignInput.startDay = startDay.toString();
+    }
+    
+    // Format the end date
+    var end_date = date[1];
+    this.campaignInput.endYear = end_date.getFullYear();
+    var endMonth = end_date.getMonth() + 1;
+    if(endMonth < 10) {
+      this.campaignInput.endMonth = "0" + endMonth.toString();
+    } else {
+      this.campaignInput.endMonth = endMonth.toString();
+    }
+    var endDay = end_date.getDate();
+    if(endDay < 10) {
+      this.campaignInput.endDay = "0" + endDay.toString();
+    } else {
+      this.campaignInput.endDay = endDay.toString();
+    }
+    this.checkAttributes();
+  }
 
   newInput() {
     this.showSearch = false;
     this.showButtons = true;
     this.showSelectors = true;
     this.campaignInput = {};
-    this.campaignInput.startYear = new Date().getFullYear();
-    this.campaignInput.endYear = new Date().getFullYear();
+    this.campaignRange = [new Date(), new Date()];
+    this.campaignInput.custom = "XX"
   }
 
   newCampaign() {
     this.campaignInput = {};
     this.showSearch = true;
-    this.campaignInput.startYear = new Date().getFullYear();
-    this.campaignInput.endYear = new Date().getFullYear();
+    this.campaignRange = [new Date(), new Date()];
     this.showFinal = false;
   }
 
@@ -182,8 +195,17 @@ export class CampaignComponent implements OnInit {
       (result) => {
         // Show either select or create button
         this.existingCampaignInput = result;
+        this.showSave = true;
+        this.showSelect = false;
         if(result) {
           this.campaignInputObject = result;
+          this.showSelect = true;
+          this.showSave = false;
+          this._history.storeInput(result);
+          // Add to the heiarchy tree
+          this._tree.createCampaignTree(result);
+          // Send it to the app comp so the tree comp is updated
+          this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.campaignInputTagFinal.emit(result);
         }
 
@@ -217,6 +239,12 @@ export class CampaignComponent implements OnInit {
         this.showButtons = false;
         this.showFinal = true;
         this.campaignInputObject = result;
+        // Store the object for exporting
+        this._history.storeInput(result);
+         // Add to heirarchy
+        this._tree.createCampaignTree(result);
+        this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
+
         this.campaignInputTagFinal.emit(result);
       },
       (error) => {
@@ -246,14 +274,9 @@ export class CampaignComponent implements OnInit {
     this.selectComponent.setSelections(this.programLabel);
     this.selectComponent.setSelections(this.seasonLabel);
     this.selectComponent.setSelections(this.campaignTypeLabel);
-    this.monthSelectComponent.setSelections(this.startMonthLabel);
-    this.daySelectComponent.setSelections(this.startDayLabel);
-    this.monthSelectComponent.setSelections(this.endMonthLabel);
-    this.daySelectComponent.setSelections(this.endDayLabel);
+    this.campaignRange = [new Date(), new Date()];
     this.campaignInput.campaignInputTag = null;
-    this.campaignInput.custom = null;
-    this.campaignInput.startYear = new Date().getFullYear();
-    this.campaignInput.endYear = new Date().getFullYear();
+    this.campaignInput.custom = "XX"
   }
 
   duplicate() {
@@ -262,16 +285,15 @@ export class CampaignComponent implements OnInit {
     this.existingCampaignInput = false;
     this.invalid = true;
     this.campaignInputTagFinal.emit(null);
-
     // Set default values
     this.defaultNetwork = this.campaignInput.network = this.networks.find(x => x['name'] == this.campaignInputObject.network.name);
     this.defaultProgram = this.campaignInput.program = this.campaignInput.network.programs.find(x => x['name'] == this.campaignInputObject.program.name);
     this.defaultSeason = this.campaignInput.season = this.seasons.find(x => x['name'] == this.campaignInputObject.season.name);
     this.defaultCampaignType = this.campaignInput.campaignType = this.campaignTypes.find(x => x['name'] == this.campaignInputObject.campaign_type.name);
-    this.defaultStartMonth = this.campaignInput.startMonth = this.campaignInputObject.start_month;
-    this.defaultStartDay = this.campaignInput.startDay = this.campaignInputObject.start_day;
-    this.defaultEndMonth = this.campaignInput.endMonth = this.campaignInputObject.end_month;
-    this.defaultEndDay = this.campaignInput.endDay = this.campaignInputObject.end_day;
+    this.campaignInput.startMonth = this.campaignInputObject.start_month;
+    this.campaignInput.startDay = this.campaignInputObject.start_day;
+    this.campaignInput.endMonth = this.campaignInputObject.end_month;
+    this.campaignInput.endDay = this.campaignInputObject.end_day;
     this.campaignInput.custom = this.campaignInputObject.custom;
     
     this.showSelectors = true;
@@ -283,10 +305,8 @@ export class CampaignComponent implements OnInit {
     this.selectComponent.setSelections(this.programLabel);
     this.selectComponent.setSelections(this.seasonLabel);
     this.selectComponent.setSelections(this.campaignTypeLabel);
-    this.monthSelectComponent.setSelections(this.startMonthLabel);
-    this.daySelectComponent.setSelections(this.startDayLabel);
-    this.monthSelectComponent.setSelections(this.endMonthLabel);
-    this.daySelectComponent.setSelections(this.endDayLabel);
+    // Set campaignRange
+    this.campaignRange = [new Date(this.campaignInputObject.start_year, this.campaignInputObject.start_month - 1, this.campaignInputObject.start_day), new Date(this.campaignInputObject.end_year, this.campaignInputObject.end_month - 1, this.campaignInputObject.end_day)]
   }
 
 }

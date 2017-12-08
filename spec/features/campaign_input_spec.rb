@@ -33,6 +33,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
   end
 
   it 'creates a campaign input tag' do
+    date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -51,14 +52,9 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_select('Start Month')
-    select('01', from: 'Start Month')
-    select('01', from: 'Start Day')
-    select('02', from: 'End Month')
-    select('02', from: 'End Day')
-    expect(page).to have_text('Create Campaign String')
-    click_on('Create Campaign String')
-    expect(page).to have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
+    expect(page).to have_text('Save Campaign String')
+    click_on('Save Campaign String')
+    expect(page).to have_text("CCL_CLTF_s00_BG_XX_#{date}")
   end
 
   it 'selects a campaign input tag from the search box' do
@@ -91,17 +87,13 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_select('Start Month')
-    select('01', from: 'Start Month')
-    select('01', from: 'Start Day')
-    select('02', from: 'End Month')
-    select('02', from: 'End Day')
     expect(page).to have_text('Clear')
     click_on('Clear')
     expect(page).to_not have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
   end
 
   it 'duplicates a campaign input' do
+    date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -120,17 +112,12 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_select('Start Month')
-    select('01', from: 'Start Month')
-    select('01', from: 'Start Day')
-    select('02', from: 'End Month')
-    select('02', from: 'End Day')
-    expect(page).to have_text('Create Campaign String')
-    click_on('Create Campaign String')
-    expect(page).to have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
+    expect(page).to have_text('Save Campaign String')
+    click_on('Save Campaign String')
+    expect(page).to have_text("CCL_CLTF_s00_BG_XX_#{date}")
     click_on('duplicateCampaign')
     select('S02', from: 'Season')
-    click_on('Create Campaign String')
-    expect(page).to have_text('CCL_CLTF_s02_BG_XX_20170101-20170202')
+    click_on('Save Campaign String')
+    expect(page).to have_text("CCL_CLTF_s02_BG_XX_#{date}")
   end
 end

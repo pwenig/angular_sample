@@ -21,8 +21,8 @@ import {TreeService} from '../services/tree_service';
     </section>
       <section class="input-tag" *ngIf="showButtons">
         <input [ngModel]="creativeInput.creativeInputTag" class="form-control" [disabled]=true>
-        <button class="new-tag" *ngIf="!existingCreativeInput && showButtons" type="submit" (click)="saveInput()" [disabled]="invalid">Create Creative String</button>
-        <button class="new-tag" *ngIf="existingCreativeInput && showButtons" type="submit" (click)="selectInput(creativeInput.creativeInputTag)">Select Creative String</button>
+        <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Creative String</button>
+        <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput(creativeInput.creativeInputTag)">Select Creative String</button>
         <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
       </section>
     </div>
@@ -51,20 +51,16 @@ import {TreeService} from '../services/tree_service';
             <select-component [label]="videoLengthLabel" [options]="videoLengths" [default]="defaultVideoLength" (selected)="attributeUpdated($event, 'videoLength')"></select-component>
           </div>
         </section>
-        <section class="select">
+
+        <section class="select-date">
           <div class="first-column">
-            <month-select-component [label]="startMonthLabel" [default]="defaultStartMonth" (selected)="attributeUpdated($event, 'startMonth')"></month-select-component>
+            <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="creativeRange" (ngModelChange)="dateChange($event)">
           </div>
-          <div class="column">
-            <day-select-component [label]="startDayLabel" [default]="defaultStartDay" (selected)="attributeUpdated($event, 'startDay')"></day-select-component>
-          </div>
-          <div class="column">
-          <month-select-component [label]="endMonthLabel" [default]="defaultEndMonth" (selected)="attributeUpdated($event, 'endMonth')"></month-select-component>
-          </div>
-          <div class="column">
-            <day-select-component [label]="endDayLabel" [default]="defaultEndDay" (selected)="attributeUpdated($event, 'endDay')"></day-select-component>
+          <div class="second-column">
+            <button class="date-button" (click)="drp.toggle()">Creative Start / End Date</button>
           </div>
         </section>
+
       </div>
     </div>
   </div>
@@ -74,10 +70,10 @@ import {TreeService} from '../services/tree_service';
 export class CreativeComponent implements OnInit {
   @ViewChild(SelectComponent) 
   private selectComponent: SelectComponent;
-  @ViewChild(MonthSelectComponent)
-  private monthSelectComponent: MonthSelectComponent;
-  @ViewChild(DaySelectComponent) 
-  private daySelectComponent: DaySelectComponent;
+  // @ViewChild(MonthSelectComponent)
+  // private monthSelectComponent: MonthSelectComponent;
+  // @ViewChild(DaySelectComponent) 
+  // private daySelectComponent: DaySelectComponent;
 
 
   @Input() campaignInput: {};
@@ -88,7 +84,7 @@ export class CreativeComponent implements OnInit {
   @Input() videoLengths: any[];
   @Input() creativeTags: any[];
   @Output() creativeTagFinal = new EventEmitter();
-  @Output() campaignObject = new EventEmitter();
+  @Output() creativeObject = new EventEmitter();
 
   creativeInput: any = {};
   existingCreativeInput: any;
@@ -96,10 +92,6 @@ export class CreativeComponent implements OnInit {
   creativeVersionLabel: string = 'Creative Version Number';
   videoLengthLabel: string = 'Video Length';
   abTestLabel: string = 'A/B Test Label';
-  startMonthLabel: string = 'Start Month';
-  startDayLabel: string = 'Start Day';
-  endMonthLabel: string = 'End Month';
-  endDayLabel: string = 'End Day';
   showFinal: boolean = false;
   showSelectors: boolean = false;
   showButtons: boolean = false;
@@ -109,18 +101,58 @@ export class CreativeComponent implements OnInit {
   defaultCreativeMessage: any;
   defaultCreativeVersion: string;
   defaultVideoLength: any;
-  defaultStartMonth: string;
-  defaultStartDay: string;
-  defaultEndMonth: string;
-  defaultEndDay: string;
   creativeInputObject: any = {};
+  creativeRange: any = [new Date(), new Date()];
+  showSave: boolean = false;
+  showSelect: boolean = false;
 
   constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService) {}
 
   ngOnInit() {
+    if(!this.creativeTags || this.creativeTags.length == 0) {
+      this.showButtons = true;
+      this.showSelectors = true;
+    }
     this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');
     this.creativeInput.abtestLabel = this.defaultAbLabel;
+    this.creativeInput.custom = "XX";
   }
+
+  dateChange(date) {
+    // Format the start date
+    var start_date = date[0];
+    this.creativeInput.startYear = start_date.getFullYear();
+    var startMonth  = start_date.getMonth() + 1;
+    if(startMonth < 10) {
+      this.creativeInput.startMonth = "0" + startMonth.toString();
+    } else {
+      this.creativeInput.startMonth = startMonth.toString();
+    }
+    var startDay = start_date.getDate();
+    if(startDay < 10) {
+      this.creativeInput.startDay = "0" + startDay.toString();
+    } else {
+      this.creativeInput.startDay = startDay.toString();
+    }
+    
+    // Format the end date
+    var end_date = date[1];
+    this.creativeInput.endYear = end_date.getFullYear();
+    var endMonth = end_date.getMonth() + 1;
+    if(endMonth < 10) {
+      this.creativeInput.endMonth = "0" + endMonth.toString();
+    } else {
+      this.creativeInput.endMonth = endMonth.toString();
+    }
+    var endDay = end_date.getDate();
+    if(endDay < 10) {
+      this.creativeInput.endDay = "0" + endDay.toString();
+    } else {
+      this.creativeInput.endDay = endDay.toString();
+    }
+    this.checkAttributes();
+  }
+
 
   verifyTag() {
     this._creative.verifyInput(this.creativeInput.creativeInputTag).subscribe(
@@ -128,16 +160,18 @@ export class CreativeComponent implements OnInit {
       (result) => {
         // This is the object that sets the create/select button
         this.existingCreativeInput = result;
+        this.showSave = true;
 
         if(result) {
+          this.showSelect = false;
           // This is the object that will be used to copy
           this.creativeInputObject = result;
            // Store the object for exporting
-          this._history.storeCreativeInput(result);
+          this._history.storeInput(result);
           // Add to the heiarchy tree
-          this._tree.createTree(result);
+          this._tree.createCreativeTree(result);
           // Send it to the app comp so the tree comp is updated
-          this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
+          this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.creativeTagFinal.emit(result);
         }
       },
@@ -158,8 +192,10 @@ export class CreativeComponent implements OnInit {
         video_length_id: this.creativeInput.videoLength.id,
         start_month: this.creativeInput.startMonth,
         start_day: this.creativeInput.startDay,
+        start_year: this.creativeInput.startYear,
         end_month: this.creativeInput.endMonth,
         end_day: this.creativeInput.endDay,
+        end_year: this.creativeInput.end_year,
         creative_version_number: this.creativeInput.creativeVersion,
         custom: this.creativeInput.custom,
         creative_input_tag: this.creativeInput.creativeInputTag
@@ -171,8 +207,10 @@ export class CreativeComponent implements OnInit {
         abtest_label_id: this.creativeInput.abtestLabel.id,
         start_month: this.creativeInput.startMonth,
         start_day: this.creativeInput.startDay,
+        start_year: this.creativeInput.startYear,
         end_month: this.creativeInput.endMonth,
         end_day: this.creativeInput.endDay,
+        end_year: this.creativeInput.endYear,
         creative_version_number: this.creativeInput.creativeVersion,
         custom: this.creativeInput.custom,
         creative_input_tag: this.creativeInput.creativeInputTag
@@ -186,9 +224,9 @@ export class CreativeComponent implements OnInit {
         this.showFinal = true;
         this.creativeInputObject = result;
         // Store the object for exporting
-        this._history.storeCreativeInput(result);
-        this._tree.createTree(result);
-        this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
+        this._history.storeInput(result);
+        this._tree.createCreativeTree(result);
+        this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
         this.creativeTagFinal.emit(result);
       },
       (error) => {
@@ -249,6 +287,8 @@ export class CreativeComponent implements OnInit {
   }
 
   newTagSection() {
+    this.creativeInput.custom = "XX";
+    this.creativeRange = [new Date(), new Date()];
     this.showButtons = true;
     this.showSelectors = true;
   }
@@ -258,13 +298,9 @@ export class CreativeComponent implements OnInit {
       this.selectComponent.setSelections(this.videoLengthLabel);
     }
     this.selectComponent.setSelections(this.creativeMessageLabel);
-    this.creativeInput.custom = null;
-    this.monthSelectComponent.setSelections(this.creativeVersionLabel);
+    this.creativeInput.custom = "XX";
+    this. creativeRange = [new Date(), new Date()];
     this.selectComponent.setSelections(this.abTestLabel);
-    this.monthSelectComponent.setSelections(this.startMonthLabel);
-    this.monthSelectComponent.setSelections(this.endMonthLabel);
-    this.daySelectComponent.setSelections(this.startDayLabel);
-    this.daySelectComponent.setSelections(this.endDayLabel);
     this.creativeInput.creativeInputTag = null;
   }
 
@@ -273,9 +309,6 @@ export class CreativeComponent implements OnInit {
     this.showFinal = false;
     this.existingCreativeInput = false;
     this.invalid = true;
-    // VERIFY AND REMOVE
-    // Hide Export Button
-    // this.creativeTagFinal.emit(null);
 
     if(this._adtype.videoAdType(this.placementInput)) {
       this.defaultVideoLength = this.creativeInput.videoLength = this.videoLengths.find(x => x['name'] == this.creativeInputObject.video_length.name);
@@ -285,10 +318,12 @@ export class CreativeComponent implements OnInit {
      this.creativeInput.custom = this.creativeInputObject.custom;
      this.defaultCreativeVersion = this.creativeInput.creativeVersion = this.creativeInputObject.creative_version_number;
      this.defaultAbLabel = this.creativeInput.abtestLabel = this.abtestLabels.find(x => x['name'] == this.creativeInputObject.abtest_label.name);
-     this.defaultStartMonth = this.creativeInput.startMonth = this.creativeInputObject.start_month;
-     this.defaultEndMonth = this.creativeInput.endMonth = this.creativeInputObject.end_month;
-     this.defaultEndDay = this.creativeInput.endDay = this.creativeInputObject.end_day;
-     this.defaultStartDay = this.creativeInput.startDay = this.creativeInputObject.start_day;
+     this.creativeInput.startMonth = this.creativeInputObject.start_month;
+     this.creativeInput.endMonth = this.creativeInputObject.end_month;
+     this.creativeInput.endDay = this.creativeInputObject.end_day;
+     this.creativeInput.startDay = this.creativeInputObject.start_day;
+     this.creativeInput.endYear = this.creativeInputObject.end_year;
+     this.creativeInput.startYear = this.creativeInputObject.start_year;
 
     this.showSelectors = true;
     // Checks to see if the ngIf has changed and the selectors are showing.
@@ -300,11 +335,15 @@ export class CreativeComponent implements OnInit {
     }
     this.selectComponent.setSelections(this.creativeMessageLabel);
     this.selectComponent.setSelections(this.abTestLabel);
-    this.monthSelectComponent.setSelections(this.creativeVersionLabel);
-    this.monthSelectComponent.setSelections(this.startMonthLabel);
-    this.monthSelectComponent.setSelections(this.endMonthLabel);
-    this.daySelectComponent.setSelections(this.startDayLabel);
-    this.daySelectComponent.setSelections(this.endDayLabel);
+    // Set the creativeRange
+    var date = new Date();
+    this.creativeRange = [new Date(this.creativeInputObject.start_year, this.creativeInputObject.start_month - 1, this.creativeInputObject.start_day), new Date(this.creativeInputObject.end_year, this.creativeInputObject.end_month - 1, this.creativeInputObject.end_day)]
+    
+    // this.monthSelectComponent.setSelections(this.creativeVersionLabel);
+    // this.monthSelectComponent.setSelections(this.startMonthLabel);
+    // this.monthSelectComponent.setSelections(this.endMonthLabel);
+    // this.daySelectComponent.setSelections(this.startDayLabel);
+    // this.daySelectComponent.setSelections(this.endDayLabel);
   }
   
 }
