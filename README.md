@@ -1,7 +1,7 @@
 # Viacom Media Tagging Project
 
 * Rails v5.1 / Ruby v2.4
-* Database - Production is current set to PostgreSQL. Dev is set to SQLite.
+* Database - PostgreSQL
 
 * To run locally:
   * Git clone repo
@@ -80,5 +80,5 @@
     The -a option will automatically update some errors. Please see the
     .rubocop.yml file for settings to ignore or alter cop rules.
 
-* Temp staging site:
-  * https://vmtapp.herokuapp.com/
+* Staging site:
+  * http://viacom.stage.services.visual4site.tech/
