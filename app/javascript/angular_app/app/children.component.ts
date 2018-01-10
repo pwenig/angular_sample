@@ -6,6 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType != 'creative'">
       <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children.length > 0">+</span>
       <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children.length > 0">-</span>
+      <span class="no-children" *ngIf="children.length == 0"></span>
       <span class="parent-type">{{ parentType}}: </span>{{inputTag}}
     </li>
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'creative'">
@@ -29,10 +30,10 @@ export class ChildrenComponent implements OnInit {
 
   expand(childType, children, parentType, parent) {
     var expand = document.getElementById(parentType + '-expand-' + parent.id);
-    expand.style.visibility = 'hidden';
+    expand.style.display = 'none';
 
     var collapse = document.getElementById(parentType + '-collapse-' + parent.id);
-    collapse.style.visibility = 'visible';
+    collapse.style.display = 'inline';
 
     for(let child of children) {
       var namestrings = document.getElementById(childType + '-' + child.id);
@@ -90,12 +91,12 @@ export class ChildrenComponent implements OnInit {
   changeCollapse(parentType, parent, childType, children) {
     var expand = document.getElementById(parentType + '-expand-' + parent.id);
     if(expand) {
-      expand.style.visibility = 'visible';
+      expand.style.display = 'inline';
     }
 
     var collapse = document.getElementById(parentType + '-collapse-' + parent.id);
     if(collapse) {
-      collapse.style.visibility = 'hidden';
+      collapse.style.display = 'none';
     }
 
     for( let child of children) {
