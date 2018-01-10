@@ -19,6 +19,7 @@ import {MonthSelectComponent} from './monthselect.component';
 import {DaySelectComponent} from './dayselect.component';
 import {SearchComponent} from './search.component';
 import {TreeComponent} from './tree.component';
+import {ChildrenComponent} from './children.component';
 
 import { MetadataService } from '../services/metadata_service';
 import { CampaignInputService } from '../services/campaign_input_service';
@@ -48,6 +49,7 @@ import {RangePipe} from '../shared/range.pipe'
     DaySelectComponent,
     SearchComponent,
     TreeComponent,
+    ChildrenComponent,
     RangePipe
   ],
   imports: [

@@ -315,22 +315,87 @@
 
     li {
       text-align: left;
+
+      .parent-type {
+        text-transform: capitalize;
+      }
+    }
+    
+    li.campaign {
+      .expand-children, .collapse-children {
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .collapse-children {
+        visibility: hidden;
+        margin-right: 3px;
+      }
+
     }
 
-    li#package {
+    li.package {
       margin-left: 20px;
+      display: none;
+
+      .expand-children, .collapse-children {
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .collapse-children {
+        visibility: hidden;
+        margin-right: 3px;
+      }
+
     }
 
-    li#placement {
+    li.placement {
       margin-left: 40px;
+      display: none;
+
+      .expand-children, .collapse-children {
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .collapse-children {
+        visibility: hidden;
+        margin-right: 3px;
+      }
+
     }
 
-    li#ad {
+    li.ad {
       margin-left: 60px;
+      display: none;
+
+      .expand-children, .collapse-children {
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .collapse-children {
+        visibility: hidden;
+        margin-right: 3px;
+      }
+
     }
 
-    li#creative {
-      margin-left: 80px;
+    li.creative {
+      margin-left: 100px;
+      display: none;
+
+      .expand-children, .collapse-children {
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .collapse-children {
+        visibility: hidden;
+        margin-right: 3px;
+      }
+
     }
   }
 

@@ -7,85 +7,36 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
     <div class="tree-container">
       <div class="row">
         <section class="tree">
-          <tabset>
-            <tab heading="Current Inputs" id="tab1">
-              <div *ngIf="current_created_input && current_created_input['campaignInputs'] && current_created_input['campaignInputs'].length > 0">
-                <button class="export" (click)="export(current_exports)">Export</button>
-                <ul *ngFor="let campaign of current_created_input['campaignInputs']">
-                  <li id='campaign'>
-                    <span style='font-weight: 900'>Campaign:</span> {{ campaign.input }}
-                  </li>
-                  <span *ngIf="campaign.package_inputs && campaign.package_inputs.length > 0">
-                    <span *ngFor="let package_input of campaign.package_inputs" >
-                      <li id='package'>
-                        <span style='font-weight: 900'>Package:</span> {{ package_input.input }}
-                      </li>
-                      <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
-                        <span *ngFor="let placement_input of package_input.placement_inputs">
-                          <li id='placement'>
-                            <span style='font-weight: 900'>Placement:</span> {{ placement_input.input }}
-                          </li>
-                          <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
-                            <span *ngFor="let ad_input of placement_input.ad_inputs">
-                              <li id='ad'>
-                                <span style='font-weight: 900'>Ad:</span> {{ ad_input.input }}
-                              </li>
-                              <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
-                                <span *ngFor="let creative_input of ad_input.creative_inputs">
-                                  <li id='creative'>
-                                    <span style='font-weight: 900'>Creative:</span> {{ creative_input.input }}
-                                  </li>
-                                </span>
-                              </span>
+          <div *ngIf="all_inputs && all_inputs.length > 0">
+            <ul *ngFor="let input of all_inputs">
+              <children-component [parentType]="'campaign'" [childType]="'package'" [children]=input.package_inputs [parent]=input></children-component>
+              
+              <span *ngIf="input.package_inputs && input.package_inputs.length > 0">
+                <span *ngFor="let package_input of input.package_inputs">
+                  <children-component [parentType]="'package'" [childType]="'placement'" [children]=package_input.placement_inputs [parent]=package_input></children-component>
+                 
+                  <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
+                    <span *ngFor="let placement_input of package_input.placement_inputs">
+                      <children-component [parentType]="'placement'" [childType]="'ad'" [children]=placement_input.ad_inputs [parent]=placement_input></children-component>
+                     
+                      <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
+                        <span *ngFor="let ad_input of placement_input.ad_inputs">
+                           <children-component [parentType]="'ad'" [childType]="'creative'" [children]=ad_input.creative_inputs [parent]=ad_input></children-component>
+                          
+                           <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
+                            <span *ngFor="let creative_input of ad_input.creative_inputs">
+                            <children-component [parentType]="'creative'" [childType]=null [children]=[] [parent]=creative_input></children-component>
+                            
                             </span>
                           </span>
                         </span>
                       </span>
                     </span>
                   </span>
-                </ul>
-              </div>
-            </tab>
-            <tab heading="All Inputs">
-              <div *ngIf="all_inputs && all_inputs.length > 0">
-                <button class="export" (click)="export(all_inputs)">Export All</button>
-                <ul *ngFor="let input of all_inputs">
-                  <li id='campaign'>
-                    <span style='font-weight: 900'>Campaign:</span> {{ input.campaign_input_tag }}
-                  </li>
-                  <span *ngIf="input.package_inputs && input.package_inputs.length > 0">
-                    <span *ngFor="let package_input of input.package_inputs" >
-                      <li id='package'>
-                        <span style='font-weight: 900'>Package:</span> {{ package_input.package_input_tag }}
-                      </li>
-                      <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
-                        <span *ngFor="let placement_input of package_input.placement_inputs">
-                          <li id='placement'>
-                            <span style='font-weight: 900'>Placement:</span> {{ placement_input.placement_input_tag }}
-                          </li>
-                          <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
-                            <span *ngFor="let ad_input of placement_input.ad_inputs">
-                              <li id='ad'>
-                                <span style='font-weight: 900'>Ad:</span> {{ ad_input.ad_input_tag }}
-                              </li>
-                              <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
-                                <span *ngFor="let creative_input of ad_input.creative_inputs">
-                                  <li id='creative'>
-                                    <span style='font-weight: 900'>Creative:</span> {{ creative_input.creative_input_tag }}
-                                  </li>
-                                </span>
-                              </span>
-                            </span>
-                          </span>
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </ul>
-              </div>
-            </tab>
-          </tabset>
-         
+                </span>
+              </span>
+            </ul>
+          </div>
         </section>
       </div>
     </div>
@@ -94,10 +45,16 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 })
 
 export class TreeComponent {
+   // Not being used yet
   @Input() current_created_input: any = {};
   @Input() current_exports: any[];
   @Input() all_inputs: any[];
   @Input() all_exports: any[];
+
+  parentType: any;
+  childType: any;
+  parent: any = {};
+  children: any = [];
 
   constructor() {}
 
@@ -119,6 +76,7 @@ export class TreeComponent {
     return omnitureCode;
   }
 
+  // Needs to be upated to new UI
   export(inputs) {
     var data = [];
     var inputObject = {};
