@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 
 @Component({
@@ -9,23 +9,23 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
         <section class="tree">
           <div *ngIf="all_inputs && all_inputs.length > 0">
             <ul *ngFor="let input of all_inputs">
-              <children-component [parentType]="'campaign'" [childType]="'package'" [children]=input.package_inputs [parent]=input></children-component>
+              <children-component [parentType]="'campaign'" [childType]="'package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
               
               <span *ngIf="input.package_inputs && input.package_inputs.length > 0">
                 <span *ngFor="let package_input of input.package_inputs">
-                  <children-component [parentType]="'package'" [childType]="'placement'" [children]=package_input.placement_inputs [parent]=package_input></children-component>
+                  <children-component [parentType]="'package'" [childType]="'placement'" [children]=package_input.placement_inputs [parent]=package_input (selectedNamestring)="selectedString($event)"></children-component>
                  
                   <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
                     <span *ngFor="let placement_input of package_input.placement_inputs">
-                      <children-component [parentType]="'placement'" [childType]="'ad'" [children]=placement_input.ad_inputs [parent]=placement_input></children-component>
+                      <children-component [parentType]="'placement'" [childType]="'ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
                      
                       <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
                         <span *ngFor="let ad_input of placement_input.ad_inputs">
-                           <children-component [parentType]="'ad'" [childType]="'creative'" [children]=ad_input.creative_inputs [parent]=ad_input></children-component>
+                           <children-component [parentType]="'ad'" [childType]="'creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
                           
                            <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
                             <span *ngFor="let creative_input of ad_input.creative_inputs">
-                            <children-component [parentType]="'creative'" [childType]=null [children]=[] [parent]=creative_input></children-component>
+                            <children-component [parentType]="'creative'" [childType]=null [children]=[] [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
                             
                             </span>
                           </span>
@@ -50,13 +50,17 @@ export class TreeComponent {
   @Input() current_exports: any[];
   @Input() all_inputs: any[];
   @Input() all_exports: any[];
+  @Output() selectedNamestring = new EventEmitter(); 
 
   parentType: any;
   childType: any;
   parent: any = {};
   children: any = [];
 
-  constructor() {}
+  selectedString(nameStringObject) {
+    // Send the selected namestring to app-component
+    this.selectedNamestring.emit(nameStringObject);
+  }
 
   // Creates the omniture code from an input from current_exports
   createOmniCode(creativeInput) {

@@ -7,7 +7,7 @@ import {CreativeInputService} from '../services/creative_input_service';
 @Component({
   selector: 'app-component',
   template: `
-    <tree [current_created_input]="current_created_input" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports"></tree>
+    <tree [current_created_input]="current_created_input" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
     <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignObject)="createdCampaign($event)"></campaign>
     <div *ngIf="showPackageInput">
       <package [campaignInput]="campaignInput" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)" (packageObjectCreated)="createdCampaign($event)"></package>
@@ -135,7 +135,12 @@ export class AppComponent implements OnInit {
     //     console.log('Error', error);
     //   }
     // )
+    
+  }
 
+  // This function is called when a namestring has been selected from the children-component
+  selectedString(nameStringObject) {
+    console.log('APP-COMP', nameStringObject);
   }
 
   setCampaignTag(campaignTag) {
