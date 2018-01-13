@@ -7,10 +7,10 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
       <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children.length > 0">+</span>
       <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children.length > 0">-</span>
       <span class="no-children" *ngIf="children.length == 0"></span>
-      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType)">{{inputTag}}</span>
+      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, childType)">{{inputTag}}</span>
     </li>
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'creative'">
-      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType)">{{inputTag}}</span>
+      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null)">{{inputTag}}</span>
     </li>
   `,
 })
@@ -30,18 +30,27 @@ export class ChildrenComponent implements OnInit {
     localStorage.removeItem('selected');
   }
 
-  namestringSelected(namestring, type) {
+  namestringSelected(namestring, parentType, childType) {
     // Change old one that was selected from bold to normal
     if(localStorage.getItem('selected')) {
       var oldElement = document.getElementById(localStorage.getItem('selected'));
       oldElement.style.fontWeight = 'normal';
     } 
       // Change current one that was selected from normal to bold
-      localStorage.setItem('selected', type + '-' + namestring.id);
-      var newElement = document.getElementById(type + '-' + namestring.id);
+      localStorage.setItem('selected', parentType + '-' + namestring.id);
+      var newElement = document.getElementById(parentType + '-' + namestring.id);
       newElement.style.fontWeight = 'bold';
       // Send the selected object back to the tree-component
-      this.selectedNamestring.emit({nameString: namestring, type: type});
+      // Capitalize the childType so it looks nice for the button.
+      if(childType) {
+        var formattedChild = childType.charAt(0).toUpperCase() + childType.slice(1);
+      }
+      var nameStringObject = {
+        nameString: namestring,
+        parent: parentType,
+        child: formattedChild
+      }
+      this.selectedNamestring.emit(nameStringObject);
   }
 
   expand(childType, children, parentType, parent) {

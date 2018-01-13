@@ -7,6 +7,7 @@ import {CreativeInputService} from '../services/creative_input_service';
 @Component({
   selector: 'app-component',
   template: `
+   <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
     <tree [current_created_input]="current_created_input" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
     <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignObject)="createdCampaign($event)"></campaign>
     <div *ngIf="showPackageInput">
@@ -62,6 +63,8 @@ export class AppComponent implements OnInit {
   showAdInput: boolean = false;
   showCreativeInput: boolean = false;
   showNew: boolean = false;
+  selectedNameString: any = {};
+  disableActions: boolean = true;
   // Object that has current campaign object arrays for the current heirarchy
   current_created_input: any = {};
   // Current array of mamestrings that can be exported
@@ -140,7 +143,19 @@ export class AppComponent implements OnInit {
 
   // This function is called when a namestring has been selected from the children-component
   selectedString(nameStringObject) {
-    console.log('APP-COMP', nameStringObject);
+    // Send it so the action-component has the correct child action
+    this.selectedNameString = nameStringObject;
+    // Enable the action buttons since a namestring was selected
+    this.disableActions = false;
+  }
+
+  // This is called when an action has been selected
+  selectedAction(action) {
+    var selectedObject = {
+      namestring: this.selectedNameString,
+      action: action
+    }
+    console.log('APP-COMP-ACTION', selectedObject)
   }
 
   setCampaignTag(campaignTag) {
