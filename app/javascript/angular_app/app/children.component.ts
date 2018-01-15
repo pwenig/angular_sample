@@ -1,56 +1,96 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'children-component',
   template: `
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType != 'creative'">
-      <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children.length > 0">+</span>
-      <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children.length > 0">-</span>
-      <span class="no-children" *ngIf="children.length == 0"></span>
-      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, childType)">{{inputTag}}</span>
+      <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children && children.length > 0">+</span>
+      <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children && children.length > 0">-</span>
+      <span class="no-children" *ngIf="!children || children.length == 0"></span>
+      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent)">{{inputTag}}</span>
     </li>
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'creative'">
-      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null)">{{inputTag}}</span>
+      <span class="parent-type">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent)">{{inputTag}}</span>
     </li>
   `,
 })
 
-export class ChildrenComponent implements OnInit {
+export class ChildrenComponent implements OnInit, AfterViewInit {
 
   @Input() parentType: any;
   @Input() parent: any = {};
   @Input() childType: any;
   @Input() children: any = [];
+  @Input() currentCreated: any = {};
+  @Input() campaignParent: any = {};
+  @Input() packageParent: any = {};
+  @Input() placementParent: any = {};
+  @Input() adParent: any = {};
   @Output() selectedNamestring = new EventEmitter();
 
   inputTag: string;
 
   ngOnInit() {
     this.inputTag = this.parent[this.parentType + '_input_tag'];
-    localStorage.removeItem('selected');
   }
 
-  namestringSelected(namestring, parentType, childType) {
-    // Change old one that was selected from bold to normal
-    if(localStorage.getItem('selected')) {
+  // Checks to make sure all of the data is rendered and then calls the function if currentCreated exists.
+  ngAfterViewInit() {
+    if(Object.keys(this.currentCreated).length != 0) {
+      setTimeout(() => {
+        this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
+        if(this.currentCreated.parentType == 'package') {
+          this.expand('package', [this.currentCreated.namestring], 'campaign', this.campaignParent);
+        }
+        if(this.currentCreated.parentType == 'placement') {
+          this.expand('placement', [this.currentCreated.namestring], 'package', this.packageParent);
+        }
+        if(this.currentCreated.parentType == 'ad') {
+          this.expand('ad', [this.currentCreated.namestring], 'placement', this.placementParent);
+        }
+        if(this.currentCreated.parentType == 'creative') {
+          this.expand('creative', [this.currentCreated.namestring], 'ad', this.adParent);
+        }
+      });
+    }
+  }
+
+  namestringSelected(namestring, parentType, childType, campaignParent, packageParent, placementParent, adParent) {
+    // If the same namstring was selected twice, reverse
+    if(parentType + '-' + namestring.id == localStorage.getItem('selected')) {
       var oldElement = document.getElementById(localStorage.getItem('selected'));
       oldElement.style.fontWeight = 'normal';
-    } 
-      // Change current one that was selected from normal to bold
-      localStorage.setItem('selected', parentType + '-' + namestring.id);
-      var newElement = document.getElementById(parentType + '-' + namestring.id);
-      newElement.style.fontWeight = 'bold';
-      // Send the selected object back to the tree-component
-      // Capitalize the childType so it looks nice for the button.
-      if(childType) {
-        var formattedChild = childType.charAt(0).toUpperCase() + childType.slice(1);
+      oldElement.style.backgroundColor = 'white';
+      localStorage.removeItem('selected');
+      this.selectedNamestring.emit(null);
+    } else {
+        // Change old one that was selected from bold to normal
+        if(localStorage.getItem('selected')) {
+          var oldElement = document.getElementById(localStorage.getItem('selected'));
+          oldElement.style.fontWeight = 'normal';
+          oldElement.style.backgroundColor = 'white';
+        } 
+        // Change current one that was selected from normal to bold
+        localStorage.setItem('selected', parentType + '-' + namestring.id);
+        var newElement = document.getElementById(parentType + '-' + namestring.id);
+        newElement.style.fontWeight = 'bold';
+        newElement.style.backgroundColor = 'lightblue';
+        // Send the selected object back to the tree-component
+        // Capitalize the childType so it looks nice for the button.
+        if(childType) {
+          var formattedChild = childType.charAt(0).toUpperCase() + childType.slice(1);
+        }
+        var nameStringObject = {
+          namestring: namestring,
+          parent: parentType,
+          child: formattedChild,
+          campaignParent: campaignParent,
+          packageParent: packageParent,
+          placementParent: placementParent,
+          adParent: adParent
+        }
+        this.selectedNamestring.emit(nameStringObject);
       }
-      var nameStringObject = {
-        nameString: namestring,
-        parent: parentType,
-        child: formattedChild
-      }
-      this.selectedNamestring.emit(nameStringObject);
   }
 
   expand(childType, children, parentType, parent) {
@@ -60,9 +100,11 @@ export class ChildrenComponent implements OnInit {
     var collapse = document.getElementById(parentType + '-collapse-' + parent.id);
     collapse.style.display = 'inline';
 
-    for(let child of children) {
-      var namestrings = document.getElementById(childType + '-' + child.id);
-      namestrings.style.display = 'block';
+    if(children.length > 0) {
+      for(let child of children) {
+        var namestrings = document.getElementById(childType + '-' + child.id);
+        namestrings.style.display = 'block';
+      }
     }
     
   }
@@ -97,7 +139,7 @@ export class ChildrenComponent implements OnInit {
       // Change campaign and  package
       this.changeCollapse(parentType, parent, childType, children);
       for(let child of children) {
-        if(child.placement_inputs.length > 0) {
+        if(child.placement_inputs && child.placement_inputs.length > 0) {
           // Change placement
           this.changeCollapse('package', child, 'placement', child.placement_inputs);
           // Change ad
@@ -105,7 +147,11 @@ export class ChildrenComponent implements OnInit {
             this.changeCollapse('placement', placementChild, 'ad', placementChild.ad_inputs);
             // Change creative
             for(let adChild of placementChild.ad_inputs) {
-              this.changeCollapse('ad', adChild, 'creative', adChild.creative_inputs);
+              if(adChild.creative_inputs && adChild.creative_inputs.length > 0) {
+                this.changeCollapse('ad', adChild, 'creative', adChild.creative_inputs);
+              } else {
+                this.changeCollapse('ad', adChild, 'creative', []);
+              }
             }
           }
         }
@@ -128,6 +174,8 @@ export class ChildrenComponent implements OnInit {
       var namestrings = document.getElementById(childType + '-' + child.id);
       if(namestrings) {
         namestrings.style.display = 'none';
+        namestrings.style.backgroundColor = 'white';
+        namestrings.style.fontWeight = 'normal';
       }
     }
   }

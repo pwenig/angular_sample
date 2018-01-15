@@ -15,7 +15,6 @@ export class PlacementInputService {
   // Network_Program_Season_TentpoleDetails_Agency_Tactic_Device_Publisher_BuyMethod_AdType_
   // InventoryType_TargetingType_AudienceType-CustomDimension_Size_CampaignFlightDate
   createPlacementString(campaignObj, packageObj, placementObj){
-    
     // Non-video ad type includes width and height 
     let non_video_ad_type =
       packageObj['agency']['abbrev'] + '_' +

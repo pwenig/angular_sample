@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, EventEmitter, Output, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CampaignInputService } from '../services/campaign_input_service';
 import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
@@ -7,70 +7,70 @@ import {HistoryService} from '../services/history_service';
 @Component({
   selector: 'campaign',
   template: `
-    <h2 class="campaign-title">Campaign Input</h2>
-    <p *ngIf="showFinal" class="final-string">{{campaignInput.campaignInputTag }}<button class="duplicate" id="duplicateCampaign" type="submit" (click)="duplicate()">Duplicate</button></p>
-    <div class="input-tag-container">
-      <div class="row">
-        <search [inputTags]="campaignTags" [searchDesc]="searchDesc" *ngIf="showSearch" (newTag)="newInput()" (tagChosen)="tagSelected($event)"></search>
-        <section class="input-tag" *ngIf="showButtons">
-          <input [ngModel]="campaignInput.campaignInputTag" class="form-control" [disabled]=true>
-          <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Campaign String</button>
-          <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput()">Select Campaign String</button>
-          <button class="cancel-tag" *ngIf="(!existingCampaignInput && showButtons) || (!existingCampaignInput && campaignTags.length == 0)" type="submit" (click)="cancelInput()">Clear</button>
-        </section>
-      </div>
-    </div>
 
-    <div *ngIf="showSelectors">
-      <div class="select-container">
-        <div class="row">
-        
-          <section class="select">
-            <div class="first-column" *ngIf="networks && networks.length > 0">
-              <select-component [label]="networkLabel" [default]="defaultNetwork" [options]="networks" (selected)="attributeUpdated($event, 'network')"></select-component>
+  <div *ngIf="selectedObject.action">
+    <div [config]="{ show: true }" (onHide)=closeModal() bsModal #autoShownModal="bs-modal" #Modal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content campaign">
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">{{selectedObject.action}} Campaign</h4>
+            <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="select-container">
+              <div class="row">
+                <section class="select">
+                  <div class="first-column" *ngIf="networks && networks.length > 0">
+                    <select-component [label]="networkLabel" [default]="defaultNetwork" [options]="networks" (selected)="attributeUpdated($event, 'network')"></select-component>
+                  </div>
+                  <div class="column" *ngIf="campaignInput.network">
+                    <select-component [label]="programLabel" [default]="defaultProgram" [options]="campaignInput.network.programs" (selected)="attributeUpdated($event, 'program')"></select-component>
+                  </div>
+                  <div class="column" *ngIf="campaignInput.network">
+                    <select-component [label]="seasonLabel" [default]="defaultSeason" [options]="seasons" (selected)="attributeUpdated($event, 'season')"></select-component>
+                  </div>
+                </section>
+                <section class="select">
+                  <div class="campaign-type-column"> 
+                    <select-component [label]="campaignTypeLabel" [default]="defaultCampaignType" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component>
+                  </div>
+                  <div class="custom-column"> 
+                    <label for="type">Campaign Custom</label><br>
+                    <input type="text" id="customCampaign" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+                  </div>
+                  <div class="column">
+                    <label>Campaign Start / End Date</label>
+                    <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="campaignRange" (ngModelChange)="dateChange($event)">
+                  </div>
+                </section>
+                <section class="select">
+                  <div class="action-column">
+                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Campaign</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput()">Create Campaign</button>
+                  </div>
+                </section>
+              </div>
             </div>
-            <div class="column" *ngIf="campaignInput.network">
-               <select-component [label]="programLabel" [default]="defaultProgram" [options]="campaignInput.network.programs" (selected)="attributeUpdated($event, 'program')"></select-component>
-            </div>
-            <div class="column" *ngIf="campaignInput.network">
-              <select-component [label]="seasonLabel" [default]="defaultSeason" [options]="seasons" (selected)="attributeUpdated($event, 'season')"></select-component>
-            </div>
-          </section>
-
-          <section class="select">
-            <div class="campaign-type-column"> 
-              <select-component [label]="campaignTypeLabel" [default]="defaultCampaignType" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component>
-            </div>
-            <div class="custom-column"> 
-              <label for="type">Campaign Custom</label><br>
-              <input type="text" id="customCampaign" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
-            </div>
-          </section>
-          <section class="select-date">
-            <div class="first-column">
-              <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="campaignRange" (ngModelChange)="dateChange($event)">
-            </div>
-            <div class="second-column">
-              <button class="date-button" (click)="drp.toggle()">Campaign Start / End Date</button>
-            </div>
-          </section>
-
+           </div>
         </div>
-
       </div>
-
     </div>
+  </div>
+    
   `
 })
 
-export class CampaignComponent {
+export class CampaignComponent implements OnInit {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
 
-  @Input() networks: any[];
-  @Input() seasons: any[];
-  @Input() campaignTypes: any[];
-  @Input() campaignTags: any[];
+  @Input() networks: any = [];
+  @Input() seasons: any = [];
+  @Input() campaignTypes: any = [];
+  @Input() campaignTags: any = [];
+  @Input() selectedObject: any = {};
   @Output() campaignInputTagFinal = new EventEmitter();
   @Output() campaignObject = new EventEmitter();
 
@@ -92,22 +92,28 @@ export class CampaignComponent {
   showSearch: boolean = true;
   existingCampaignInput: any;
   searchDesc: string = 'Search Campaign Strings';
-  invalid: boolean = true;
   defaultNetwork: any;
   defaultProgram: any;
   defaultSeason: any;
   defaultCampaignType: any;
-  // defaultStartMonth: any;
-  // defaultStartDay: any;
-  // defaultEndMonth: any;
-  // defaultEndDay: any;
   campaignInputObject: any;
   campaignRange: any = [new Date(), new Date()];
   showSave: boolean = false;
   showSelect: boolean = false;
-
+  showModal: boolean;
   
   constructor( private _campaign: CampaignInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
+
+  ngOnInit() {
+    this.campaignInput.custom = 'XX';
+    console.log('HERE', this.selectedObject)
+  }
+  closeModal() {
+    this.selectedObject.action = null;
+    this.campaignInput = {};
+    this.campaignInput.custom = 'XX';
+    this.showSave = false;
+  }
 
   dateChange(date) {
     // Format the start date
@@ -144,22 +150,6 @@ export class CampaignComponent {
     this.checkAttributes();
   }
 
-  newInput() {
-    this.showSearch = false;
-    this.showButtons = true;
-    this.showSelectors = true;
-    this.campaignInput = {};
-    this.campaignRange = [new Date(), new Date()];
-    this.campaignInput.custom = "XX"
-  }
-
-  newCampaign() {
-    this.campaignInput = {};
-    this.showSearch = true;
-    this.campaignRange = [new Date(), new Date()];
-    this.showFinal = false;
-  }
-
   // Updates the attribute when it is selected from child components
   attributeUpdated(value, attribute) {
     this.campaignInput[attribute] = value;
@@ -180,15 +170,15 @@ export class CampaignComponent {
       this.campaignInput.endMonth &&
       this.campaignInput.endDay
       ){ 
+        this.showSave = true;
         this.campaignInput.campaignInputTag = this._campaign.createCampaignString(this.campaignInput)
-        // This will enable the create button
-        this.invalid = false; 
         if(this.campaignInput.campaignInputTag) {
           this.verifyTag();
         }
       };
   }
 
+  // Need to update this function
   verifyTag() {
     this._campaign.verifyInput(this.campaignInput.campaignInputTag).subscribe(
       
@@ -235,17 +225,17 @@ export class CampaignComponent {
     this._campaign.createInput(createParams).subscribe(
 
       (result) => {
-        this.showSelectors = false;
-        this.showButtons = false;
-        this.showFinal = true;
         this.campaignInputObject = result;
-        // Store the object for exporting
-        this._history.storeInput(result);
+        // // Store the object for exporting
+        // this._history.storeInput(result);
          // Add to heirarchy
         this._tree.createCampaignTree(result);
         this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
-
         this.campaignInputTagFinal.emit(result);
+        this.selectedObject.action = null;
+        this.campaignInput = {};
+        this.campaignInput.custom = 'XX';
+        
       },
       (error) => {
         console.log('ERROR', error)
@@ -268,22 +258,10 @@ export class CampaignComponent {
     this.verifyTag();
   }
 
-  // Clears the selected options
-  cancelInput(){
-    this.selectComponent.setSelections(this.networkLabel);
-    this.selectComponent.setSelections(this.programLabel);
-    this.selectComponent.setSelections(this.seasonLabel);
-    this.selectComponent.setSelections(this.campaignTypeLabel);
-    this.campaignRange = [new Date(), new Date()];
-    this.campaignInput.campaignInputTag = null;
-    this.campaignInput.custom = "XX"
-  }
-
   duplicate() {
     this.showButtons = true;
     this.showFinal = false;
     this.existingCampaignInput = false;
-    this.invalid = true;
     this.campaignInputTagFinal.emit(null);
     // Set default values
     this.defaultNetwork = this.campaignInput.network = this.networks.find(x => x['name'] == this.campaignInputObject.network.name);

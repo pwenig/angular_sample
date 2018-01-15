@@ -111,38 +111,36 @@
 
 .select-container {
 
-  // datepicker {
-    section.select-date {
-      width: 700px;;
-      display: flex;
-      flex-direction: row;
-      margin: 0 auto;
+    // section.select-date {
+    //   width: 700px;;
+    //   display: flex;
+    //   flex-direction: row;
+    //   margin: 0 auto;
 
-      .first-column {
-        margin: 10px;
-        width: 200px;
-      }
-      .second-column {
-        margin: 10px;
-        button.date-button {
-          background-color: #2CACD9;
-          border: none;
-          border-radius: 5%;
-          font-size: 14px;
-          color: white;
-          width: 300px;
-          margin-left: 10px;
-          height: 34px;
-          cursor: pointer;
-        }
-      }
+      // .first-column {
+      //   margin: 10px;
+      //   width: 200px;
+      // }
+    //   .second-column {
+    //     margin: 10px;
+    //     button.date-button {
+    //       background-color: #2CACD9;
+    //       border: none;
+    //       border-radius: 5%;
+    //       font-size: 14px;
+    //       color: white;
+    //       width: 300px;
+    //       margin-left: 10px;
+    //       height: 34px;
+    //       cursor: pointer;
+    //     }
+    //   }
 
-    }
+    // }
 
-  // }
 
   section.select {
-    width: 700px;;
+    width: 700px;
     display: flex;
     flex-direction: row;
     margin: 0 auto;
@@ -155,6 +153,29 @@
       flex: 1 1 auto;
       margin: 10px;
 
+    }
+
+    .creative-date-column {
+      width: 200px;
+      margin: 10px;
+    }
+
+    .action-column {
+      margin-left: 175px;
+      
+      .btn.btn-primary.action {
+        background-color: $primary-color;
+        margin: 3px 15px 3px 15px;
+        font-size: 15px;
+        border-radius: 4px;
+        border-color: $primary-color;
+    
+        &:active {
+          background-color:$primary-color;
+          box-shadow: 0 5px white;
+          transform: translateY(4px);
+        }
+      }
     }
 
     .second-column {
@@ -294,9 +315,11 @@
   section.tree {
     padding: 10px;
     font-size: 13px;
-    height: 400px;
+    height: 800px;
     overflow: auto;
     overflow-x: hidden;
+    border-color: lightblue;
+    border-style: solid;
 
     ul {
       list-style: none;
@@ -307,7 +330,8 @@
     li {
       text-align: left;
       font-size: 15px;
-      margin-bottom: -5px;
+      // margin-bottom: -5px;
+      width: 50%;
 
       .expand-children, .collapse-children {
         font-size: 22px;
@@ -342,6 +366,7 @@
     li.placement {
       margin-left: 40px;
       display: none;
+      width: 90%;
     }
 
     li.ad {
@@ -425,4 +450,13 @@ button.duplicate {
     }
   }
   
+}
+
+.modal-dialog{
+  .modal-content.campaign {
+    width: 745px;
+  }
+  .modal-content.ad {
+    width: 500px;
+  }
 }

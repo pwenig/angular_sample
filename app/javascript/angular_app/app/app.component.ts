@@ -3,27 +3,27 @@ import { MetadataService } from '../services/metadata_service';
 import {CampaignComponent} from './campaign.component';
 import {CampaignInputService} from '../services/campaign_input_service';
 import {CreativeInputService} from '../services/creative_input_service';
+import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflector';
 
 @Component({
   selector: 'app-component',
   template: `
-   <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
+   <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions" [disableNewCampaign]="disableNewCampaign"></actions>
     <tree [current_created_input]="current_created_input" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
-    <campaign [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignObject)="createdCampaign($event)"></campaign>
-    <div *ngIf="showPackageInput">
-      <package [campaignInput]="campaignInput" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)" (packageObjectCreated)="createdCampaign($event)"></package>
+    <div *ngIf="campaignAction">
+      <campaign [selectedObject]="selectedObject" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
     </div>
-    <div *ngIf="showPlacementInput">
-      <placement [campaignInput]="campaignInput" [placementTags]="placementTags" [packageInput]="packageInput" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)" (placementObjectCreated)="createdCampaign($event)"></placement>
+    <div *ngIf="packageAction">
+      <package [selectedObject]="selectedObject" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
     </div>
-    <div *ngIf="showAdInput">
-      <ad [campaignInput]="campaignInput" [packageInput]="packageInput" [placementInput]="placementInput" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adObjectCreated)="createdCampaign($event)"></ad>
+    <div *ngIf="placementAction">
+      <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)"></placement>
     </div>
-    <div *ngIf="showCreativeInput">
-      <creative [campaignInput]="campaignInput" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeObject)="createdCampaign($event)"></creative>
+    <div *ngIf="adAction">
+      <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)"></ad>
     </div>
-    <div *ngIf="showNew">
-      <button class="new" (click)="newCampaign()">New</button>
+    <div *ngIf="creativeAction">
+      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)"></creative>
     </div>
   `
 })
@@ -58,13 +58,21 @@ export class AppComponent implements OnInit {
   adTags: any = [];
   creativeTags: any = [];
   placementTags: any = [];
+  // Remove these?
   showPackageInput: boolean = false;
   showPlacementInput: boolean = false;
   showAdInput: boolean = false;
   showCreativeInput: boolean = false;
-  showNew: boolean = false;
   selectedNameString: any = {};
   disableActions: boolean = true;
+  disableNewCampaign: boolean;
+  selectedObject: any = {};
+  campaignAction: boolean;
+  packageAction: boolean;
+  placementAction: boolean;
+  adAction: boolean;
+  creativeAction: boolean;
+  newCreatedCampaign: any = {};
   // Object that has current campaign object arrays for the current heirarchy
   current_created_input: any = {};
   // Current array of mamestrings that can be exported
@@ -104,13 +112,13 @@ export class AppComponent implements OnInit {
 
     )
 
-    // Get the current input objects that have been created and stored in localStorage
-    if(!JSON.parse(localStorage.getItem('inputs'))) {
-      // If it does not exist, create an empty object
-      this.current_created_input = {};
-    } else {
-      this.current_created_input = JSON.parse(localStorage.getItem('inputs'));
-    }
+    // // Get the current input objects that have been created and stored in localStorage
+    // if(!JSON.parse(localStorage.getItem('inputs'))) {
+    //   // If it does not exist, create an empty object
+    //   this.current_created_input = {};
+    // } else {
+    //   this.current_created_input = JSON.parse(localStorage.getItem('inputs'));
+    // }
 
     // Get all of the input objects that have been created
     this._campaign.getInputs().subscribe(
@@ -141,21 +149,83 @@ export class AppComponent implements OnInit {
     
   }
 
+  // This may need to change to handle double-clicking other namestrings 
   // This function is called when a namestring has been selected from the children-component
   selectedString(nameStringObject) {
-    // Send it so the action-component has the correct child action
-    this.selectedNameString = nameStringObject;
-    // Enable the action buttons since a namestring was selected
-    this.disableActions = false;
+    if(!nameStringObject) {
+      // Disable the action buttons since a namestring was not selected
+      this.disableActions = true;
+      // Enable the New Campaign button
+      this.disableNewCampaign = false;
+      var inactiveNameStringObject = {
+        namestring: null,
+        parent: 'campaign',
+        child: 'package'
+      }
+      this.selectedNameString = inactiveNameStringObject;
+    } else {
+      // Send it so the action-component has the correct child action
+      this.selectedNameString = nameStringObject;
+      // Enable the action buttons since a namestring was selected
+      this.disableActions = false;
+      // Disable the New Campaign button if one of the other buttons was selected
+      this.disableNewCampaign = true;
+    }
   }
 
   // This is called when an action has been selected
   selectedAction(action) {
-    var selectedObject = {
-      namestring: this.selectedNameString,
-      action: action
+    this.selectedObject = {namestring: this.selectedNameString, action: action};
+    
+    if(!this.selectedNameString.parent || action == 'Campaign') {
+      this.selectedObject.action = 'New';
+      this.changeModals(true, false, false, false, false);
     }
-    console.log('APP-COMP-ACTION', selectedObject)
+
+    if(this.selectedObject.namestring.parent == 'campaign') {
+      this.changeModals(true, false, false, false, false);
+    }
+
+    if(this.selectedObject.namestring.parent == 'package' || action == 'Package') {
+      if(action == 'Package') {
+        this.selectedObject.action = 'New';
+      }
+      this.changeModals(false, true, false, false, false);
+    }
+    if(this.selectedObject.namestring.parent == 'placement' || action == 'Placement') {
+      if(action == 'Placement') {
+        this.selectedObject.action = 'New';
+      }
+      // this.selectedObject.namestring.packageParent = this.selectedNameString.namestring;
+      this.changeModals(false, false, true, false, false)
+    }
+    if(this.selectedObject.namestring.parent == 'ad' || action == 'Ad') {
+      if(action == 'Ad') {
+        this.selectedObject.action = 'New';
+      }
+      // this.selectedObject.namestring.packageParent = this.selectedNameString.packageParent;
+      // this.selectedObject.namestring.placementParent = this.selectedNameString.placementParent;
+      
+      this.changeModals(false, false, false, true, false);
+    }
+    if(this.selectedObject.namestring.parent == 'creative' || action == 'Creative') {
+      if(action == 'Creative') {
+        this.selectedObject.action = 'New';
+      }
+      // this.selectedObject.namestring.packageParent = this.selectedNameString.packageParent;
+      this.selectedObject.namestring.placementParent = this.selectedNameString.placementParent;
+      this.changeModals(false, false, false, false, true)
+    }
+
+  }
+
+  changeModals(campaignModal, packageModal, placementModal, adModal, creativeModal) {
+      this.campaignAction = campaignModal;
+      this.packageAction = packageModal;
+      this.placementAction = placementModal;
+      this.adAction = adModal;
+      this.creativeAction = creativeModal;
+
   }
 
   setCampaignTag(campaignTag) {
@@ -166,7 +236,10 @@ export class AppComponent implements OnInit {
       this.showCreativeInput = false;
     } else {
       this.campaignInput = campaignTag;
+      this.current_created_input = {namestring: campaignTag, parentType: 'campaign', childType: 'package'};
+      this.all_inputs.unshift(campaignTag);
       this.campaignTags.push(campaignTag.campaign_input_tag);
+      this.campaignAction = false;
       if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
         this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
       } else {
@@ -183,7 +256,15 @@ export class AppComponent implements OnInit {
       this.showAdInput = false;
       this.showCreativeInput = false;
     } else {
+      // Remove this?
       this.packageInput = packageTag;
+      this.current_created_input = {namestring: packageTag, parentType: 'package', childType: 'placement'};
+      // Update the object in the all_inputs array
+      let updatedCampaign = this.all_inputs.find(x => x.id == packageTag.campaign_input_id);
+      let index = this.all_inputs.indexOf(updatedCampaign);
+      updatedCampaign.package_inputs.unshift(packageTag);
+      this.all_inputs[index] = updatedCampaign;
+      this.packageAction = false;
       if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
         this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
       } else {
@@ -199,6 +280,13 @@ export class AppComponent implements OnInit {
       this.showCreativeInput = false;
     } else {
       this.placementInput = placementTag;
+      this.current_created_input = {namestring: placementTag, parentType: 'placement', childType: 'ad'};
+      let updatedCampaign = this.all_inputs.find(x => x.id == placementTag.package_input.campaign_input_id);
+      let index = this.all_inputs.indexOf(updatedCampaign);
+      let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == placementTag.package_input.id);
+      updatedPackage.placement_inputs.unshift(placementTag);
+      this.all_inputs[index] = updatedCampaign;
+      this.placementInput = false;
       if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
         this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
       } else {
@@ -210,9 +298,17 @@ export class AppComponent implements OnInit {
 
   setAdTag(adTag) {
     if(adTag == null) {
-      this.showCreativeInput = false;
+      // this.showCreativeInput = false;
     } else {
       this.adInput = adTag;
+      this.current_created_input = {namestring: adTag, parentType: 'ad', childType: 'creative'};
+      let updatedCampaign = this.all_inputs.find(x => x.id == adTag.placement_input.package_input.campaign_input_id);
+      let index = this.all_inputs.indexOf(updatedCampaign);
+      let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == adTag.placement_input.package_input.id);
+      let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == adTag.placement_input_id);
+      updatedPlacement.ad_inputs.unshift(adTag);
+      this.all_inputs[index] = updatedCampaign;
+      this.adAction = false;
       if(this.adInput.creative_inputs && this.adInput.creative_inputs.length > 0) {
         this.creativeTags = this.adInput.creative_inputs.map(n=> n['creative_input_tag']);
       } else {
@@ -223,43 +319,21 @@ export class AppComponent implements OnInit {
   }
 
   setCreativeTag(creativeTag) {
-    this.creativeInput = creativeTag;
     if(creativeTag == null) {
-      this.showNew = false;
+      // this.showNew = false;
     } else {
-      this.showNew= true;
+      this.creativeInput = creativeTag;
+      this.current_created_input = {namestring: creativeTag, parentType: 'creative', childType: null };
+      let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
+      let index = this.all_inputs.indexOf(updatedCampaign);
+      let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
+      let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == creativeTag.ad_input.placement_input.id);
+      let updatedAd = updatedPlacement.ad_inputs.find( x => x.id == creativeTag.ad_input.id);
+      updatedAd.creative_inputs.unshift(creativeTag);
+      this.all_inputs[index] = updatedCampaign;
+      this.creativeAction = false;
     }
     
-  }
-
-
-  createdCampaign(campaign) {
-    // Current object of campaign object arrays
-    this.current_created_input = campaign;
-    this.current_exports = campaign;
-
-     // Get all of the input strings that have been created
-     this._campaign.getInputs().subscribe(
-      (data) => {
-        this.all_inputs = data.reverse();
-      },
-      (error) => {
-        console.log('Error', error);
-      }
-    )
-  }
-
-  newCampaign(){
-    this.campaignComponent.newCampaign();
-    this.showAdInput = false;
-    this.adInput = {};
-    this.showCreativeInput = false;
-    this.creativeInput = {};
-    this.showPlacementInput = false;
-    this.placementInput = {};
-    this.showPackageInput = false;
-    this.packageInput = {};
-    this.showNew = false;
   }
 
 }

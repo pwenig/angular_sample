@@ -11,78 +11,78 @@ import {TreeService} from '../services/tree_service';
 @Component({
   selector: 'creative',
   template: `
-  <h2 class="campaign-title">Creative Input</h2>
-  <p *ngIf="showFinal" class="final-string">{{creativeInput.creativeInputTag}}<button class="duplicate" id="duplicateCreative" type="submit" (click)="duplicate()">Duplicate</button></p>
-  <div class="input-tag-container">
-    <div class="row">
-    <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
-      <select-string-component [options]="creativeTags" (selected)="selectInput($event)"></select-string-component>
-      <button class="new-tag" type="submit" (click)="newTagSection()">New Creative String</button>
-    </section>
-      <section class="input-tag" *ngIf="showButtons">
-        <input [ngModel]="creativeInput.creativeInputTag" class="form-control" [disabled]=true>
-        <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Creative String</button>
-        <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput(creativeInput.creativeInputTag)">Select Creative String</button>
-        <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
-      </section>
-    </div>
-  </div>
 
-  <div *ngIf="showSelectors">
-    <div class="select-container">
-      <div class="row">
-        <section class="select">
-          <div class="first-column" *ngIf="creativeMessages && creativeMessages.length > 0">
-            <select-component [label]="creativeMessageLabel" [default]="defaultCreativeMessage" [options]="creativeMessages" (selected)="attributeUpdated($event, 'creativeMessage')"></select-component>
+  <div *ngIf="selectedObject.action">
+    <div [config]="{ show: true }" (onHide)=closeModal() bsModal #autoShownModal="bs-modal" #Modal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content campaign">
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">{{selectedObject.action}} Creative</h4>
+            <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          <div class="custom-column">
-            <label for="creativeCustom">Creative Version Custom</label>
-            <input type="text" id="creativeCustom" [(ngModel)]="creativeInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+          <div class="modal-body">
+            <div class="select-container">
+              <div class="row">
+                <section class="select">
+                  <div class="first-column" *ngIf="creativeMessages && creativeMessages.length > 0">
+                    <select-component [label]="creativeMessageLabel" [default]="defaultCreativeMessage" [options]="creativeMessages" (selected)="attributeUpdated($event, 'creativeMessage')"></select-component>
+                  </div>
+                  <div class="custom-column">
+                    <label for="creativeCustom">Creative Version Custom</label>
+                    <input type="text" id="creativeCustom" [(ngModel)]="creativeInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+                  </div>
+                  <div class="column">
+                    <month-select-component [label]="creativeVersionLabel" [default]="defaultCreativeVersion" (selected)="attributeUpdated($event, 'creativeVersion')"></month-select-component>
+                  </div>
+                </section>
+                <section class="select">
+                  <div class="first-column">
+                    <select-component [label]="abTestLabel" [options]="abtestLabels" [default]="defaultAbLabel" (selected)="attributeUpdated($event, 'abtestLabel')"></select-component>
+                  </div>
+                  <div class="creative-date-column">
+                    <label>Creative Start / End Date</label>
+                    <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="creativeRange" (ngModelChange)="dateChange($event)">
+                   </div>
+                  <div class="column" *ngIf="_adtype.videoAdType(selectedObject.namestring.placementParent)">
+                    <select-component [label]="videoLengthLabel" [options]="videoLengths" [default]="defaultVideoLength" (selected)="attributeUpdated($event, 'videoLength')"></select-component>
+                  </div>
+                </section>
+                <section class="select">
+                  <div class="action-column">
+                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Creative</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput()">Create Creative</button>
+                  </div>
+                </section>
+              </div>
+            </div>
           </div>
-          <div class="column">
-            <month-select-component [label]="creativeVersionLabel" [default]="defaultCreativeVersion" (selected)="attributeUpdated($event, 'creativeVersion')"></month-select-component>
-          </div>
-        </section>
-        <section class="select">
-          <div class="first-column">
-            <select-component [label]="abTestLabel" [options]="abtestLabels" [default]="defaultAbLabel" (selected)="attributeUpdated($event, 'abtestLabel')"></select-component>
-          </div>
-          <div class="second-column" *ngIf="_adtype.videoAdType(placementInput)">
-            <select-component [label]="videoLengthLabel" [options]="videoLengths" [default]="defaultVideoLength" (selected)="attributeUpdated($event, 'videoLength')"></select-component>
-          </div>
-        </section>
-
-        <section class="select-date">
-          <div class="first-column">
-            <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="creativeRange" (ngModelChange)="dateChange($event)">
-          </div>
-          <div class="second-column">
-            <button class="date-button" (click)="drp.toggle()">Creative Start / End Date</button>
-          </div>
-        </section>
-
+        </div>
       </div>
     </div>
   </div>
+
+      
   `
 })
 
 export class CreativeComponent implements OnInit {
   @ViewChild(SelectComponent) 
   private selectComponent: SelectComponent;
-  // @ViewChild(MonthSelectComponent)
-  // private monthSelectComponent: MonthSelectComponent;
-  // @ViewChild(DaySelectComponent) 
-  // private daySelectComponent: DaySelectComponent;
 
 
   @Input() campaignInput: {};
+  @Input() selectedObject: any = {};
+  // Remove below two?
   @Input() adInput: {};
   @Input() placementInput: {};
   @Input() creativeMessages: any[];
   @Input() abtestLabels: any[];
   @Input() videoLengths: any[];
   @Input() creativeTags: any[];
+
+  
   @Output() creativeTagFinal = new EventEmitter();
   @Output() creativeObject = new EventEmitter();
 
@@ -117,6 +117,14 @@ export class CreativeComponent implements OnInit {
     this.creativeInput.abtestLabel = this.defaultAbLabel;
     this.creativeInput.custom = "XX";
   }
+
+  closeModal() {
+    this.selectedObject.action = null;
+    this.creativeInput = {};
+    this.creativeInput.custom = "XX";
+    this.showSave = false;
+  }
+
 
   dateChange(date) {
     // Format the start date
@@ -184,9 +192,9 @@ export class CreativeComponent implements OnInit {
 
   saveInput() {
     let createParams = {};
-    if(this._adtype.videoAdType(this.placementInput)){
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)){
       createParams = {
-        ad_input_id: this.adInput['id'],
+        ad_input_id: this.selectedObject.namestring.namestring.id,
         creative_message_id: this.creativeInput.creativeMessage.id,
         abtest_label_id: this.creativeInput.abtestLabel.id,
         video_length_id: this.creativeInput.videoLength.id,
@@ -202,7 +210,7 @@ export class CreativeComponent implements OnInit {
       }
     } else {
       createParams = {
-        ad_input_id: this.adInput['id'],
+        ad_input_id: this.selectedObject.namestring.namestring.id,
         creative_message_id: this.creativeInput.creativeMessage.id,
         abtest_label_id: this.creativeInput.abtestLabel.id,
         start_month: this.creativeInput.startMonth,
@@ -219,15 +227,20 @@ export class CreativeComponent implements OnInit {
     this._creative.createInput(createParams).subscribe(
 
       (result) => {
-        this.showSelectors = false;
-        this.showButtons = false;
-        this.showFinal = true;
+        // this.showSelectors = false;
+        // this.showButtons = false;
+        // this.showFinal = true;
         this.creativeInputObject = result;
         // Store the object for exporting
         this._history.storeInput(result);
         this._tree.createCreativeTree(result);
         this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
         this.creativeTagFinal.emit(result);
+        this.selectedObject.action = null;
+        this.creativeInput = {};
+        this.creativeInput.custom = "XX";
+        this.showSave = false;
+
       },
       (error) => {
         console.log('ERROR', error);
@@ -251,17 +264,21 @@ export class CreativeComponent implements OnInit {
   }
 
   checkAttributes() {
-    if(this.creativeInput.creativeMessage && this._adtype.videoAdType(this.placementInput) &&
+    // Need to fix how videolength is handled
+
+    if(this.creativeInput.creativeMessage && this._adtype.videoAdType(this.selectedObject.namestring.placementParent) &&
       this.creativeInput.custom &&
       this.creativeInput.creativeVersion &&
       this.creativeInput.abtestLabel &&
-      this.creativeInput.videoLength &&
+      // this.creativeInput.videoLength &&
       this.creativeInput.startMonth &&
       this.creativeInput.startDay &&
       this.creativeInput.endMonth &&
       this.creativeInput.endDay
     ){
-      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.campaignInput, this.placementInput, this.adInput, this.creativeInput)
+      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.namestring, this.creativeInput)
+      this.showSave = true;
+
       if(this.creativeInput.creativeInputTag){
         this.verifyTag();
       }
@@ -277,7 +294,8 @@ export class CreativeComponent implements OnInit {
       this.creativeInput.endMonth &&
       this.creativeInput.endDay
     ){
-      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.campaignInput, this.placementInput, this.adInput, this.creativeInput)
+      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.namestring, this.creativeInput)
+      this.showSave = true;
       if(this.creativeInput.creativeInputTag){
         this.verifyTag();
       }
@@ -293,16 +311,16 @@ export class CreativeComponent implements OnInit {
     this.showSelectors = true;
   }
 
-  cancelInput() {
-    if(this._adtype.videoAdType(this.placementInput)) {
-      this.selectComponent.setSelections(this.videoLengthLabel);
-    }
-    this.selectComponent.setSelections(this.creativeMessageLabel);
-    this.creativeInput.custom = "XX";
-    this. creativeRange = [new Date(), new Date()];
-    this.selectComponent.setSelections(this.abTestLabel);
-    this.creativeInput.creativeInputTag = null;
-  }
+  // cancelInput() {
+  //   if(this._adtype.videoAdType(this.placementInput)) {
+  //     this.selectComponent.setSelections(this.videoLengthLabel);
+  //   }
+  //   this.selectComponent.setSelections(this.creativeMessageLabel);
+  //   this.creativeInput.custom = "XX";
+  //   this. creativeRange = [new Date(), new Date()];
+  //   this.selectComponent.setSelections(this.abTestLabel);
+  //   this.creativeInput.creativeInputTag = null;
+  // }
 
   duplicate() {
     this.showButtons = true;

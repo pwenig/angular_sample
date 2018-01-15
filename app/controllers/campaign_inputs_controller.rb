@@ -1,12 +1,14 @@
 class CampaignInputsController < ApplicationController
   def index
-    # Only get the pacakges that belong to the current user's agency
+    # Only get the pacakges that belong to the current user's agency or where the agency has not yet been set.
     # This only returns campaigns that have pacakge_inputs
     @campaign_inputs = CampaignInput.includes(:package_inputs)
                                     .where(package_inputs: { agency_id: current_user.agency.id })
+                                    .or(CampaignInput.includes(:package_inputs)
+                                    .where(package_inputs: {agency_id: nil}))
     render json: @campaign_inputs, include: [:network, :season, :program, { package_inputs:
-    { include: [:publisher, { placement_inputs: { include:
-    { ad_inputs: { include: :creative_inputs } } } }] } }], status: 200
+    { include: [:publisher,:agency, :buy_method, { placement_inputs: { include: [:ad_type,
+    { ad_inputs: { include: [:creative_group, :creative_inputs] } } ]} }] } }], status: 200
   end
 
   def create

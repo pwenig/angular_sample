@@ -7,48 +7,50 @@ import {HistoryService} from '../services/history_service';
 @Component({
   selector: 'package',
   template: `
-    <h2 class="campaign-title">Package Input</h2>
-    <p *ngIf="showFinal" class="final-string">{{ packageInput.packageInputTag }}<button class="duplicate" id="duplicatePackage" type="submit" (click)="duplicate()">Duplicate</button></p>
-    <div class="input-tag-container">
-      <div class="row">
-        <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
-          <select-string-component [label]="packageLabel" [options]="packageTags" (selected)="selectInput($event)"></select-string-component>
-          <button class="new-tag" type="submit" (click)="newTagSection()">New Package String</button>
-          </section>
 
-        <section class="input-tag" *ngIf="showButtons">
-          <input [ngModel]="packageInput.packageInputTag" class="form-control" [disabled]=true>
-          <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Package String</button>
-          <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput(packageInput.packageInputTag)">Select Package String</button>
-          <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
-          </section>
-      </div>
-    </div>
-
-    <div *ngIf="showSelectors">
-      <div class="select-container">
-        <div class="row">
-          <section class="select">
-            <div class="column" *ngIf="publishers && publishers.length > 0">
-              <select-component [label]="publisherLabel"[default]="defaultPublisher" [options]="publishers" (selected)="attributeUpdated($event, 'publisher')"></select-component>
+  <div *ngIf="selectedObject.action">
+    <div [config]="{ show: true }" (onHide)=closeModal() bsModal #autoShownModal="bs-modal" #Modal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content campaign">
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">{{selectedObject.action}} Package</h4>
+            <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="select-container">
+              <div class="row">
+                <section class="select">
+                  <div class="column" *ngIf="publishers && publishers.length > 0">
+                    <select-component [label]="publisherLabel"[default]="defaultPublisher" [options]="publishers" (selected)="attributeUpdated($event, 'publisher')"></select-component>
+                  </div>
+                  <div class="column" *ngIf="buyMethods && buyMethods.length > 0">
+                    <select-component [label]="buyMethodLabel" [default]="defaultBuyMethod" [options]="buyMethods" (selected)="attributeUpdated($event, 'buyMethod')"></select-component>
+                   </div>
+                </section>
+                <section class="select">  
+                  <div class="inv-type-column" *ngIf="inventoryTypes && inventoryTypes.length > 0">
+                    <select-component [label]="inventoryTypeLabel" [default]="defaultInventoryType" [options]="inventoryTypes" (selected)="attributeUpdated($event, 'inventoryType')"></select-component>
+                  </div>
+                  <div class="custom-column"> 
+                    <label for="customPackage">Package Custom</label><br>
+                    <input type="text" id="customPackage" [(ngModel)]="packageInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+                  </div>
+                </section>
+                <section class="select">
+                  <div class="action-column">
+                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Package</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput()">Create Package</button>
+                  </div>
+                </section>
+              </div>
             </div>
-            <div class="column" *ngIf="buyMethods && buyMethods.length > 0">
-              <select-component [label]="buyMethodLabel" [default]="defaultBuyMethod" [options]="buyMethods" (selected)="attributeUpdated($event, 'buyMethod')"></select-component>
-            </div>
-          </section>
-
-          <section class="select">  
-            <div class="inv-type-column" *ngIf="inventoryTypes && inventoryTypes.length > 0">
-              <select-component [label]="inventoryTypeLabel" [default]="defaultInventoryType" [options]="inventoryTypes" (selected)="attributeUpdated($event, 'inventoryType')"></select-component>
-            </div>
-            <div class="custom-column"> 
-              <label for="customPackage">Package Custom</label><br>
-              <input type="text" id="customPackage" [(ngModel)]="packageInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
-            </div>
-          </section>
+           </div>
         </div>
       </div>
     </div>
+  </div>
   `
 })
 
@@ -56,7 +58,8 @@ export class PackageComponent implements OnInit {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
   
-  @Input() campaignInput: {};
+  // @Input() campaignInput: {};
+  @Input() selectedObject: any = {};
   @Input() agency: {};
   @Input() publishers: any[];
   @Input() buyMethods: any[];
@@ -93,6 +96,13 @@ export class PackageComponent implements OnInit {
     this.packageInput.custom = "XX";
   }
 
+  closeModal() {
+    this.selectedObject.action = null;
+    this.packageInput = {};
+    this.packageInput.custom = "XX";
+    this.showSave = false;
+  }
+
   // Updates the attribute when it is selected from child components
   attributeUpdated(value, attribute) {
     this.packageInput[attribute] = value;
@@ -107,12 +117,11 @@ export class PackageComponent implements OnInit {
       this.packageInput.inventoryType &&
       this.packageInput.custom
       ){ 
-        this.packageInput.packageInputTag = this._package.createPackageString(this.campaignInput, this.packageInput, this.agency)
+        this.showSave = true;
+        this.packageInput.packageInputTag = this._package.createPackageString(this.selectedObject.namestring.namestring, this.packageInput, this.agency)
         if(this.packageInput.packageInputTag) {
           this.verifyTag();
         }
-        // This will enable the create button
-        this.invalid = false;
       };
   }
 
@@ -146,7 +155,7 @@ export class PackageComponent implements OnInit {
   saveInput() {
     // Create the params
     var createParams = {
-      campaign_input_id: this.campaignInput['id'],
+      campaign_input_id: this.selectedObject.namestring.namestring.id,
       agency_id: this.agency['id'],
       publisher_id: this.packageInput.publisher.id,
       buy_method_id: this.packageInput.buyMethod.id,
@@ -157,16 +166,18 @@ export class PackageComponent implements OnInit {
     this._package.createInput(createParams).subscribe(
 
       (result) => {
-        this.showSelectors = false;
-        this.showButtons = false;
-        this.showFinal = true;
+        // this.showSelectors = false;
+        // this.showButtons = false;
+        // this.showFinal = true;
         this.packageObject = result;
-        this._history.storeInput(result);
+        // this._history.storeInput(result);
         // Add to the heiarchy tree
         this._tree.createPackageTree(result);
         // Send it to the app comp so the tree comp is updated
         this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
         this.packageInputTagFinal.emit(result);
+        this.selectedObject.action = null;
+        this.packageInput = {};
       },
       (error) => {
         console.log('ERROR', error)
@@ -189,14 +200,14 @@ export class PackageComponent implements OnInit {
     this.packageInput.custom = "XX";
   }
 
-  // Clears the selected options
-  cancelInput() {
-    this.selectComponent.setSelections(this.publisherLabel);
-    this.selectComponent.setSelections(this.buyMethodLabel);
-    this.selectComponent.setSelections(this.inventoryTypeLabel);
-    this.packageInput.custom = "XX";
-    this.packageInput.packageInputTag = null;
-  }
+  // // Clears the selected options
+  // cancelInput() {
+  //   this.selectComponent.setSelections(this.publisherLabel);
+  //   this.selectComponent.setSelections(this.buyMethodLabel);
+  //   this.selectComponent.setSelections(this.inventoryTypeLabel);
+  //   this.packageInput.custom = "XX";
+  //   this.packageInput.packageInputTag = null;
+  // }
 
   duplicate() {
     this.showButtons = true;

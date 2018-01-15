@@ -29,7 +29,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
-    expect(page).to have_text('Campaign Input')
+    expect(page).to have_text('New Campaign')
   end
 
   it 'creates a campaign input tag' do
@@ -37,7 +37,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
-    click_on('New Campaign String')
+    click_on('New Campaign')
     expect(page).to have_select('Network', options: ['Select Network', 'Comedy Central'])
     select('Comedy Central', from: 'Network')
     expect(page).to have_text('Comedy Central')
@@ -47,17 +47,18 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_select('Season', options: ['Select Season', 'S00', 'S01', 'S02'])
     select('S00', from: 'Season')
     expect(page).to have_text('S00')
+    expect(page).to have_field('customCampaign')
+    fill_in('customCampaign', with: 'XX')
     expect(page).to have_select('Campaign Type', options: ['Select Campaign Type', 'Binge', 'Awareness'])
     select('Binge', from: 'Campaign Type')
     expect(page).to have_text('Binge')
-    expect(page).to have_field('customCampaign')
-    fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Save Campaign String')
-    click_on('Save Campaign String')
+    expect(page).to have_text('Create')
+    click_on('Create')
     expect(page).to have_text("CCL_CLTF_s00_BG_XX_#{date}")
   end
 
   it 'selects a campaign input tag from the search box' do
+    pending
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
@@ -72,7 +73,7 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
-    click_on('New Campaign String')
+    click_on('New Campaign')
     expect(page).to have_select('Network', options: ['Select Network', 'Comedy Central'])
     select('Comedy Central', from: 'Network')
     expect(page).to have_text('Comedy Central')
@@ -84,15 +85,16 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('S00')
     expect(page).to have_select('Campaign Type', options: ['Select Campaign Type', 'Binge', 'Awareness'])
     select('Binge', from: 'Campaign Type')
-    expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Clear')
-    click_on('Clear')
+    expect(page).to have_text('Binge')
+    expect(page).to have_text('Cancel Campaign')
+    click_on('Cancel Campaign')
     expect(page).to_not have_text('CCL_CLTF_s00_BG_XX_20170101-20170202')
   end
 
   it 'duplicates a campaign input' do
+    pending
     date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
