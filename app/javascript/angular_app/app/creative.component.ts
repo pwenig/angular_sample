@@ -1,12 +1,11 @@
-import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef, OnChanges, SimpleChanges} from '@angular/core';
 import { CreativeInputService } from '../services/creative_input_service';
 import { AdTypeService } from '../services/ad_type_service';
 import {SelectComponent} from './select.component';
-import {MonthSelectComponent} from './monthselect.component';
-import {DaySelectComponent} from './dayselect.component';
 import {HistoryService} from '../services/history_service';
 import {CampaignInputService} from '../services/campaign_input_service';
 import {TreeService} from '../services/tree_service';
+import {DateFormatService} from '../services/date_format_service'
 
 @Component({
   selector: 'creative',
@@ -52,7 +51,7 @@ import {TreeService} from '../services/tree_service';
                 <section class="select">
                   <div class="action-column">
                     <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Creative</button>
-                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput()">Create Creative</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}} Creative</button>
                   </div>
                 </section>
               </div>
@@ -67,7 +66,7 @@ import {TreeService} from '../services/tree_service';
   `
 })
 
-export class CreativeComponent implements OnInit {
+export class CreativeComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent: SelectComponent;
 
@@ -82,9 +81,10 @@ export class CreativeComponent implements OnInit {
   @Input() videoLengths: any[];
   @Input() creativeTags: any[];
 
-  
+
   @Output() creativeTagFinal = new EventEmitter();
   @Output() creativeObject = new EventEmitter();
+  @Output() creativeTagUpdate = new EventEmitter();
 
   creativeInput: any = {};
   existingCreativeInput: any;
@@ -105,28 +105,43 @@ export class CreativeComponent implements OnInit {
   creativeRange: any = [new Date(), new Date()];
   showSave: boolean = false;
   showSelect: boolean = false;
+  action: any = 'Create';
 
-  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService, private _date: DateFormatService) {}
 
   ngOnInit() {
-    if(!this.creativeTags || this.creativeTags.length == 0) {
-      this.showButtons = true;
-      this.showSelectors = true;
-    }
-    this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');
-    this.creativeInput.abtestLabel = this.defaultAbLabel;
     this.creativeInput.custom = "XX";
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.selectedObject.currentValue.action == 'Edit') {
+      this.action = 'Update'
+      this.duplicate();
+    }
   }
 
   closeModal() {
     this.selectedObject.action = null;
     this.creativeInput = {};
-    this.creativeInput.custom = "XX";
+    this.cancelInput();
     this.showSave = false;
   }
 
 
+  cancelInput() {
+    if(this._adtype.videoAdType(this.placementInput)) {
+      this.selectComponent.setSelections(this.videoLengthLabel);
+    }
+    this.creativeInput = {};
+    this.defaultCreativeMessage = undefined;
+    this.defaultCreativeVersion = undefined;
+    this.defaultAbLabel = undefined;
+    this.creativeInput.custom = "XX";
+    this. creativeRange = [new Date(), new Date()];
+  }
+
   dateChange(date) {
+    this.creativeRange = date;
     // Format the start date
     var start_date = date[0];
     this.creativeInput.startYear = start_date.getFullYear();
@@ -158,7 +173,6 @@ export class CreativeComponent implements OnInit {
     } else {
       this.creativeInput.endDay = endDay.toString();
     }
-    this.checkAttributes();
   }
 
 
@@ -190,7 +204,7 @@ export class CreativeComponent implements OnInit {
 
   }
 
-  saveInput() {
+  saveInput(action) {
     let createParams = {};
     if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)){
       createParams = {
@@ -224,29 +238,49 @@ export class CreativeComponent implements OnInit {
         creative_input_tag: this.creativeInput.creativeInputTag
       }
     }
-    this._creative.createInput(createParams).subscribe(
 
-      (result) => {
-        // this.showSelectors = false;
-        // this.showButtons = false;
-        // this.showFinal = true;
-        this.creativeInputObject = result;
-        // Store the object for exporting
-        this._history.storeInput(result);
-        this._tree.createCreativeTree(result);
-        this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
-        this.creativeTagFinal.emit(result);
-        this.selectedObject.action = null;
-        this.creativeInput = {};
-        this.creativeInput.custom = "XX";
-        this.showSave = false;
+    if(action == 'Update') {
+      createParams['ad_input_id'] = this.selectedObject.namestring.namestring.ad_input_id,
+      this._creative.updateInput(this.selectedObject.namestring.namestring.id, createParams).subscribe(
 
-      },
-      (error) => {
-        console.log('ERROR', error);
-      }
-    );
+        (result) => {
+          this.creativeInput = result;
+          // Store the object for exporting
+          this._history.storeInput(result);
+          this._tree.createCreativeTree(result);
+          // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
+          this.creativeTagUpdate.emit(result);
+          this.selectedObject.action = null;
+          this.selectedObject.namestring.namestring = {};
+          this.showSave = false;
+  
+        },
+        (error) => {
+          console.log('ERROR', error);
+        }
+      );
 
+    } else if (action == 'Create') {
+      this._creative.createInput(createParams).subscribe(
+
+        (result) => {
+          this.creativeInputObject = result;
+          // Store the object for exporting
+          this._history.storeInput(result);
+          this._tree.createCreativeTree(result);
+          // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
+          this.creativeTagFinal.emit(result);
+          this.selectedObject.action = null;
+          this.creativeInput = {};
+          this.showSave = false;
+  
+        },
+        (error) => {
+          console.log('ERROR', error);
+        }
+      );
+
+    } else {}
   }
 
   selectInput(tag) {
@@ -264,21 +298,19 @@ export class CreativeComponent implements OnInit {
   }
 
   checkAttributes() {
-    // Need to fix how videolength is handled
-
     if(this.creativeInput.creativeMessage && this._adtype.videoAdType(this.selectedObject.namestring.placementParent) &&
       this.creativeInput.custom &&
       this.creativeInput.creativeVersion &&
       this.creativeInput.abtestLabel &&
-      // this.creativeInput.videoLength &&
       this.creativeInput.startMonth &&
       this.creativeInput.startDay &&
       this.creativeInput.endMonth &&
       this.creativeInput.endDay
     ){
-      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.namestring, this.creativeInput)
-      this.showSave = true;
-
+      if(this.creativeInput.videoLength) {
+        this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.adParent, this.creativeInput)
+        this.showSave = true;
+      }
       if(this.creativeInput.creativeInputTag){
         this.verifyTag();
       }
@@ -294,7 +326,7 @@ export class CreativeComponent implements OnInit {
       this.creativeInput.endMonth &&
       this.creativeInput.endDay
     ){
-      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.namestring, this.creativeInput)
+      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.adParent, this.creativeInput)
       this.showSave = true;
       if(this.creativeInput.creativeInputTag){
         this.verifyTag();
@@ -304,46 +336,22 @@ export class CreativeComponent implements OnInit {
 
   }
 
-  newTagSection() {
-    this.creativeInput.custom = "XX";
-    this.creativeRange = [new Date(), new Date()];
-    this.showButtons = true;
-    this.showSelectors = true;
-  }
-
-  // cancelInput() {
-  //   if(this._adtype.videoAdType(this.placementInput)) {
-  //     this.selectComponent.setSelections(this.videoLengthLabel);
-  //   }
-  //   this.selectComponent.setSelections(this.creativeMessageLabel);
-  //   this.creativeInput.custom = "XX";
-  //   this. creativeRange = [new Date(), new Date()];
-  //   this.selectComponent.setSelections(this.abTestLabel);
-  //   this.creativeInput.creativeInputTag = null;
-  // }
-
   duplicate() {
-    this.showButtons = true;
-    this.showFinal = false;
-    this.existingCreativeInput = false;
-    this.invalid = true;
-
     if(this._adtype.videoAdType(this.placementInput)) {
-      this.defaultVideoLength = this.creativeInput.videoLength = this.videoLengths.find(x => x['name'] == this.creativeInputObject.video_length.name);
+      this.defaultVideoLength = this.creativeInput.videoLength = this.videoLengths.find(x => x['name'] == this.selectedObject.namestring.namestring.video_length.name);
     }
      // Set the default values for each of the selectors and set the object attributes
-     this.defaultCreativeMessage = this.creativeInput.creativeMessage = this.creativeMessages.find(x => x['name'] == this.creativeInputObject.creative_message.name);
-     this.creativeInput.custom = this.creativeInputObject.custom;
-     this.defaultCreativeVersion = this.creativeInput.creativeVersion = this.creativeInputObject.creative_version_number;
-     this.defaultAbLabel = this.creativeInput.abtestLabel = this.abtestLabels.find(x => x['name'] == this.creativeInputObject.abtest_label.name);
-     this.creativeInput.startMonth = this.creativeInputObject.start_month;
-     this.creativeInput.endMonth = this.creativeInputObject.end_month;
-     this.creativeInput.endDay = this.creativeInputObject.end_day;
-     this.creativeInput.startDay = this.creativeInputObject.start_day;
-     this.creativeInput.endYear = this.creativeInputObject.end_year;
-     this.creativeInput.startYear = this.creativeInputObject.start_year;
+     this.defaultCreativeMessage = this.creativeInput.creativeMessage = this.creativeMessages.find(x => x['id'] == this.selectedObject.namestring.namestring.creative_message_id);
+     this.creativeInput.custom = this.selectedObject.namestring.namestring.custom;
+     this.defaultCreativeVersion = this.creativeInput.creativeVersion = this.selectedObject.namestring.namestring.creative_version_number;
+     this.defaultAbLabel = this.creativeInput.abtestLabel = this.abtestLabels.find(x => x['id'] == this.selectedObject.namestring.namestring.abtest_label_id);
+     this.creativeInput.startMonth = this.selectedObject.namestring.namestring.start_month;
+     this.creativeInput.endMonth = this.selectedObject.namestring.namestring.end_month;
+     this.creativeInput.endDay = this.selectedObject.namestring.namestring.end_day;
+     this.creativeInput.startDay = this.selectedObject.namestring.namestring.start_day;
+     this.creativeInput.endYear = this.selectedObject.namestring.namestring.end_year;
+     this.creativeInput.startYear = this.selectedObject.namestring.namestring.start_year;
 
-    this.showSelectors = true;
     // Checks to see if the ngIf has changed and the selectors are showing.
     this.changeDetector.detectChanges();
 
@@ -355,13 +363,7 @@ export class CreativeComponent implements OnInit {
     this.selectComponent.setSelections(this.abTestLabel);
     // Set the creativeRange
     var date = new Date();
-    this.creativeRange = [new Date(this.creativeInputObject.start_year, this.creativeInputObject.start_month - 1, this.creativeInputObject.start_day), new Date(this.creativeInputObject.end_year, this.creativeInputObject.end_month - 1, this.creativeInputObject.end_day)]
-    
-    // this.monthSelectComponent.setSelections(this.creativeVersionLabel);
-    // this.monthSelectComponent.setSelections(this.startMonthLabel);
-    // this.monthSelectComponent.setSelections(this.endMonthLabel);
-    // this.daySelectComponent.setSelections(this.startDayLabel);
-    // this.daySelectComponent.setSelections(this.endDayLabel);
+    this.creativeRange = [new Date(this.selectedObject.namestring.namestring.start_year, this.selectedObject.namestring.namestring.start_month - 1, this.selectedObject.namestring.namestring.start_day), new Date(this.selectedObject.namestring.namestring.end_year, this.selectedObject.namestring.namestring.end_month - 1, this.selectedObject.namestring.namestring.end_day)]
   }
   
 }

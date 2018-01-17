@@ -22,8 +22,10 @@ export class CreativeInputService {
       creativeObj.abtestLabel.abbrev + '_' +
       placementObj['width'] + 'x' +
       placementObj['height'] + '_' +
+      creativeObj.startYear +
       creativeObj.startMonth +
       creativeObj.startDay + '-' +
+      creativeObj.endYear + 
       creativeObj.endMonth +
       creativeObj.endDay
     return creativeString;
@@ -38,8 +40,10 @@ export class CreativeInputService {
       creativeObj.creativeVersion + '_' +
       creativeObj.abtestLabel.abbrev + '_' +
       creativeObj.videoLength.name + '_' +
+      creativeObj.startYear +
       creativeObj.startMonth +
       creativeObj.startDay + '-' +
+      creativeObj.endYear +
       creativeObj.endMonth +
       creativeObj.endDay
     return creativeString;
@@ -55,6 +59,22 @@ export class CreativeInputService {
         subject.next(success);
       },
 
+      (error) => {
+        console.log('Error', error);
+        subject.error(error);
+      }
+    )
+    return subject.asObservable();
+  }
+
+  // updateInput
+  updateInput(id, creativeInput): Observable<any> {
+    let subject: Subject<any> = new Subject;
+    this.http.put('/creative_inputs/' + id, creativeInput).subscribe(
+
+      (success) => {
+        subject.next(success);
+      },
       (error) => {
         console.log('Error', error);
         subject.error(error);

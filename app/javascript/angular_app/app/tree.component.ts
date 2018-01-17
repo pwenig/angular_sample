@@ -21,11 +21,11 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
                      
                       <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
                         <span *ngFor="let ad_input of placement_input.ad_inputs">
-                           <children-component [campaignParent]="input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'ad'" [childType]="'creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
+                           <children-component [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'ad'" [childType]="'creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
                           
                            <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
                             <span *ngFor="let creative_input of ad_input.creative_inputs">
-                             <children-component [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'creative'" [childType]=null [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
+                             <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'creative'" [childType]=null [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
                             
                             </span>
                           </span>
@@ -50,6 +50,7 @@ export class TreeComponent {
   @Input() current_exports: any[];
   @Input() all_inputs: any[];
   @Input() all_exports: any[];
+  @Input() action: any;
   @Output() selectedNamestring = new EventEmitter(); 
 
   parentType: any;

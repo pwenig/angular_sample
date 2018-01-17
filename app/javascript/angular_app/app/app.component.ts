@@ -9,7 +9,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
   selector: 'app-component',
   template: `
    <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions" [disableNewCampaign]="disableNewCampaign"></actions>
-    <tree [current_created_input]="current_created_input" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
+    <tree [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
       <campaign [selectedObject]="selectedObject" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
     </div>
@@ -23,7 +23,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
       <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)"></ad>
     </div>
     <div *ngIf="creativeAction">
-      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)"></creative>
+      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
     </div>
   `
 })
@@ -72,6 +72,7 @@ export class AppComponent implements OnInit {
   placementAction: boolean;
   adAction: boolean;
   creativeAction: boolean;
+  action: any;
   newCreatedCampaign: any = {};
   // Object that has current campaign object arrays for the current heirarchy
   current_created_input: any = {};
@@ -176,7 +177,6 @@ export class AppComponent implements OnInit {
   // This is called when an action has been selected
   selectedAction(action) {
     this.selectedObject = {namestring: this.selectedNameString, action: action};
-    
     if(!this.selectedNameString.parent || action == 'Campaign') {
       this.selectedObject.action = 'New';
       this.changeModals(true, false, false, false, false);
@@ -196,24 +196,19 @@ export class AppComponent implements OnInit {
       if(action == 'Placement') {
         this.selectedObject.action = 'New';
       }
-      // this.selectedObject.namestring.packageParent = this.selectedNameString.namestring;
       this.changeModals(false, false, true, false, false)
     }
     if(this.selectedObject.namestring.parent == 'ad' || action == 'Ad') {
       if(action == 'Ad') {
         this.selectedObject.action = 'New';
       }
-      // this.selectedObject.namestring.packageParent = this.selectedNameString.packageParent;
-      // this.selectedObject.namestring.placementParent = this.selectedNameString.placementParent;
-      
       this.changeModals(false, false, false, true, false);
     }
     if(this.selectedObject.namestring.parent == 'creative' || action == 'Creative') {
       if(action == 'Creative') {
         this.selectedObject.action = 'New';
+
       }
-      // this.selectedObject.namestring.packageParent = this.selectedNameString.packageParent;
-      this.selectedObject.namestring.placementParent = this.selectedNameString.placementParent;
       this.changeModals(false, false, false, false, true)
     }
 
@@ -225,7 +220,6 @@ export class AppComponent implements OnInit {
       this.placementAction = placementModal;
       this.adAction = adModal;
       this.creativeAction = creativeModal;
-
   }
 
   setCampaignTag(campaignTag) {
@@ -331,9 +325,27 @@ export class AppComponent implements OnInit {
       let updatedAd = updatedPlacement.ad_inputs.find( x => x.id == creativeTag.ad_input.id);
       updatedAd.creative_inputs.unshift(creativeTag);
       this.all_inputs[index] = updatedCampaign;
+      this.selectedNameString.namestring = creativeTag;
       this.creativeAction = false;
     }
-    
+  }
+
+  updateCreativeTag(creativeTag) {
+    this.creativeInput = creativeTag;
+    this.current_created_input = {namestring: creativeTag, parentType: 'creative', childType: null };
+    let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == creativeTag.ad_input.placement_input.id);
+    let updatedAd = updatedPlacement.ad_inputs.find( x => x.id == creativeTag.ad_input.id);
+    let updatedCreative = updatedAd.creative_inputs.find(x => x.id == creativeTag.id);
+    let creativeIndex = updatedAd.creative_inputs.indexOf(updatedCreative);
+    updatedAd.creative_inputs.splice(creativeIndex, 1);
+    updatedAd.creative_inputs.unshift(creativeTag);
+    this.selectedObject.namestring = creativeTag;
+    this.all_inputs[index] = updatedCampaign;
+    this.action = 'Edit';
+    this.creativeAction = false;
   }
 
 }

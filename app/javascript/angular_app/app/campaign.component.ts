@@ -106,7 +106,6 @@ export class CampaignComponent implements OnInit {
 
   ngOnInit() {
     this.campaignInput.custom = 'XX';
-    console.log('HERE', this.selectedObject)
   }
   closeModal() {
     this.selectedObject.action = null;
