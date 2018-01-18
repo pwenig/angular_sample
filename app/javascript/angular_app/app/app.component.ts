@@ -20,7 +20,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
       <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)"></placement>
     </div>
     <div *ngIf="adAction">
-      <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)"></ad>
+      <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adTagUpdate)="updateAdTag($event)"></ad>
     </div>
     <div *ngIf="creativeAction">
       <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
@@ -302,6 +302,7 @@ export class AppComponent implements OnInit {
       let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == adTag.placement_input_id);
       updatedPlacement.ad_inputs.unshift(adTag);
       this.all_inputs[index] = updatedCampaign;
+      this.selectedNameString.namestring = adTag;
       this.adAction = false;
       if(this.adInput.creative_inputs && this.adInput.creative_inputs.length > 0) {
         this.creativeTags = this.adInput.creative_inputs.map(n=> n['creative_input_tag']);
@@ -332,7 +333,7 @@ export class AppComponent implements OnInit {
 
   updateCreativeTag(creativeTag) {
     this.creativeInput = creativeTag;
-    this.current_created_input = {namestring: creativeTag, parentType: 'creative', childType: null };
+    this.current_created_input = {namestring: creativeTag, parentType: 'creative', childType: null};
     let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
     let index = this.all_inputs.indexOf(updatedCampaign);
     let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
@@ -342,10 +343,29 @@ export class AppComponent implements OnInit {
     let creativeIndex = updatedAd.creative_inputs.indexOf(updatedCreative);
     updatedAd.creative_inputs.splice(creativeIndex, 1);
     updatedAd.creative_inputs.unshift(creativeTag);
-    this.selectedObject.namestring = creativeTag;
+    // this.selectedObject.namestring = creativeTag;
+    this.selectedNameString.namestring.namestring = creativeTag;
     this.all_inputs[index] = updatedCampaign;
     this.action = 'Edit';
     this.creativeAction = false;
+  }
+
+  updateAdTag(adTag) {
+    this.adInput = adTag;
+    this.current_created_input = {namestring: adTag, parentType: 'ad', childType: 'creative'};
+    let updatedCampaign = this.all_inputs.find( x => x.id == adTag.placement_input.package_input.campaign_input.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find( x => x.id == adTag.placement_input.package_input.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find( x => x.id == adTag.placement_input.id);
+    let updatedAd = updatedPlacement.ad_inputs.find( x => x.id == adTag.id);
+    updatedAd.creative_inputs = adTag.creative_inputs;
+    let adIndex = updatedPlacement.ad_inputs.indexOf(updatedAd);
+    updatedPlacement.ad_inputs.splice(adIndex, 1);
+    updatedPlacement.ad_inputs.unshift(adTag);
+    this.selectedNameString.namestring.namestring = adTag;
+    this.all_inputs[index] = updatedCampaign;
+    this.action = 'Edit';
+    this.adAction = false;
   }
 
 }

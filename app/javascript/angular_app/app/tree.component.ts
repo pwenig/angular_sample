@@ -17,7 +17,7 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
                  
                   <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
                     <span *ngFor="let placement_input of package_input.placement_inputs">
-                      <children-component [campaignParent]="input" [packageParent]="package_input"  [currentCreated]="current_created_input" [parentType]="'placement'" [childType]="'ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
+                      <children-component [campaignParent]="input" [packageParent]="package_input" [placementParent]="placement_input" [currentCreated]="current_created_input" [parentType]="'placement'" [childType]="'ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
                      
                       <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
                         <span *ngFor="let ad_input of placement_input.ad_inputs">

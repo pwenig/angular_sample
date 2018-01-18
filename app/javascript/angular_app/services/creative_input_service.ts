@@ -11,23 +11,24 @@ export class CreativeInputService {
   // Network_Program_Season_CreativeGroup_CreativeMessage_CreativeVersion-CustomDimension_
   // CreativeVersionNumber_A/BTestLabel_Size/Length_CreativeFlightDate
   createCreativeString(campaignObj, placementObj, adObj, creativeObj){
+    console.log('INPUT-SVC', creativeObj)
     if(placementObj['ad_type']['abbrev'] != 'SVD' && placementObj['ad_type']['abbrev'] != 'NSV') {
       let creativeString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       adObj['creative_group']['abbrev'] + '_' +
-      creativeObj.creativeMessage.abbrev + '_' +
+      creativeObj.creative_message.abbrev + '_' +
       creativeObj.custom + '_' +
-      creativeObj.creativeVersion + '_' +
-      creativeObj.abtestLabel.abbrev + '_' +
+      creativeObj.creative_version_number + '_' +
+      creativeObj.abtest_label.abbrev + '_' +
       placementObj['width'] + 'x' +
       placementObj['height'] + '_' +
-      creativeObj.startYear +
-      creativeObj.startMonth +
-      creativeObj.startDay + '-' +
-      creativeObj.endYear + 
-      creativeObj.endMonth +
-      creativeObj.endDay
+      creativeObj.start_year +
+      creativeObj.start_month +
+      creativeObj.start_day + '-' +
+      creativeObj.end_year + 
+      creativeObj.end_month +
+      creativeObj.end_day
     return creativeString;
 
     } else {
@@ -35,17 +36,17 @@ export class CreativeInputService {
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       adObj['creative_group']['abbrev'] + '_' +
-      creativeObj.creativeMessage.abbrev + '_' +
+      creativeObj.creative_message.abbrev + '_' +
       creativeObj.custom + '_' +
-      creativeObj.creativeVersion + '_' +
-      creativeObj.abtestLabel.abbrev + '_' +
-      creativeObj.videoLength.name + '_' +
-      creativeObj.startYear +
-      creativeObj.startMonth +
-      creativeObj.startDay + '-' +
-      creativeObj.endYear +
-      creativeObj.endMonth +
-      creativeObj.endDay
+      creativeObj.creative_version + '_' +
+      creativeObj.abtest_label.abbrev + '_' +
+      creativeObj.video_length.name + '_' +
+      creativeObj.start_year +
+      creativeObj.start_month +
+      creativeObj.start_day + '-' +
+      creativeObj.end_year +
+      creativeObj.end_month +
+      creativeObj.end_day
     return creativeString;
     }
     

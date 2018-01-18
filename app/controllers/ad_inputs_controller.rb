@@ -24,9 +24,41 @@ class AdInputsController < ApplicationController
     end
   end
 
+  def update 
+    ActiveRecord::Base.transaction do
+      # Update the creative namestrings
+      params['creativeParams'].each do |creative|
+        current_creative = CreativeInput.find(creative['id'])
+        if current_creative
+          current_creative.update_attribute(:creative_input_tag, creative['creative_input_tag'])
+        end 
+      end 
+      @ad_input = AdInput.includes(:creative_inputs).find(params[:id])
+      if @ad_input 
+        if @ad_input.update!(permitted_params)
+
+          # Need to add creative_message object to the return here!
+
+          render json: @ad_input, except: %i[creative_group_id],
+             include: [:creative_group, :creative_inputs, placement_input: { include: [package_input:
+             { include: [:campaign_input] } ] } ], status: 201
+
+        else 
+          head :no_content
+        end 
+      else 
+        head :no_content
+      end 
+    end
+  end 
+
   private
 
   def permitted_params
     params.permit(:placement_input_id, :creative_group_id, :custom, :ad_input_tag)
   end
 end
+
+# include: [:network, :season, :program, { package_inputs:
+#     { include: [:publisher,:agency, :buy_method, { placement_inputs: { include: [:ad_type,
+#     { ad_inputs: { include: [:creative_group, {creative_inputs: {include: [:creative_message, :abtest_label, :video_length]} } ] } } ]} }] } }]

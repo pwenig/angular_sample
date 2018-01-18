@@ -8,7 +8,7 @@ class CampaignInputsController < ApplicationController
                                     .where(package_inputs: {agency_id: nil}))
     render json: @campaign_inputs, include: [:network, :season, :program, { package_inputs:
     { include: [:publisher,:agency, :buy_method, { placement_inputs: { include: [:ad_type,
-    { ad_inputs: { include: [:creative_group, :creative_inputs] } } ]} }] } }], status: 200
+    { ad_inputs: { include: [:creative_group, {creative_inputs: {include: [:creative_message, :abtest_label, :video_length]} } ] } } ]} }] } }], status: 200
   end
 
   def create

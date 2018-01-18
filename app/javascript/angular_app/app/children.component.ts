@@ -41,9 +41,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
           if(this.action == 'Edit') {
             this.namestringUpdated(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
-          } else {
+          } else if ( this.currentCreated.parentType + '-' + this.currentCreated.namestring.id != localStorage.getItem('selected') ){
             this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
-          }
+          } else {}
           
           if(this.currentCreated.parentType == 'package') {
             this.expand('package', [this.currentCreated.namestring], 'campaign', this.campaignParent);
