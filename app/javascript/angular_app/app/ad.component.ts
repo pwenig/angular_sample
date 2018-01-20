@@ -81,7 +81,9 @@ export class AdComponent implements OnInit, OnChanges {
       this.showButtons = true;
       this.showSelectors = true;
     }
-    this.adInput.custom = "XX";
+    if(this.selectedObject.action == 'New') {
+      this.adInput.custom = "XX";
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

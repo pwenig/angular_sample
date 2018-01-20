@@ -110,7 +110,10 @@ export class CreativeComponent implements OnInit, OnChanges {
   constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService, private _date: DateFormatService) {}
 
   ngOnInit() {
-    this.creativeInput.custom = "XX";
+    if(this.selectedObject.action == 'New') {
+      this.creativeInput.custom = "XX";
+      
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
