@@ -11,7 +11,6 @@ export class CreativeInputService {
   // Network_Program_Season_CreativeGroup_CreativeMessage_CreativeVersion-CustomDimension_
   // CreativeVersionNumber_A/BTestLabel_Size/Length_CreativeFlightDate
   createCreativeString(campaignObj, placementObj, adObj, creativeObj){
-    console.log('INPUT-SVC', creativeObj)
     if(placementObj['ad_type']['abbrev'] != 'SVD' && placementObj['ad_type']['abbrev'] != 'NSV') {
       let creativeString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +

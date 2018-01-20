@@ -140,9 +140,11 @@ export class AdComponent implements OnInit, OnChanges {
 
         (result) => {
           this.adInput = result;
-          this._history.storeInput(result);
-          this._tree.createAdTree(result);
-          this.adTagUpdate.emit(result);
+          this.adInput.placement_input.package_input = this.selectedObject.namestring.packageParent;
+          this.adInput.placement_input.package_input.campaign_input = this.selectedObject.namestring.campaignParent;
+          this._history.storeInput(this.adInput);
+          this._tree.createAdTree(this.adInput);
+          this.adTagUpdate.emit(this.adInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
           this.showSave = false;
