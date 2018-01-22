@@ -125,7 +125,6 @@ export class CreativeComponent implements OnInit, OnChanges {
 
   closeModal() {
     this.selectedObject.action = null;
-    this.creativeInput = {};
     this.cancelInput();
     this.showSave = false;
   }
@@ -250,7 +249,7 @@ export class CreativeComponent implements OnInit, OnChanges {
           this.creativeInput = result;
           // Store the object for exporting
           this._history.storeInput(result);
-          this._tree.createCreativeTree(result);
+          // this._tree.createCreativeTree(result);
           // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.creativeTagUpdate.emit(result);
           this.selectedObject.action = null;
@@ -270,7 +269,7 @@ export class CreativeComponent implements OnInit, OnChanges {
           this.creativeInputObject = result;
           // Store the object for exporting
           this._history.storeInput(result);
-          this._tree.createCreativeTree(result);
+          // this._tree.createCreativeTree(result);
           // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.creativeTagFinal.emit(result);
           this.selectedObject.action = null;

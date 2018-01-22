@@ -17,7 +17,7 @@ export class AdInputService {
       let adString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
-      adObj.creativeGroup.abbrev + '_' +
+      adObj.creative_group.abbrev + '_' +
       packageObj['publisher']['abbrev'] + '_' +
       placementObj.width + 'x' +
       placementObj.height + '_' +
@@ -28,7 +28,7 @@ export class AdInputService {
       let adString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
-      adObj.creativeGroup.abbrev + '_' +
+      adObj.creative_group.abbrev + '_' +
       packageObj['publisher']['abbrev'] + '_' +
       adObj.custom
     return adString;

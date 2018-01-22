@@ -172,7 +172,7 @@ export class PackageComponent implements OnInit {
         this.packageObject = result;
         // this._history.storeInput(result);
         // Add to the heiarchy tree
-        this._tree.createPackageTree(result);
+        // this._tree.createPackageTree(result);
         // Send it to the app comp so the tree comp is updated
         this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
         this.packageInputTagFinal.emit(result);

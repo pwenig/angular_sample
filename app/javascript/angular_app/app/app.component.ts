@@ -17,7 +17,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
       <package [selectedObject]="selectedObject" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
     </div>
     <div *ngIf="placementAction">
-      <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)"></placement>
+      <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)"></placement>
     </div>
     <div *ngIf="adAction">
       <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adTagUpdate)="updateAdTag($event)"></ad>
@@ -366,6 +366,24 @@ export class AppComponent implements OnInit {
     this.all_inputs[index] = updatedCampaign;
     this.action = 'Edit';
     this.adAction = false;
+  }
+
+  updatePlacementTag(placementTag) {
+    this.placementInput = placementTag;
+    this.current_created_input = {namestring: placementTag, parentType: 'placement', childType: 'ad' };
+    let updatedCampaign = this.all_inputs.find( x => x.id == placementTag.package_input.campaign_input.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find( x => x.id = placementTag.package_input.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find( x => x.id == placementTag.id);
+    updatedPlacement.ad_inputs = placementTag.ad_inputs;
+    let placementIndex = updatedPackage.placement_inputs.indexOf(updatedPlacement);
+    updatedPackage.placement_inputs.splice(placementIndex, 1);
+    updatedPackage.placement_inputs.unshift(placementTag);
+    this.selectedNameString.namestring.namestring = placementTag;
+    this.all_inputs[index] = updatedCampaign;
+    this.action = 'Edit';
+    this.placementAction = false;
+
   }
 
 }
