@@ -104,6 +104,50 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
   end
 
+  it 'edits a package input' do 
+    date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
+    fill_in('email-login', with: @user.email)
+    fill_in('password-login', with: @user.password)
+    click_on('Log In')
+    click_on('New Campaign')
+    expect(page).to have_select('Network', options: ['Select Network', 'Comedy Central'])
+    select('Comedy Central', from: 'Network')
+    expect(page).to have_text('Comedy Central')
+    expect(page).to have_select('Program', options: ['Select Program', 'Clusterfest', 'Broad City'])
+    select('Clusterfest', from: 'Program')
+    expect(page).to have_text('Clusterfest')
+    expect(page).to have_select('Season', options: ['Select Season', 'S00', 'S01'])
+    select('S00', from: 'Season')
+    expect(page).to have_text('S00')
+    expect(page).to have_select('Campaign Type', options: ['Select Campaign Type', 'Binge', 'Awareness'])
+    select('Binge', from: 'Campaign Type')
+    expect(page).to have_text('Binge')
+    expect(page).to have_field('customCampaign')
+    fill_in('customCampaign', with: 'XX')
+    expect(page).to have_text('Create Campaign')
+    click_on('Create Campaign')
+    expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
+    expect(page).to have_text('New Package')
+    click_on('New Package')
+    expect(page).to have_select('Publisher', options: ['Select Publisher', 'ABC'])
+    select('ABC', from: 'Publisher')
+    expect(page).to have_select('Buy Method', options: ['Select Buy Method', 'CPA'])
+    select('CPA', from: 'Buy Method')
+    expect(page).to have_field('customPackage')
+    fill_in('customPackage', with: 'XX')
+    expect(page).to have_select('Inventory Type', options: ['Select Inventory Type',
+                                                            'Partner Social Distribution',
+                                                            'Custom Program'])
+    select('Partner Social Distribution', from: 'Inventory Type')
+    click_on('Create Package')
+    expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
+    click_on('Edit')
+    select('Custom Program', from: 'Inventory Type')
+    click_on('Update Package')
+    expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_CSP_XX')
+  end 
+
+
   it 'clears a package input' do
     date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
