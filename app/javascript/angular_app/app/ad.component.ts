@@ -138,8 +138,7 @@ export class AdComponent implements OnInit, OnChanges {
       createParams['placement_input_id'] = this.selectedObject.namestring.placementParent.id;
       // Need to get ids of the creative inputs and update each 
       // of the namestrings.
-
-      this._ad.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent).subscribe(
+      this._ad.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent).subscribe(
 
         (result) => {
           this.adInput = result;
