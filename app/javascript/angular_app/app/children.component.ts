@@ -39,7 +39,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if(Object.keys(this.currentCreated).length != 0) {
       setTimeout(() => {
-          if(this.action == 'Edit') {
+          if(this.action == 'Edit' || this.currentCreated.parentType == 'campaign') {
             this.namestringUpdated(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
           } else if ( this.currentCreated.parentType + '-' + this.currentCreated.namestring.id != localStorage.getItem('selected') ){
             this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);

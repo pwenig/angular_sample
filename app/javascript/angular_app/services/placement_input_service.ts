@@ -80,7 +80,8 @@ export class PlacementInputService {
 
     // Not tentpole and video
     }else if(!this._campaign.tentpole(campaignObj) && this._adtype.videoAdType(placementObj)) {
-      let placementString = campaignObj['program']['abbrev'] + '_' +
+      let placementString = campaignObj['network']['abbrev'] + '_' +
+      campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       placementObj.episode_start.abbrev + '-' +
       placementObj.episode_end.abbrev + '_' +

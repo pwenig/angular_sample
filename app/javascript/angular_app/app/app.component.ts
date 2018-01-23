@@ -11,7 +11,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
    <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions" [disableNewCampaign]="disableNewCampaign"></actions>
     <tree [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
-      <campaign [selectedObject]="selectedObject" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
+      <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
     </div>
     <div *ngIf="packageAction">
       <package [selectedObject]="selectedObject" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)" (packageTagUpdate)="updatePackageTag($event)"></package>
@@ -250,7 +250,6 @@ export class AppComponent implements OnInit {
       this.showAdInput = false;
       this.showCreativeInput = false;
     } else {
-      // Remove this?
       this.packageInput = packageTag;
       this.current_created_input = {namestring: packageTag, parentType: 'package', childType: 'placement'};
       // Update the object in the all_inputs array
@@ -343,7 +342,6 @@ export class AppComponent implements OnInit {
     let creativeIndex = updatedAd.creative_inputs.indexOf(updatedCreative);
     updatedAd.creative_inputs.splice(creativeIndex, 1);
     updatedAd.creative_inputs.unshift(creativeTag);
-    // this.selectedObject.namestring = creativeTag;
     this.selectedNameString.namestring.namestring = creativeTag;
     this.all_inputs[index] = updatedCampaign;
     this.action = 'Edit';
@@ -399,6 +397,18 @@ export class AppComponent implements OnInit {
     this.all_inputs[index] = updatedCampaign;
     this.action = 'Edit';
     this.packageAction = false;
+  }
+
+  updateCampaignTag(campaignTag) {
+    this.campaignInput = campaignTag;
+    this.current_created_input = {namestring: campaignTag, parentType: 'campaign', childType: 'package'};
+    let updatedCampaign = this.all_inputs.find( x => x.id == campaignTag.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    this.selectedNameString.namestring.namestring = campaignTag;
+    this.all_inputs.splice(index, 1);
+    this.all_inputs.unshift(campaignTag);
+    this.action = 'Edit';
+    this.campaignAction = false;
   }
 
 }

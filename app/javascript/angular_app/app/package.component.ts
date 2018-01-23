@@ -26,12 +26,12 @@ import {HistoryService} from '../services/history_service';
                     <select-component [label]="publisherLabel"[default]="defaultPublisher" [options]="publishers" (selected)="attributeUpdated($event, 'publisher')"></select-component>
                   </div>
                   <div class="column" *ngIf="buyMethods && buyMethods.length > 0">
-                    <select-component [label]="buyMethodLabel" [default]="defaultBuyMethod" [options]="buyMethods" (selected)="attributeUpdated($event, 'buyMethod')"></select-component>
+                    <select-component [label]="buyMethodLabel" [default]="defaultBuyMethod" [options]="buyMethods" (selected)="attributeUpdated($event, 'buy_method')"></select-component>
                    </div>
                 </section>
                 <section class="select">  
                   <div class="inv-type-column" *ngIf="inventoryTypes && inventoryTypes.length > 0">
-                    <select-component [label]="inventoryTypeLabel" [default]="defaultInventoryType" [options]="inventoryTypes" (selected)="attributeUpdated($event, 'inventoryType')"></select-component>
+                    <select-component [label]="inventoryTypeLabel" [default]="defaultInventoryType" [options]="inventoryTypes" (selected)="attributeUpdated($event, 'inventory_type')"></select-component>
                   </div>
                   <div class="custom-column"> 
                     <label for="customPackage">Package Custom</label><br>
@@ -122,8 +122,8 @@ export class PackageComponent implements OnInit, OnChanges {
   checkAttributes() {
     if(
       this.packageInput.publisher && 
-      this.packageInput.buyMethod &&
-      this.packageInput.inventoryType &&
+      this.packageInput.buy_method &&
+      this.packageInput.inventory_type &&
       this.packageInput.custom
       ){ 
         this.showSave = true;
@@ -169,9 +169,9 @@ export class PackageComponent implements OnInit, OnChanges {
       agency: this.agency,
       publisher_id: this.packageInput.publisher.id,
       publisher: this.packageInput.publisher,
-      buy_method_id: this.packageInput.buyMethod.id,
-      buy_method: this.packageInput.buyMethod,
-      inventory_type_id: this.packageInput.inventoryType.id,
+      buy_method_id: this.packageInput.buy_method.id,
+      buy_method: this.packageInput.buy_method,
+      inventory_type_id: this.packageInput.inventory_type.id,
       custom: this.packageInput.custom,
       package_input_tag: this.packageInput.packageInputTag
     }
@@ -237,8 +237,8 @@ export class PackageComponent implements OnInit, OnChanges {
   duplicate() {
     // Set default values
     this.defaultPublisher = this.packageInput.publisher = this.publishers.find(x => x['id'] == this.selectedObject.namestring.namestring.publisher.id);
-    this.defaultBuyMethod = this.packageInput.buyMethod = this.buyMethods.find(x => x['id'] == this.selectedObject.namestring.namestring.buy_method.id);
-    this.defaultInventoryType = this.packageInput.inventoryType = this.inventoryTypes.find(x => x['id'] == this.selectedObject.namestring.namestring.inventory_type_id);
+    this.defaultBuyMethod = this.packageInput.buy_method = this.buyMethods.find(x => x['id'] == this.selectedObject.namestring.namestring.buy_method.id);
+    this.defaultInventoryType = this.packageInput.inventory_type = this.inventoryTypes.find(x => x['id'] == this.selectedObject.namestring.namestring.inventory_type_id);
     this.packageInput.custom = this.selectedObject.namestring.namestring.custom;
     // Checks to see if the ngIf has changed and the selectors are showing.
     this.changeDetector.detectChanges();

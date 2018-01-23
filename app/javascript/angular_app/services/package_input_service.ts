@@ -20,8 +20,8 @@ export class PackageInputService {
       campaignObj['season']['abbrev'] + '_' +
       agency['abbrev'] + '_' +
       packageObj.publisher.abbrev + '_' +
-      packageObj.buyMethod.abbrev + '_' +
-      packageObj.inventoryType.abbrev + '_' +
+      packageObj.buy_method.abbrev + '_' +
+      packageObj.inventory_type.abbrev + '_' +
       packageObj.custom
     return packageString;
   }
