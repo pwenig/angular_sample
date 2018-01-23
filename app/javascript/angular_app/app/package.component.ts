@@ -94,6 +94,7 @@ export class PackageComponent implements OnInit, OnChanges {
   ngOnInit() {
     if(this.selectedObject.action == 'New') {
       this.packageInput.custom = "XX";
+      this.defaultInventoryType = undefined;
     }
   }
 
