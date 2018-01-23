@@ -143,7 +143,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     if(parentType == 'placement') {
       this.changeCollapse(parentType, parent, childType, children);
       for(let child of children ) {
-        if(child.creative_inputs.length > 0) {
+        if(child.creative_inputs && child.creative_inputs.length > 0) {
           this.changeCollapse('ad', child, 'creative', child.creative_inputs);
         }
       }
@@ -152,7 +152,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       // Change package and placement
       this.changeCollapse(parentType, parent, childType, children);
       for(let child of children) {
-        if(child.ad_inputs.length > 0) {
+        if(child.ad_inputs && child.ad_inputs.length > 0) {
           // Change ad
           this.changeCollapse('placement', child, 'ad', child.ad_inputs);
           // Change creative

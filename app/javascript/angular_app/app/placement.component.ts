@@ -25,10 +25,10 @@ import {HistoryService} from '../services/history_service';
               <div class="row">
                 <section class="select">
                 <div class="column" *ngIf="(episodes && episodes.length > 0) && !_campaign.tentpole(selectedObject.namestring.campaignParent)">
-                <select-component [label]="episodeStartLabel" [default]="defaultEpisodeStart" [options]="episodes" (selected)="attributeUpdated($event, 'episodeStartDate')"></select-component>
+                <select-component [label]="episodeStartLabel" [default]="defaultEpisodeStart" [options]="episodes" (selected)="attributeUpdated($event, 'episode_start')"></select-component>
                 </div>
                 <div class="column" *ngIf="(episodes && episodes.length > 0) && !_campaign.tentpole(selectedObject.namestring.campaignParent)">
-                  <select-component [label]="episodeEndLabel" [default]="defaultEpisodeEnd" [options]="episodes" (selected)="attributeUpdated($event, 'episodeEndDate')"></select-component>
+                  <select-component [label]="episodeEndLabel" [default]="defaultEpisodeEnd" [options]="episodes" (selected)="attributeUpdated($event, 'episode_end')"></select-component>
                 </div>
                 <div class="custom-column" *ngIf="_campaign.tentpole(selectedObject.namestring.campaignParent)"> 
                   <label for="customTentpole">Tentpole Details</label><br>
@@ -63,7 +63,7 @@ import {HistoryService} from '../services/history_service';
                 <section class="select" *ngIf="placementInput.ad_type">
                 <div class="custom-column"> 
                   <label for="type">Audience Type</label><br>
-                  <input type="text" id="customAudience" [(ngModel)]="placementInput.audience" placeholder="Enter Type" (change)="checkAttributes()">
+                  <input type="text" id="customAudience" [(ngModel)]="placementInput.audience_type" placeholder="Enter Type" (change)="checkAttributes()">
                 </div>
                 <div class="custom-column" *ngIf="!_adtype.videoAdType(placementInput)"> 
                   <label for="type">Width</label><br>
@@ -177,8 +177,8 @@ export class PlacementComponent implements OnInit, OnChanges {
   checkAttributes(){
     // Not a tentpole and not video ad type
     if(!this._campaign.tentpole(this.selectedObject.namestring.campaignParent) && !this._adtype.videoAdType(this.placementInput) && 
-      this.placementInput.episodeStartDate &&
-      this.placementInput.episodeEndDate &&
+      this.placementInput.episode_start &&
+      this.placementInput.episode_end &&
       this.placementInput.height &&
       this.placementInput.width &&
       this.mainAttributes()
@@ -197,8 +197,8 @@ export class PlacementComponent implements OnInit, OnChanges {
 
     // Not a tentpole and is a video ad type
     }else if(!this._campaign.tentpole(this.selectedObject.namestring.campaignParent) && this._adtype.videoAdType(this.placementInput) &&
-      this.placementInput.episodeStartDate &&
-      this.placementInput.episodeEndDate &&
+      this.placementInput.episode_start &&
+      this.placementInput.episode_end &&
       this.mainAttributes()
     ){
       this.showSave = true;
@@ -246,15 +246,15 @@ export class PlacementComponent implements OnInit, OnChanges {
         tactic_id: this.placementInput.tactic.id,
         device_id: this.placementInput.device.id,
         ad_type_id: this.placementInput.ad_type.id,
-        audience_type: this.placementInput.audience,
+        audience_type: this.placementInput.audience_type,
         width: this.placementInput.width,
         height: this.placementInput.height,
         targeting_type_1_id: this.placementInput.targeting_type_1.id,
         targeting_type_2_id: this.placementInput.targeting_type_2.id,
         targeting_type_3_id: this.placementInput.targeting_type_3.id,
         targeting_type_4_id: this.placementInput.targeting_type_4.id,
-        episode_start_id: this.placementInput.episodeStartDate.id,
-        episode_end_id: this.placementInput.episodeEndDate.id,
+        episode_start_id: this.placementInput.episode_start.id,
+        episode_end_id: this.placementInput.episode_end.id,
         placement_input_tag: this.placementInput.placementInputTag
       } 
     } else {
@@ -264,7 +264,7 @@ export class PlacementComponent implements OnInit, OnChanges {
         tactic_id: this.placementInput.tactic.id,
         device_id: this.placementInput.device.id,
         ad_type_id: this.placementInput.ad_type.id,
-        audience_type: this.placementInput.audience,
+        audience_type: this.placementInput.audience_type,
         width: this.placementInput.width,
         height: this.placementInput.height,
         targeting_type_1_id: this.placementInput.targeting_type_1.id,
@@ -362,7 +362,7 @@ export class PlacementComponent implements OnInit, OnChanges {
     return (this.placementInput.tactic &&
       this.placementInput.device &&
       this.placementInput.ad_type &&
-      this.placementInput.audience)
+      this.placementInput.audience_type)
   }
 
   createString() {
@@ -379,13 +379,13 @@ export class PlacementComponent implements OnInit, OnChanges {
       this.placementInput.tentpole = this.selectedObject.namestring.namestring.tentpole;
     }
     if(!this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
-      this.defaultEpisodeStart = this.placementInput.episodeStartDate = this.episodes.find(x => x['id'] == this.selectedObject.namestring.namestring.episode_start_id);
-      this.defaultEpisodeEnd = this.placementInput.episodeEndDate = this.episodes.find(x => x['id'] == this.selectedObject.namestring.namestring.episode_end_id);
+      this.defaultEpisodeStart = this.placementInput.episode_start = this.episodes.find(x => x['id'] == this.selectedObject.namestring.namestring.episode_start_id);
+      this.defaultEpisodeEnd = this.placementInput.episode_end = this.episodes.find(x => x['id'] == this.selectedObject.namestring.namestring.episode_end_id);
     }
     this.defaultTactic = this.placementInput.tactic = this.tactics.find(x => x['id'] == this.selectedObject.namestring.namestring.tactic_id);
     this.defaultDevice = this.placementInput.device = this.devices.find(x => x['id'] == this.selectedObject.namestring.namestring.device_id);
     this.defaultAdType = this.placementInput.ad_type = this.adTypes.find(x => x['id'] == this.selectedObject.namestring.namestring.ad_type_id);
-    this.placementInput.audience = this.selectedObject.namestring.namestring.audience_type;
+    this.placementInput.audience_type = this.selectedObject.namestring.namestring.audience_type;
     this.placementInput.height = this.selectedObject.namestring.namestring.height;
     this.placementInput.width = this.selectedObject.namestring.namestring.width;
     this.defaultTargetingType1 = this.placementInput.targeting_type_1 = this.targetingTypes.find(x => x['id'] == this.selectedObject.namestring.namestring.targeting_type_1_id);

@@ -29,7 +29,7 @@ export class PlacementInputService {
       placementObj.targeting_type_2.abbrev + '-' +
       placementObj.targeting_type_3.abbrev + '-' +
       placementObj.targeting_type_4.abbrev + '_' +
-      placementObj.audience + '_' +
+      placementObj.audience_type + '_' +
       placementObj.width + 'x' +
       placementObj.height + '_' +
       campaignObj['start_year'] +
@@ -51,7 +51,7 @@ export class PlacementInputService {
       placementObj.targeting_type_2.abbrev + '-' +
       placementObj.targeting_type_3.abbrev + '-' +
       placementObj.targeting_type_4.abbrev + '_' +
-      placementObj.audience + '_' +
+      placementObj.audience_type + '_' +
       campaignObj['start_year'] +
       campaignObj['start_month'] +
       campaignObj['start_day'] + '-' +
@@ -73,8 +73,8 @@ export class PlacementInputService {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
-        placementObj.episodeStartDate.abbrev + '-' +
-        placementObj.episodeEndDate.abbrev + '_' +
+        placementObj.episode_start.abbrev + '-' +
+        placementObj.episode_end.abbrev + '_' +
         non_video_ad_type
       return placementString;
 
@@ -82,8 +82,8 @@ export class PlacementInputService {
     }else if(!this._campaign.tentpole(campaignObj) && this._adtype.videoAdType(placementObj)) {
       let placementString = campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
-      placementObj.episodeStartDate.abbrev + '-' +
-      placementObj.episodeEndDate.abbrev + '_' +
+      placementObj.episode_start.abbrev + '-' +
+      placementObj.episode_end.abbrev + '_' +
       video_ad_type
     return placementString;
 
@@ -140,7 +140,6 @@ export class PlacementInputService {
     newPlacementInput.creativeParams = [];
     if(currentPlacementInput.ad_inputs && currentPlacementInput.ad_inputs.length > 0) {
       for(let adInput of currentPlacementInput.ad_inputs) {
-        // CHECK THIS
         let adNamestring = this._ad.createAdString(campaignObj, packageObj, newPlacementInput, adInput);
         let adParams = {
           id: adInput.id,

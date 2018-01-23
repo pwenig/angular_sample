@@ -14,7 +14,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
       <campaign [selectedObject]="selectedObject" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)"></campaign>
     </div>
     <div *ngIf="packageAction">
-      <package [selectedObject]="selectedObject" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)"></package>
+      <package [selectedObject]="selectedObject" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)" (packageTagUpdate)="updatePackageTag($event)"></package>
     </div>
     <div *ngIf="placementAction">
       <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)"></placement>
@@ -383,7 +383,22 @@ export class AppComponent implements OnInit {
     this.all_inputs[index] = updatedCampaign;
     this.action = 'Edit';
     this.placementAction = false;
+  }
 
+  updatePackageTag(packageTag) {
+    this.packageInput = packageTag;
+    this.current_created_input = {namestring: packageTag, parentType: 'package', childType: 'placement'};
+    let updatedCampaign = this.all_inputs.find( x => x.id == packageTag.campaign_input.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == packageTag.id );
+    updatedPackage.placement_inputs = packageTag.placement_inputs;
+    let packageIndex = updatedCampaign.package_inputs.indexOf(updatedPackage);
+    updatedCampaign.package_inputs.splice(packageIndex, 1);
+    updatedCampaign.package_inputs.unshift(packageTag);
+    this.selectedNameString.namestring.namestring = packageTag;
+    this.all_inputs[index] = updatedCampaign;
+    this.action = 'Edit';
+    this.packageAction = false;
   }
 
 }

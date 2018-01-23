@@ -7,7 +7,8 @@ class CampaignInputsController < ApplicationController
                                     .or(CampaignInput.includes(:package_inputs)
                                     .where(package_inputs: {agency_id: nil}))
     render json: @campaign_inputs, include: [:network, :season, :program, { package_inputs:
-    { include: [:publisher,:agency, :buy_method, { placement_inputs: { include: [:ad_type,
+    { include: [:publisher,:agency, :buy_method, { placement_inputs: { include: [:episode_start, :episode_end, :tactic, :device, :targeting_type_1, :targeting_type_2,
+    :targeting_type_3, :targeting_type_4, :ad_type,
     { ad_inputs: { include: [:creative_group, {creative_inputs: {include: [:creative_message, :abtest_label, :video_length]} } ] } } ]} }] } }], status: 200
   end
 
