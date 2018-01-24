@@ -16,7 +16,7 @@ import {DateFormatService} from '../services/date_format_service'
       <div class="modal-dialog">
         <div class="modal-content campaign">
           <div class="modal-header">
-            <h4 class="modal-title pull-left">{{selectedObject.action}} Creative</h4>
+            <h4 class="modal-title pull-left">{{selectedObject.action}}</h4>
             <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -110,14 +110,14 @@ export class CreativeComponent implements OnInit, OnChanges {
   constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService, private _date: DateFormatService) {}
 
   ngOnInit() {
-    if(this.selectedObject.action == 'New') {
+    if(this.selectedObject.action == 'New Creative') {
       this.creativeInput.custom = "XX";
       
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.selectedObject.currentValue.action == 'Edit') {
+    if(changes.selectedObject.currentValue.action == 'Edit Creative') {
       this.action = 'Update'
       this.duplicate();
     }

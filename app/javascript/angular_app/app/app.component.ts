@@ -8,7 +8,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
 @Component({
   selector: 'app-component',
   template: `
-   <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions" [disableNewCampaign]="disableNewCampaign"></actions>
+   <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
     <tree [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
       <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
@@ -65,7 +65,6 @@ export class AppComponent implements OnInit {
   showCreativeInput: boolean = false;
   selectedNameString: any = {};
   disableActions: boolean = true;
-  disableNewCampaign: boolean;
   selectedObject: any = {};
   campaignAction: boolean;
   packageAction: boolean;
@@ -150,68 +149,31 @@ export class AppComponent implements OnInit {
     
   }
 
-  // This may need to change to handle double-clicking other namestrings 
   // This function is called when a namestring has been selected from the children-component
   selectedString(nameStringObject) {
-    if(!nameStringObject) {
-      // Disable the action buttons since a namestring was not selected
-      this.disableActions = true;
-      // Enable the New Campaign button
-      this.disableNewCampaign = false;
-      var inactiveNameStringObject = {
-        namestring: null,
-        parent: 'campaign',
-        child: 'package'
-      }
-      this.selectedNameString = inactiveNameStringObject;
-    } else {
-      // Send it so the action-component has the correct child action
-      this.selectedNameString = nameStringObject;
-      // Enable the action buttons since a namestring was selected
-      this.disableActions = false;
-      // Disable the New Campaign button if one of the other buttons was selected
-      this.disableNewCampaign = true;
-    }
+    this.selectedNameString = nameStringObject;
+    this.disableActions = false;
   }
 
   // This is called when an action has been selected
   selectedAction(action) {
     this.selectedObject = {namestring: this.selectedNameString, action: action};
-    if(!this.selectedNameString.parent || action == 'Campaign') {
-      this.selectedObject.action = 'New';
+    if(action.includes('Campaign')) {
       this.changeModals(true, false, false, false, false);
     }
 
-    if(this.selectedObject.namestring.parent == 'campaign') {
-      this.changeModals(true, false, false, false, false);
-    }
-
-    if(this.selectedObject.namestring.parent == 'package' || action == 'Package') {
-      if(action == 'Package') {
-        this.selectedObject.action = 'New';
-      }
+    if(action.includes('Package')) {
       this.changeModals(false, true, false, false, false);
     }
-    if(this.selectedObject.namestring.parent == 'placement' || action == 'Placement') {
-      if(action == 'Placement') {
-        this.selectedObject.action = 'New';
-      }
+    if(action.includes('Placement')) {
       this.changeModals(false, false, true, false, false)
     }
-    if(this.selectedObject.namestring.parent == 'ad' || action == 'Ad') {
-      if(action == 'Ad') {
-        this.selectedObject.action = 'New';
-      }
+    if( action.includes('Ad')) {
       this.changeModals(false, false, false, true, false);
     }
-    if(this.selectedObject.namestring.parent == 'creative' || action == 'Creative') {
-      if(action == 'Creative') {
-        this.selectedObject.action = 'New';
-
-      }
+    if(action.includes('Creative')) {
       this.changeModals(false, false, false, false, true)
     }
-
   }
 
   changeModals(campaignModal, packageModal, placementModal, adModal, creativeModal) {
@@ -230,7 +192,7 @@ export class AppComponent implements OnInit {
       this.showCreativeInput = false;
     } else {
       this.campaignInput = campaignTag;
-      this.current_created_input = {namestring: campaignTag, parentType: 'campaign', childType: 'package'};
+      this.current_created_input = {namestring: campaignTag, parentType: 'Campaign', childType: 'Package'};
       this.all_inputs.unshift(campaignTag);
       this.campaignTags.push(campaignTag.campaign_input_tag);
       this.campaignAction = false;
@@ -251,7 +213,7 @@ export class AppComponent implements OnInit {
       this.showCreativeInput = false;
     } else {
       this.packageInput = packageTag;
-      this.current_created_input = {namestring: packageTag, parentType: 'package', childType: 'placement'};
+      this.current_created_input = {namestring: packageTag, parentType: 'Package', childType: 'Placement'};
       // Update the object in the all_inputs array
       let updatedCampaign = this.all_inputs.find(x => x.id == packageTag.campaign_input_id);
       let index = this.all_inputs.indexOf(updatedCampaign);
@@ -273,7 +235,7 @@ export class AppComponent implements OnInit {
       this.showCreativeInput = false;
     } else {
       this.placementInput = placementTag;
-      this.current_created_input = {namestring: placementTag, parentType: 'placement', childType: 'ad'};
+      this.current_created_input = {namestring: placementTag, parentType: 'Placement', childType: 'Ad'};
       let updatedCampaign = this.all_inputs.find(x => x.id == placementTag.package_input.campaign_input_id);
       let index = this.all_inputs.indexOf(updatedCampaign);
       let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == placementTag.package_input.id);
@@ -294,7 +256,7 @@ export class AppComponent implements OnInit {
       // this.showCreativeInput = false;
     } else {
       this.adInput = adTag;
-      this.current_created_input = {namestring: adTag, parentType: 'ad', childType: 'creative'};
+      this.current_created_input = {namestring: adTag, parentType: 'Ad', childType: 'Creative'};
       let updatedCampaign = this.all_inputs.find(x => x.id == adTag.placement_input.package_input.campaign_input_id);
       let index = this.all_inputs.indexOf(updatedCampaign);
       let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == adTag.placement_input.package_input.id);
@@ -317,7 +279,7 @@ export class AppComponent implements OnInit {
       // this.showNew = false;
     } else {
       this.creativeInput = creativeTag;
-      this.current_created_input = {namestring: creativeTag, parentType: 'creative', childType: null };
+      this.current_created_input = {namestring: creativeTag, parentType: 'Creative', childType: null };
       let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
       let index = this.all_inputs.indexOf(updatedCampaign);
       let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
@@ -332,7 +294,7 @@ export class AppComponent implements OnInit {
 
   updateCreativeTag(creativeTag) {
     this.creativeInput = creativeTag;
-    this.current_created_input = {namestring: creativeTag, parentType: 'creative', childType: null};
+    this.current_created_input = {namestring: creativeTag, parentType: 'Creative', childType: null};
     let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
     let index = this.all_inputs.indexOf(updatedCampaign);
     let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
@@ -350,7 +312,7 @@ export class AppComponent implements OnInit {
 
   updateAdTag(adTag) {
     this.adInput = adTag;
-    this.current_created_input = {namestring: adTag, parentType: 'ad', childType: 'creative'};
+    this.current_created_input = {namestring: adTag, parentType: 'Ad', childType: 'Creative'};
     let updatedCampaign = this.all_inputs.find( x => x.id == adTag.placement_input.package_input.campaign_input.id);
     let index = this.all_inputs.indexOf(updatedCampaign);
     let updatedPackage = updatedCampaign.package_inputs.find( x => x.id == adTag.placement_input.package_input.id);
@@ -368,7 +330,7 @@ export class AppComponent implements OnInit {
 
   updatePlacementTag(placementTag) {
     this.placementInput = placementTag;
-    this.current_created_input = {namestring: placementTag, parentType: 'placement', childType: 'ad' };
+    this.current_created_input = {namestring: placementTag, parentType: 'Placement', childType: 'Ad' };
     let updatedCampaign = this.all_inputs.find( x => x.id == placementTag.package_input.campaign_input.id);
     let index = this.all_inputs.indexOf(updatedCampaign);
     let updatedPackage = updatedCampaign.package_inputs.find( x => x.id = placementTag.package_input.id);
@@ -385,7 +347,7 @@ export class AppComponent implements OnInit {
 
   updatePackageTag(packageTag) {
     this.packageInput = packageTag;
-    this.current_created_input = {namestring: packageTag, parentType: 'package', childType: 'placement'};
+    this.current_created_input = {namestring: packageTag, parentType: 'Package', childType: 'Placement'};
     let updatedCampaign = this.all_inputs.find( x => x.id == packageTag.campaign_input.id);
     let index = this.all_inputs.indexOf(updatedCampaign);
     let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == packageTag.id );
@@ -401,7 +363,7 @@ export class AppComponent implements OnInit {
 
   updateCampaignTag(campaignTag) {
     this.campaignInput = campaignTag;
-    this.current_created_input = {namestring: campaignTag, parentType: 'campaign', childType: 'package'};
+    this.current_created_input = {namestring: campaignTag, parentType: 'Campaign', childType: 'Package'};
     let updatedCampaign = this.all_inputs.find( x => x.id == campaignTag.id);
     let index = this.all_inputs.indexOf(updatedCampaign);
     this.selectedNameString.namestring.namestring = campaignTag;

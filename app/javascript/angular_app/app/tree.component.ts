@@ -9,23 +9,23 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
         <section class="tree">
           <div *ngIf="all_inputs && all_inputs.length > 0">
             <ul *ngFor="let input of all_inputs">
-              <children-component [campaignParent]="input" [currentCreated]="current_created_input" [parentType]="'campaign'" [childType]="'package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
+              <children-component [campaignParent]="input" [currentCreated]="current_created_input" [parentType]="'Campaign'" [childType]="'Package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
               
               <span *ngIf="input.package_inputs && input.package_inputs.length > 0">
                 <span *ngFor="let package_input of input.package_inputs">
-                  <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'package'" [childType]="'placement'" [children]=package_input.placement_inputs [parent]=package_input (selectedNamestring)="selectedString($event)"></children-component>
+                  <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Package'" [childType]="'Placement'" [children]=package_input.placement_inputs [parent]=package_input (selectedNamestring)="selectedString($event)"></children-component>
                  
                   <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
                     <span *ngFor="let placement_input of package_input.placement_inputs">
-                      <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [placementParent]="placement_input" [currentCreated]="current_created_input" [parentType]="'placement'" [childType]="'ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
+                      <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [placementParent]="placement_input" [currentCreated]="current_created_input" [parentType]="'Placement'" [childType]="'Ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
                      
                       <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
                         <span *ngFor="let ad_input of placement_input.ad_inputs">
-                           <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'ad'" [childType]="'creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
+                           <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Ad'" [childType]="'Creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
                           
                            <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
                             <span *ngFor="let creative_input of ad_input.creative_inputs">
-                             <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'creative'" [childType]=null [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
+                             <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Creative'" [childType]=null [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
                             
                             </span>
                           </span>

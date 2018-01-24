@@ -13,7 +13,7 @@ import {HistoryService} from '../services/history_service';
       <div class="modal-dialog">
         <div class="modal-content campaign">
           <div class="modal-header">
-            <h4 class="modal-title pull-left">{{selectedObject.action}} Package</h4>
+            <h4 class="modal-title pull-left">{{selectedObject.action}}</h4>
             <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -92,14 +92,14 @@ export class PackageComponent implements OnInit, OnChanges {
   constructor( private _package: PackageInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
   ngOnInit() {
-    if(this.selectedObject.action == 'New') {
+    if(this.selectedObject.action == 'New Package') {
       this.packageInput.custom = "XX";
       this.defaultInventoryType = undefined;
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.selectedObject.currentValue.action == 'Edit') {
+    if(changes.selectedObject.currentValue.action == 'Edit Package') {
       this.action = 'Update'
       this.editDisable = true;
       this.duplicate();

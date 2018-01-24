@@ -13,7 +13,7 @@ import {HistoryService} from '../services/history_service';
         <div class="modal-dialog">
           <div class="modal-content campaign">
             <div class="modal-header">
-              <h4 class="modal-title pull-left">{{selectedObject.action}} Ad</h4>
+              <h4 class="modal-title pull-left">{{selectedObject.action}}</h4>
               <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -77,16 +77,16 @@ export class AdComponent implements OnInit, OnChanges {
   constructor( private _ad: AdInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
   ngOnInit() {
-    if(this.selectedObject.action == 'New') {
+    if(this.selectedObject.action == 'New Ad') {
       this.adInput.custom = "XX";
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.selectedObject.currentValue.action == 'Edit') {
+    if(changes.selectedObject.currentValue.action == 'Edit Ad') {
       this.action = 'Update'
       this.duplicate();
-    } else if(changes.selectedObject.currentValue.action == 'New') {
+    } else if(changes.selectedObject.currentValue.action == 'New Ad') {
       this.adInput = {};
       this.adInput.custom = 'XX';
       this.showSave = false;
