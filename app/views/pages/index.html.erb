@@ -21,14 +21,11 @@
   <% end %>
 
   <% if current_user %>
-    <div class='login-container'>
-      <div class='row'>
-        <section class='component'>
-          <app-component></app-component>
-        </section>
-      </div>
+    <div class='login-container flexbox-item-grow flexbox-parent'>
+      <section class='component flexbox-item-grow flexbox-parent'>
+        <app-component class="flexbox-item-grow flexbox-parent"></app-component>
+      </section>
     </div>
   <% end %>
 
   <%= javascript_pack_tag 'angular_app' %>
-

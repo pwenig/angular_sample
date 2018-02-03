@@ -1,16 +1,94 @@
 @import "variables.scss";
 
+*, *:before, *:after
+{
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+html, body
+{
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+body
+{
+    background: #444444;
+
+    color: #cccccc;
+    font-size: 14px;
+    /* Helvetica/Arial-based sans serif stack */
+    font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+}
+
+.flexbox-parent
+{
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    justify-content: flex-start; /* align items in Main Axis */
+    align-items: stretch; /* align items in Cross Axis */
+    align-content: stretch;
+}
+
+.flexbox-item
+{
+    padding: 0px;
+}
+.flexbox-item-grow
+{
+    flex-grow: 1; /* same as flex: 1 1 auto; */
+}
+
+.flexbox-item.header
+{
+}
+.flexbox-item.footer
+{
+
+}
+.flexbox-item.content
+{
+}
+.fill-area
+{
+    display: flex;
+    flex-direction: row;
+
+    justify-content: flex-start; /* align items in Main Axis */
+    align-items: stretch; /* align items in Cross Axis */
+    align-content: stretch; /* Extra space in Cross Axis */
+
+}
+.fill-area-content
+{
+    border: 1px solid #000000;
+
+    /* Needed for when the area gets squished too far and there is content that can't be displayed */
+    overflow: auto;
+}
 .header-container {
   width: 100%;
   display: flex;
+  flex-direction: row;
   margin: 0;
-  
+
   .row {
     width: 100%;
     margin: 0;
   }
 
   section.header {
+    width: 100%;
     padding: 10px;
     font-size: medium;
     background-color: $primary-color;
@@ -24,7 +102,7 @@
     a {
       text-decoration: none;
       color: white;
-      font-size: 24px;
+      font-size: 20px;
       cursor: pointer;
     }
 
@@ -162,14 +240,14 @@
 
     .action-column {
       margin-left: 175px;
-      
+
       .btn.btn-primary.action {
         background-color: $primary-color;
         margin: 3px 15px 3px 15px;
         font-size: 15px;
         border-radius: 4px;
         border-color: $primary-color;
-    
+
         &:active {
           background-color:$primary-color;
           box-shadow: 0 5px white;
@@ -251,9 +329,9 @@
 .login-container {
   margin-top: 20px;
   width: 100%;
+
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
 
 
   section.login {
@@ -264,7 +342,7 @@
 
     .field {
       margin: 20px;
-      
+
     }
       input {
         height: 25px;
@@ -301,7 +379,6 @@
 
   section.component {
     height: auto;
-    margin-bottom: 100px;
   }
 
 }
@@ -310,12 +387,11 @@
 .tree-container {
   margin-top: 20px;
   width: 100%;
-  display: flex;
 
   section.tree {
+    width: 100%;
     padding: 10px;
     font-size: 13px;
-    height: 800px;
     overflow: auto;
     overflow-x: hidden;
     border-color: lightblue;
@@ -341,7 +417,7 @@
 
       .no-children {
         font-size: 22px;
-        margin: 14px; 
+        margin: 14px;
       }
 
       .namestring {
@@ -358,7 +434,7 @@
       }
 
     }
-    
+
     li.Package {
       margin-left: 20px;
       display: none;
@@ -451,7 +527,7 @@ button.duplicate {
       transform: translateY(4px);
     }
   }
-  
+
 }
 
 .modal-dialog{

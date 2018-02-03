@@ -8,8 +8,10 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
 @Component({
   selector: 'app-component',
   template: `
-   <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
-    <tree [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
+   <div class="flexbox-item">
+    <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
+   </div>
+      <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
       <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
     </div>
@@ -146,7 +148,7 @@ export class AppComponent implements OnInit {
     //     console.log('Error', error);
     //   }
     // )
-    
+
   }
 
   // This function is called when a namestring has been selected from the children-component
@@ -203,7 +205,7 @@ export class AppComponent implements OnInit {
       }
       this.showPackageInput = true;
     }
-   
+
   }
 
   setPackageTag(packageTag) {
