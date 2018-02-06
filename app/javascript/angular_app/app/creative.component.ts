@@ -73,9 +73,6 @@ export class CreativeComponent implements OnInit, OnChanges {
 
   @Input() campaignInput: {};
   @Input() selectedObject: any = {};
-  // Remove below two?
-  @Input() adInput: {};
-  @Input() placementInput: {};
   @Input() creativeMessages: any[];
   @Input() abtestLabels: any[];
   @Input() videoLengths: any[];
@@ -131,7 +128,7 @@ export class CreativeComponent implements OnInit, OnChanges {
 
 
   cancelInput() {
-    if(this._adtype.videoAdType(this.placementInput)) {
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)) {
       this.selectComponent.setSelections(this.videoLengthLabel);
     }
     this.creativeInput = {};
@@ -193,7 +190,7 @@ export class CreativeComponent implements OnInit, OnChanges {
            // Store the object for exporting
           this._history.storeInput(result);
           // Add to the heiarchy tree
-          this._tree.createCreativeTree(result);
+          // this._tree.createCreativeTree(result);
           // Send it to the app comp so the tree comp is updated
           this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.creativeTagFinal.emit(result);
@@ -242,7 +239,7 @@ export class CreativeComponent implements OnInit, OnChanges {
     }
 
     if(action == 'Update') {
-      createParams['ad_input_id'] = this.selectedObject.namestring.namestring.ad_input_id,
+      createParams['ad_input_id'] = this.selectedObject.namestring.namestring.ad_input_id;
       this._creative.updateInput(this.selectedObject.namestring.namestring.id, createParams).subscribe(
 
         (result) => {
@@ -339,7 +336,7 @@ export class CreativeComponent implements OnInit, OnChanges {
   }
 
   duplicate() {
-    if(this._adtype.videoAdType(this.placementInput)) {
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)) {
       this.defaultVideoLength = this.creativeInput.video_length = this.videoLengths.find(x => x['name'] == this.selectedObject.namestring.namestring.video_length.name);
     }
      // Set the default values for each of the selectors and set the object attributes
@@ -358,7 +355,7 @@ export class CreativeComponent implements OnInit, OnChanges {
     this.changeDetector.detectChanges();
 
      // Set the selectors to the current value
-    if(this._adtype.videoAdType(this.placementInput)) {
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)) {
       this.selectComponent.setSelections(this.videoLengthLabel);
     }
     this.selectComponent.setSelections(this.creativeMessageLabel);

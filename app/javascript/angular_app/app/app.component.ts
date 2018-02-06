@@ -25,7 +25,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
       <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adTagUpdate)="updateAdTag($event)"></ad>
     </div>
     <div *ngIf="creativeAction">
-      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [adInput]="adInput" [placementInput]="placementInput" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
+      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
     </div>
   `
 })

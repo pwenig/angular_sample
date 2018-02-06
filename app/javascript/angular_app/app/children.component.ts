@@ -40,7 +40,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     if(Object.keys(this.currentCreated).length != 0) {
       setTimeout(() => {
           if(this.action == 'Edit' || this.currentCreated.parentType == 'Campaign') {
-            if(localStorage.getItem('selected')) {
+            if(localStorage.getItem('selected') != this.currentCreated.parentType + '-' + this.currentCreated.namestring.id ) {
               this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
             } else {
               this.namestringUpdated(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
