@@ -157,6 +157,10 @@ export class PlacementComponent implements OnInit, OnChanges {
       this.editDisable = true;
       this.duplicate();
     }
+    if(changes.selectedObject.currentValue.action == 'Copy/Create Placement') {
+      this.action = 'Create'
+      this.duplicate();
+    }
   }
 
 
@@ -275,8 +279,8 @@ export class PlacementComponent implements OnInit, OnChanges {
       }
     }
 
-    if(action == 'Update') {  
-      createParams['package_input_id'] = this.selectedObject.namestring.packageParent.id;
+    if(action == 'Update') {
+      createParams['package_input_id'] = this.selectedObject.namestring.namestring.package_input_id;
       createParams['ad_type'] = this.selectedObject.namestring.namestring.ad_type;
       this._placement.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent).subscribe(
 
@@ -296,7 +300,9 @@ export class PlacementComponent implements OnInit, OnChanges {
       )
 
     } else if(action == 'Create') {
-
+      if(this.selectedObject.action == 'Copy/Create Placement') {
+        createParams['package_input_id'] = this.selectedObject.namestring.namestring.package_input_id;
+      }
       this._placement.createInput(createParams).subscribe(
 
         (result) => {

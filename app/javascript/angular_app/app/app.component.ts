@@ -60,11 +60,6 @@ export class AppComponent implements OnInit {
   adTags: any = [];
   creativeTags: any = [];
   placementTags: any = [];
-  // Remove these?
-  showPackageInput: boolean = false;
-  showPlacementInput: boolean = false;
-  showAdInput: boolean = false;
-  showCreativeInput: boolean = false;
   selectedNameString: any = {};
   disableActions: boolean = true;
   selectedObject: any = {};
@@ -187,111 +182,80 @@ export class AppComponent implements OnInit {
   }
 
   setCampaignTag(campaignTag) {
-    if(campaignTag == null) {
-      this.showPackageInput = false;
-      this.showPlacementInput = false;
-      this.showAdInput = false;
-      this.showCreativeInput = false;
+    this.campaignInput = campaignTag;
+    this.current_created_input = {namestring: campaignTag, parentType: 'Campaign', childType: 'Package'};
+    this.all_inputs.unshift(campaignTag);
+    this.campaignTags.push(campaignTag.campaign_input_tag);
+    this.campaignAction = false;
+    if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
+      this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
     } else {
-      this.campaignInput = campaignTag;
-      this.current_created_input = {namestring: campaignTag, parentType: 'Campaign', childType: 'Package'};
-      this.all_inputs.unshift(campaignTag);
-      this.campaignTags.push(campaignTag.campaign_input_tag);
-      this.campaignAction = false;
-      if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
-        this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
-      } else {
-        this.packageTags = [];
-      }
-      this.showPackageInput = true;
+      this.packageTags = [];
     }
-
   }
 
   setPackageTag(packageTag) {
-    if(packageTag == null) {
-      this.showPlacementInput = false;
-      this.showAdInput = false;
-      this.showCreativeInput = false;
+    this.packageInput = packageTag;
+    this.current_created_input = {namestring: packageTag, parentType: 'Package', childType: 'Placement'};
+    // Update the object in the all_inputs array
+    let updatedCampaign = this.all_inputs.find(x => x.id == packageTag.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    updatedCampaign.package_inputs.unshift(packageTag);
+    this.all_inputs[index] = updatedCampaign;
+    this.packageAction = false;
+    if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
+      this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
     } else {
-      this.packageInput = packageTag;
-      this.current_created_input = {namestring: packageTag, parentType: 'Package', childType: 'Placement'};
-      // Update the object in the all_inputs array
-      let updatedCampaign = this.all_inputs.find(x => x.id == packageTag.campaign_input_id);
-      let index = this.all_inputs.indexOf(updatedCampaign);
-      updatedCampaign.package_inputs.unshift(packageTag);
-      this.all_inputs[index] = updatedCampaign;
-      this.packageAction = false;
-      if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
-        this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
-      } else {
-        this.placementTags = [];
-      }
-      this.showPlacementInput = true;
+      this.placementTags = [];
     }
   }
 
   setPlacementTag(placementTag) {
-    if(placementTag == null) {
-      this.showAdInput = false;
-      this.showCreativeInput = false;
+    this.placementInput = placementTag;
+    this.current_created_input = {namestring: placementTag, parentType: 'Placement', childType: 'Ad'};
+    let updatedCampaign = this.all_inputs.find(x => x.id == placementTag.package_input.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == placementTag.package_input.id);
+    updatedPackage.placement_inputs.unshift(placementTag);
+    this.all_inputs[index] = updatedCampaign;
+    this.placementInput = false;
+    if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
+      this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
     } else {
-      this.placementInput = placementTag;
-      this.current_created_input = {namestring: placementTag, parentType: 'Placement', childType: 'Ad'};
-      let updatedCampaign = this.all_inputs.find(x => x.id == placementTag.package_input.campaign_input_id);
-      let index = this.all_inputs.indexOf(updatedCampaign);
-      let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == placementTag.package_input.id);
-      updatedPackage.placement_inputs.unshift(placementTag);
-      this.all_inputs[index] = updatedCampaign;
-      this.placementInput = false;
-      if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
-        this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
-      } else {
-        this.adTags = [];
-      }
-      this.showAdInput = true;
+      this.adTags = [];
     }
   }
 
   setAdTag(adTag) {
-    if(adTag == null) {
-      // this.showCreativeInput = false;
+    this.adInput = adTag;
+    this.current_created_input = {namestring: adTag, parentType: 'Ad', childType: 'Creative'};
+    let updatedCampaign = this.all_inputs.find(x => x.id == adTag.placement_input.package_input.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == adTag.placement_input.package_input.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == adTag.placement_input_id);
+    updatedPlacement.ad_inputs.unshift(adTag);
+    this.all_inputs[index] = updatedCampaign;
+    this.selectedNameString.namestring = adTag;
+    this.adAction = false;
+    if(this.adInput.creative_inputs && this.adInput.creative_inputs.length > 0) {
+      this.creativeTags = this.adInput.creative_inputs.map(n=> n['creative_input_tag']);
     } else {
-      this.adInput = adTag;
-      this.current_created_input = {namestring: adTag, parentType: 'Ad', childType: 'Creative'};
-      let updatedCampaign = this.all_inputs.find(x => x.id == adTag.placement_input.package_input.campaign_input_id);
-      let index = this.all_inputs.indexOf(updatedCampaign);
-      let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == adTag.placement_input.package_input.id);
-      let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == adTag.placement_input_id);
-      updatedPlacement.ad_inputs.unshift(adTag);
-      this.all_inputs[index] = updatedCampaign;
-      this.selectedNameString.namestring = adTag;
-      this.adAction = false;
-      if(this.adInput.creative_inputs && this.adInput.creative_inputs.length > 0) {
-        this.creativeTags = this.adInput.creative_inputs.map(n=> n['creative_input_tag']);
-      } else {
-        this.creativeTags = [];
-      }
-      this.showCreativeInput = true;
+      this.creativeTags = [];
     }
   }
 
   setCreativeTag(creativeTag) {
-    if(creativeTag == null) {
-      // this.showNew = false;
-    } else {
-      this.creativeInput = creativeTag;
-      this.current_created_input = {namestring: creativeTag, parentType: 'Creative', childType: null };
-      let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
-      let index = this.all_inputs.indexOf(updatedCampaign);
-      let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
-      let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == creativeTag.ad_input.placement_input.id);
-      let updatedAd = updatedPlacement.ad_inputs.find( x => x.id == creativeTag.ad_input.id);
-      updatedAd.creative_inputs.unshift(creativeTag);
-      this.all_inputs[index] = updatedCampaign;
-      this.selectedNameString.namestring = creativeTag;
-      this.creativeAction = false;
-    }
+    this.creativeInput = creativeTag;
+    this.current_created_input = {namestring: creativeTag, parentType: 'Creative', childType: null };
+    let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == creativeTag.ad_input.placement_input.id);
+    let updatedAd = updatedPlacement.ad_inputs.find( x => x.id == creativeTag.ad_input.id);
+    updatedAd.creative_inputs.unshift(creativeTag);
+    this.all_inputs[index] = updatedCampaign;
+    this.selectedNameString.namestring = creativeTag;
+    this.creativeAction = false;
   }
 
   updateCreativeTag(creativeTag) {

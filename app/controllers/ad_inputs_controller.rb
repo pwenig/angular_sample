@@ -7,8 +7,7 @@ class AdInputsController < ApplicationController
              { include: [package_input: { include: [:campaign_input] }] }], status: 200
     else
       @ad_input = AdInput.create!(permitted_params)
-      render json: @ad_input, except: %i[creative_group_id],
-             include: [:creative_group, :creative_inputs, placement_input: { include: [package_input:
+      render json: @ad_input, include: [:creative_group, :creative_inputs, placement_input: { include: [package_input:
              { include: [:campaign_input] }] }], status: 201
     end
   end
@@ -36,8 +35,7 @@ class AdInputsController < ApplicationController
       @ad_input = AdInput.includes(:creative_inputs).find(params[:id])
       if @ad_input 
         if @ad_input.update!(permitted_params)
-          render json: @ad_input, except: %i[creative_group_id],
-             include: [:placement_input, :creative_group,  creative_inputs: {include: [:creative_message, :abtest_label, :video_length] } ], status: 201
+          render json: @ad_input, include: [:placement_input, :creative_group,  creative_inputs: {include: [:creative_message, :abtest_label, :video_length] } ], status: 201
         else 
           head :no_content
         end 

@@ -104,6 +104,10 @@ export class PackageComponent implements OnInit, OnChanges {
       this.editDisable = true;
       this.duplicate();
     }
+    if(changes.selectedObject.currentValue.action == 'Copy/Create Package') {
+      this.action = 'Create'
+      this.duplicate();
+    }
   }
 
   closeModal() {
@@ -178,7 +182,7 @@ export class PackageComponent implements OnInit, OnChanges {
     }
 
     if(action == 'Update') {
-      createParams['campaign_input_id'] = this.selectedObject.namestring.campaignParent.id;
+      createParams['campaign_input_id'] = this.selectedObject.namestring.namestring.campaign_input_id;
       this._package.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent).subscribe(
 
         (result) => {
@@ -191,6 +195,9 @@ export class PackageComponent implements OnInit, OnChanges {
         }
       )
     } else if(action == 'Create') {
+      if(this.selectedObject.action == 'Copy/Create Package') {
+        createParams['campaign_input_id'] = this.selectedObject.namestring.namestring.campaign_input_id;
+      }
       this._package.createInput(createParams).subscribe(
 
         (result) => {

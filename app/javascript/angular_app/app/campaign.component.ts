@@ -120,6 +120,10 @@ export class CampaignComponent implements OnInit, OnChanges {
         this.editDisable = true;
         this.duplicate();
       }
+      if(changes.selectedObject.currentValue.action == 'Copy/Create Campaign') {
+        this.action = 'Create'
+        this.duplicate();
+      }
     }
 
   closeModal() {

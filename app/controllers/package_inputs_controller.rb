@@ -13,8 +13,7 @@ class PackageInputsController < ApplicationController
     else
       @package_input = PackageInput.includes(:placement_inputs, :agency, :publisher, :buy_method, :inventory_type)
                                    .create!(permitted_params)
-      render json: @package_input, except: %i[agency_id publisher_id buy_method_id inventory_type_id],
-             include: %i[agency publisher buy_method inventory_type placement_inputs campaign_input], status: 201
+      render json: @package_input, include: %i[agency publisher buy_method inventory_type placement_inputs campaign_input], status: 201
     end
   end
 
@@ -51,9 +50,7 @@ class PackageInputsController < ApplicationController
       @package_input = PackageInput.includes(:placement_inputs, :agency, :publisher, :buy_method, :inventory_type).find(params[:id])
       if @package_input
         if @package_input.update!(permitted_params)
-          render json: @package_input,
-            except: %i[agency_id publisher_id buy_method_id inventory_type_id],
-            include: [:agency, :publisher, :buy_method, :inventory_type, :campaign_input, placement_inputs: { include: [ad_inputs: {include: :creative_inputs }] } ],
+          render json: @package_input, include: [:agency, :publisher, :buy_method, :inventory_type, :campaign_input, placement_inputs: { include: [ad_inputs: {include: :creative_inputs }] } ],
             status: 200
         else
           head :no_content

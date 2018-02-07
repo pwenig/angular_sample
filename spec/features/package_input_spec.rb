@@ -188,13 +188,12 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to_not have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
   end
 
-  it 'duplicates a package input' do
-    pending
+  it 'copies a package input' do
     date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
-    click_on('New Campaign String')
+    click_on('New Campaign')
     expect(page).to have_select('Network', options: ['Select Network', 'Comedy Central'])
     select('Comedy Central', from: 'Network')
     expect(page).to have_text('Comedy Central')
@@ -209,10 +208,11 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Save Campaign String')
-    click_on('Save Campaign String')
+    expect(page).to have_text('Create Campaign')
+    click_on('Create Campaign')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
-    expect(page).to have_text('Package Input')
+    expect(page).to have_text('New Package')
+    click_on('New Package')
     expect(page).to have_select('Publisher', options: ['Select Publisher', 'ABC'])
     select('ABC', from: 'Publisher')
     expect(page).to have_select('Buy Method', options: ['Select Buy Method', 'CPA'])
@@ -223,11 +223,12 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    click_on('Save Package String')
+    click_on('Create Package')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
-    click_on('duplicatePackage')
+    click_on('Copy/Create')
     select('Custom Program', from: 'Inventory Type')
-    click_on('Save Package String')
+    click_on('Create Package')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_CSP_XX')
+    
   end
 end

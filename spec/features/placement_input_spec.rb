@@ -206,13 +206,12 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     expect(page).to_not have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_0101-0202')
   end
 
-  it 'duplicate a placement input' do
-    pending
+  it 'copies a placement input' do
     date = Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s
     fill_in('email-login', with: @user.email)
     fill_in('password-login', with: @user.password)
     click_on('Log In')
-    click_on('New Campaign String')
+    click_on('New Campaign')
     expect(page).to have_select('Network', options: ['Select Network', 'Comedy Central'])
     select('Comedy Central', from: 'Network')
     expect(page).to have_text('Comedy Central')
@@ -227,10 +226,11 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Save Campaign String')
-    click_on('Save Campaign String')
+    expect(page).to have_text('Create Campaign')
+    click_on('Create Campaign')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
-    expect(page).to have_text('Package Input')
+    expect(page).to have_text('New Package')
+    click_on('New Package')
     expect(page).to have_select('Publisher', options: ['Select Publisher', 'ABC'])
     select('ABC', from: 'Publisher')
     expect(page).to have_select('Buy Method', options: ['Select Buy Method', 'CPA'])
@@ -239,10 +239,11 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     fill_in('customPackage', with: 'XX')
     expect(page).to have_select('Inventory Type', options: ['Select Inventory Type', 'Partner Social Distribution'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    expect(page).to have_text('Save Package String')
-    click_on('Save Package String')
+    expect(page).to have_text('Create Package')
+    click_on('Create Package')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
-    expect(page).to have_text('Placement Input')
+    expect(page).to have_text('New Placement')
+    click_on('New Placement')
     expect(page).to have_select('Episode Start', options: ['Select Episode Start', 'E01', 'E02'])
     select('E01', from: 'Episode Start')
     expect(page).to have_select('Episode End', options: ['Select Episode End', 'E01', 'E02'])
@@ -261,11 +262,11 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     fill_in('customHeight', with: '300')
     expect(page).to have_select('Targeting Type 1', options: ['Select Targeting Type 1', 'Behavioral', 'None'])
     select('Behavioral', from: 'Targeting Type 1')
-    click_on('Save Placement String')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
-    click_on('duplicatePlacement')
+    click_on('Create Placement')
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    click_on('Copy/Create')
     select('Desktop', from: 'Device')
-    click_on('Save Placement String')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_DXX_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    click_on('Create Placement')
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_DXX_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
   end
 end

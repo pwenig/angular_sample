@@ -86,10 +86,10 @@ export class AdComponent implements OnInit, OnChanges {
     if(changes.selectedObject.currentValue.action == 'Edit Ad') {
       this.action = 'Update'
       this.duplicate();
-    } else if(changes.selectedObject.currentValue.action == 'New Ad') {
-      this.adInput = {};
-      this.adInput.custom = 'XX';
-      this.showSave = false;
+    }
+    if(changes.selectedObject.currentValue.action == 'Copy/Create Ad') {
+      this.action = 'Create';
+      this.duplicate();
     }
   }
 
@@ -135,7 +135,7 @@ export class AdComponent implements OnInit, OnChanges {
       ad_input_tag: this.adInput.adInputTag
     }
     if(action == 'Update') {
-      createParams['placement_input_id'] = this.selectedObject.namestring.placementParent.id;
+      createParams['placement_input_id'] = this.selectedObject.namestring.namestring.placement_input_id;
       // Need to get ids of the creative inputs and update each 
       // of the namestrings.
       this._ad.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent).subscribe(
@@ -156,6 +156,9 @@ export class AdComponent implements OnInit, OnChanges {
 
 
     } else if(action == 'Create') {
+      if(this.selectedObject.action == 'Copy/Create Ad') {
+       createParams['placement_input_id'] = this.selectedObject.namestring.namestring.placement_input_id;
+      }
       this._ad.createInput(createParams).subscribe(
 
         (result) => {

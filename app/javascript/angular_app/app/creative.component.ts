@@ -115,7 +115,11 @@ export class CreativeComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes.selectedObject.currentValue.action == 'Edit Creative') {
-      this.action = 'Update'
+      this.action = 'Update';
+      this.duplicate();
+    }
+    if(changes.selectedObject.currentValue.action == 'Copy/Create Creative') {
+      this.action = 'Create';
       this.duplicate();
     }
   }
@@ -260,6 +264,9 @@ export class CreativeComponent implements OnInit, OnChanges {
       );
 
     } else if (action == 'Create') {
+      if(this.selectedObject.action == 'Copy/Create Creative') {
+        createParams['ad_input_id'] = this.selectedObject.namestring.namestring.ad_input_id;
+      }
       this._creative.createInput(createParams).subscribe(
 
         (result) => {
