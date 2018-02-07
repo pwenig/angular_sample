@@ -1,12 +1,15 @@
 class CampaignInputsController < ApplicationController
   def index
-    # Only get the pacakges that belong to the current user's agency
+    # Only get the pacakges that belong to the current user's agency or where the agency has not yet been set.
     # This only returns campaigns that have pacakge_inputs
     @campaign_inputs = CampaignInput.includes(:package_inputs)
                                     .where(package_inputs: { agency_id: current_user.agency.id })
-    render json: @campaign_inputs, include: [:network, :season, :program, { package_inputs:
-    { include: [:publisher, { placement_inputs: { include:
-    { ad_inputs: { include: :creative_inputs } } } }] } }], status: 200
+                                    .or(CampaignInput.includes(:package_inputs)
+                                    .where(package_inputs: {agency_id: nil}))
+    render json: @campaign_inputs, include: [:network, :season, :program, :campaign_type, { package_inputs:
+    { include: [:publisher, :agency, :inventory_type, :buy_method, { placement_inputs: { include: [:episode_start, :episode_end, :tactic, :device, :targeting_type_1, :targeting_type_2,
+    :targeting_type_3, :targeting_type_4, :ad_type,
+    { ad_inputs: { include: [:creative_group, {creative_inputs: {include: [:creative_message, :abtest_label, :video_length]} } ] } } ]} }] } }], status: 200
   end
 
   def create
@@ -35,6 +38,53 @@ class CampaignInputsController < ApplicationController
       head :no_content
     end
   end
+
+  def update
+    ActiveRecord::Base.transaction do 
+      # Update the creative namestring
+      params['creativeParams'].each do |creative|
+        current_creative = CreativeInput.find(creative['id'])
+        if current_creative
+          current_creative.update_attribute(:creative_input_tag, creative['creative_input_tag'])
+        end
+      end 
+      # Update the ad namestring
+      params['adParams'].each do |ad|
+        current_ad = AdInput.find(ad['id'])
+        if current_ad
+          current_ad.update_attribute(:ad_input_tag, ad['ad_input_tag'])
+        end 
+      end 
+      # Update the placement namestring
+      params['placementParams'].each do |placement|
+        current_placement = PlacementInput.find(placement['id'])
+        if current_placement
+          current_placement.update_attribute(:placement_input_tag, placement['placement_input_tag'])
+        end 
+      end
+      # Update the package namestring
+      params['packageParams'].each do |package|
+        current_package = PackageInput.find(package['id'])
+        if current_package
+          current_package.update_attribute(:package_input_tag, package['package_input_tag'])
+        end 
+      end 
+      # Update the campaign
+      @campaign_input = CampaignInput.includes(:package_inputs).find(params[:id])
+      if @campaign_input
+        if @campaign_input.update!(permitted_params)
+          render json: @campaign_input, include: [:network, :season, :program, :campaign_type, { package_inputs:
+            { include: [:publisher, :agency, :inventory_type, :buy_method, { placement_inputs: { include: [:episode_start, :episode_end, :tactic, :device, :targeting_type_1, :targeting_type_2,
+            :targeting_type_3, :targeting_type_4, :ad_type,
+            { ad_inputs: { include: [:creative_group, {creative_inputs: {include: [:creative_message, :abtest_label, :video_length]} } ] } } ]} }] } }], status: 200
+        else 
+          head :no_content
+        end
+      else
+        head :no_content
+      end 
+    end 
+  end 
 
   private
 

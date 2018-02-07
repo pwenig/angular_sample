@@ -1,90 +1,87 @@
-import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef, OnChanges, SimpleChanges} from '@angular/core';
 import { CreativeInputService } from '../services/creative_input_service';
 import { AdTypeService } from '../services/ad_type_service';
 import {SelectComponent} from './select.component';
-import {MonthSelectComponent} from './monthselect.component';
-import {DaySelectComponent} from './dayselect.component';
 import {HistoryService} from '../services/history_service';
 import {CampaignInputService} from '../services/campaign_input_service';
 import {TreeService} from '../services/tree_service';
+import {DateFormatService} from '../services/date_format_service'
 
 @Component({
   selector: 'creative',
   template: `
-  <h2 class="campaign-title">Creative Input</h2>
-  <p *ngIf="showFinal" class="final-string">{{creativeInput.creativeInputTag}}<button class="duplicate" id="duplicateCreative" type="submit" (click)="duplicate()">Duplicate</button></p>
-  <div class="input-tag-container">
-    <div class="row">
-    <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
-      <select-string-component [options]="creativeTags" (selected)="selectInput($event)"></select-string-component>
-      <button class="new-tag" type="submit" (click)="newTagSection()">New Creative String</button>
-    </section>
-      <section class="input-tag" *ngIf="showButtons">
-        <input [ngModel]="creativeInput.creativeInputTag" class="form-control" [disabled]=true>
-        <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Creative String</button>
-        <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput(creativeInput.creativeInputTag)">Select Creative String</button>
-        <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
-      </section>
-    </div>
-  </div>
 
-  <div *ngIf="showSelectors">
-    <div class="select-container">
-      <div class="row">
-        <section class="select">
-          <div class="first-column" *ngIf="creativeMessages && creativeMessages.length > 0">
-            <select-component [label]="creativeMessageLabel" [default]="defaultCreativeMessage" [options]="creativeMessages" (selected)="attributeUpdated($event, 'creativeMessage')"></select-component>
+  <div *ngIf="selectedObject.action">
+    <div [config]="{ show: true }" (onHide)=closeModal() bsModal #autoShownModal="bs-modal" #Modal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content campaign">
+          <div class="modal-header">
+            <h4 class="modal-title pull-left">{{selectedObject.action}}</h4>
+            <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          <div class="custom-column">
-            <label for="creativeCustom">Creative Version Custom</label>
-            <input type="text" id="creativeCustom" [(ngModel)]="creativeInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+          <div class="modal-body">
+            <div class="select-container">
+              <div class="row">
+                <section class="select">
+                  <div class="first-column" *ngIf="creativeMessages && creativeMessages.length > 0">
+                    <select-component [label]="creativeMessageLabel" [default]="defaultCreativeMessage" [options]="creativeMessages" (selected)="attributeUpdated($event, 'creative_message')"></select-component>
+                  </div>
+                  <div class="custom-column">
+                    <label for="creativeCustom">Creative Version Custom</label>
+                    <input type="text" id="creativeCustom" [(ngModel)]="creativeInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+                  </div>
+                  <div class="column">
+                    <month-select-component [label]="creativeVersionLabel" [default]="defaultCreativeVersion" (selected)="attributeUpdated($event, 'creative_version_number')"></month-select-component>
+                  </div>
+                </section>
+                <section class="select">
+                  <div class="first-column">
+                    <select-component [label]="abTestLabel" [options]="abtestLabels" [default]="defaultAbLabel" (selected)="attributeUpdated($event, 'abtest_label')"></select-component>
+                  </div>
+                  <div class="creative-date-column">
+                    <label>Creative Start / End Date</label>
+                    <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="creativeRange" (ngModelChange)="dateChange($event)">
+                   </div>
+                  <div class="column" *ngIf="_adtype.videoAdType(selectedObject.namestring.placementParent)">
+                    <select-component [label]="videoLengthLabel" [options]="videoLengths" [default]="defaultVideoLength" (selected)="attributeUpdated($event, 'video_length')"></select-component>
+                  </div>
+                </section>
+                <section class="select">
+                  <div class="action-column">
+                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Creative</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}} Creative</button>
+                  </div>
+                </section>
+              </div>
+            </div>
           </div>
-          <div class="column">
-            <month-select-component [label]="creativeVersionLabel" [default]="defaultCreativeVersion" (selected)="attributeUpdated($event, 'creativeVersion')"></month-select-component>
-          </div>
-        </section>
-        <section class="select">
-          <div class="first-column">
-            <select-component [label]="abTestLabel" [options]="abtestLabels" [default]="defaultAbLabel" (selected)="attributeUpdated($event, 'abtestLabel')"></select-component>
-          </div>
-          <div class="second-column" *ngIf="_adtype.videoAdType(placementInput)">
-            <select-component [label]="videoLengthLabel" [options]="videoLengths" [default]="defaultVideoLength" (selected)="attributeUpdated($event, 'videoLength')"></select-component>
-          </div>
-        </section>
-
-        <section class="select-date">
-          <div class="first-column">
-            <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="creativeRange" (ngModelChange)="dateChange($event)">
-          </div>
-          <div class="second-column">
-            <button class="date-button" (click)="drp.toggle()">Creative Start / End Date</button>
-          </div>
-        </section>
-
+        </div>
       </div>
     </div>
   </div>
+
+      
   `
 })
 
-export class CreativeComponent implements OnInit {
+export class CreativeComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent: SelectComponent;
-  // @ViewChild(MonthSelectComponent)
-  // private monthSelectComponent: MonthSelectComponent;
-  // @ViewChild(DaySelectComponent) 
-  // private daySelectComponent: DaySelectComponent;
 
 
   @Input() campaignInput: {};
-  @Input() adInput: {};
-  @Input() placementInput: {};
+  @Input() selectedObject: any = {};
   @Input() creativeMessages: any[];
   @Input() abtestLabels: any[];
   @Input() videoLengths: any[];
   @Input() creativeTags: any[];
+
+
   @Output() creativeTagFinal = new EventEmitter();
   @Output() creativeObject = new EventEmitter();
+  @Output() creativeTagUpdate = new EventEmitter();
 
   creativeInput: any = {};
   existingCreativeInput: any;
@@ -105,52 +102,80 @@ export class CreativeComponent implements OnInit {
   creativeRange: any = [new Date(), new Date()];
   showSave: boolean = false;
   showSelect: boolean = false;
+  action: any = 'Create';
 
-  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService, private _date: DateFormatService) {}
 
   ngOnInit() {
-    if(!this.creativeTags || this.creativeTags.length == 0) {
-      this.showButtons = true;
-      this.showSelectors = true;
+    if(this.selectedObject.action == 'New Creative') {
+      this.creativeInput.custom = "XX";
+      
     }
-    this.defaultAbLabel = this.abtestLabels.find(x => x['name'] == 'Not Applicable');
-    this.creativeInput.abtestLabel = this.defaultAbLabel;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.selectedObject.currentValue.action == 'Edit Creative') {
+      this.action = 'Update';
+      this.duplicate();
+    }
+    if(changes.selectedObject.currentValue.action == 'Copy/Create Creative') {
+      this.action = 'Create';
+      this.duplicate();
+    }
+  }
+
+  closeModal() {
+    this.selectedObject.action = null;
+    this.cancelInput();
+    this.showSave = false;
+  }
+
+
+  cancelInput() {
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)) {
+      this.selectComponent.setSelections(this.videoLengthLabel);
+    }
+    this.creativeInput = {};
+    this.defaultCreativeMessage = undefined;
+    this.defaultCreativeVersion = undefined;
+    this.defaultAbLabel = undefined;
     this.creativeInput.custom = "XX";
+    this. creativeRange = [new Date(), new Date()];
   }
 
   dateChange(date) {
+    this.creativeRange = date;
     // Format the start date
     var start_date = date[0];
-    this.creativeInput.startYear = start_date.getFullYear();
+    this.creativeInput.start_year = start_date.getFullYear();
     var startMonth  = start_date.getMonth() + 1;
     if(startMonth < 10) {
-      this.creativeInput.startMonth = "0" + startMonth.toString();
+      this.creativeInput.start_month = "0" + startMonth.toString();
     } else {
-      this.creativeInput.startMonth = startMonth.toString();
+      this.creativeInput.start_month = startMonth.toString();
     }
     var startDay = start_date.getDate();
     if(startDay < 10) {
-      this.creativeInput.startDay = "0" + startDay.toString();
+      this.creativeInput.start_day = "0" + startDay.toString();
     } else {
-      this.creativeInput.startDay = startDay.toString();
+      this.creativeInput.start_day = startDay.toString();
     }
     
     // Format the end date
     var end_date = date[1];
-    this.creativeInput.endYear = end_date.getFullYear();
+    this.creativeInput.end_year = end_date.getFullYear();
     var endMonth = end_date.getMonth() + 1;
     if(endMonth < 10) {
-      this.creativeInput.endMonth = "0" + endMonth.toString();
+      this.creativeInput.end_month = "0" + endMonth.toString();
     } else {
-      this.creativeInput.endMonth = endMonth.toString();
+      this.creativeInput.end_month = endMonth.toString();
     }
     var endDay = end_date.getDate();
     if(endDay < 10) {
-      this.creativeInput.endDay = "0" + endDay.toString();
+      this.creativeInput.end_day = "0" + endDay.toString();
     } else {
-      this.creativeInput.endDay = endDay.toString();
+      this.creativeInput.end_day = endDay.toString();
     }
-    this.checkAttributes();
   }
 
 
@@ -169,7 +194,7 @@ export class CreativeComponent implements OnInit {
            // Store the object for exporting
           this._history.storeInput(result);
           // Add to the heiarchy tree
-          this._tree.createCreativeTree(result);
+          // this._tree.createCreativeTree(result);
           // Send it to the app comp so the tree comp is updated
           this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.creativeTagFinal.emit(result);
@@ -182,58 +207,86 @@ export class CreativeComponent implements OnInit {
 
   }
 
-  saveInput() {
+  saveInput(action) {
     let createParams = {};
-    if(this._adtype.videoAdType(this.placementInput)){
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)){
       createParams = {
-        ad_input_id: this.adInput['id'],
-        creative_message_id: this.creativeInput.creativeMessage.id,
-        abtest_label_id: this.creativeInput.abtestLabel.id,
-        video_length_id: this.creativeInput.videoLength.id,
-        start_month: this.creativeInput.startMonth,
-        start_day: this.creativeInput.startDay,
-        start_year: this.creativeInput.startYear,
-        end_month: this.creativeInput.endMonth,
-        end_day: this.creativeInput.endDay,
+        ad_input_id: this.selectedObject.namestring.namestring.id,
+        creative_message_id: this.creativeInput.creative_message.id,
+        abtest_label_id: this.creativeInput.abtest_label.id,
+        video_length_id: this.creativeInput.video_length.id,
+        start_month: this.creativeInput.start_month,
+        start_day: this.creativeInput.start_day,
+        start_year: this.creativeInput.start_year,
+        end_month: this.creativeInput.end_month,
+        end_day: this.creativeInput.end_day,
         end_year: this.creativeInput.end_year,
-        creative_version_number: this.creativeInput.creativeVersion,
+        creative_version_number: this.creativeInput.creative_version_number,
         custom: this.creativeInput.custom,
         creative_input_tag: this.creativeInput.creativeInputTag
       }
     } else {
       createParams = {
-        ad_input_id: this.adInput['id'],
-        creative_message_id: this.creativeInput.creativeMessage.id,
-        abtest_label_id: this.creativeInput.abtestLabel.id,
-        start_month: this.creativeInput.startMonth,
-        start_day: this.creativeInput.startDay,
-        start_year: this.creativeInput.startYear,
-        end_month: this.creativeInput.endMonth,
-        end_day: this.creativeInput.endDay,
-        end_year: this.creativeInput.endYear,
-        creative_version_number: this.creativeInput.creativeVersion,
+        ad_input_id: this.selectedObject.namestring.namestring.id,
+        creative_message_id: this.creativeInput.creative_message.id,
+        abtest_label_id: this.creativeInput.abtest_label.id,
+        start_month: this.creativeInput.start_month,
+        start_day: this.creativeInput.start_day,
+        start_year: this.creativeInput.start_year,
+        end_month: this.creativeInput.end_month,
+        end_day: this.creativeInput.end_day,
+        end_year: this.creativeInput.end_year,
+        creative_version_number: this.creativeInput.creative_version_number,
         custom: this.creativeInput.custom,
         creative_input_tag: this.creativeInput.creativeInputTag
       }
     }
-    this._creative.createInput(createParams).subscribe(
 
-      (result) => {
-        this.showSelectors = false;
-        this.showButtons = false;
-        this.showFinal = true;
-        this.creativeInputObject = result;
-        // Store the object for exporting
-        this._history.storeInput(result);
-        this._tree.createCreativeTree(result);
-        this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
-        this.creativeTagFinal.emit(result);
-      },
-      (error) => {
-        console.log('ERROR', error);
+    if(action == 'Update') {
+      createParams['ad_input_id'] = this.selectedObject.namestring.namestring.ad_input_id;
+      this._creative.updateInput(this.selectedObject.namestring.namestring.id, createParams).subscribe(
+
+        (result) => {
+          this.creativeInput = result;
+          // Store the object for exporting
+          this._history.storeInput(result);
+          // this._tree.createCreativeTree(result);
+          // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
+          this.creativeTagUpdate.emit(result);
+          this.selectedObject.action = null;
+          this.selectedObject.namestring.namestring = {};
+          this.showSave = false;
+  
+        },
+        (error) => {
+          console.log('ERROR', error);
+        }
+      );
+
+    } else if (action == 'Create') {
+      if(this.selectedObject.action == 'Copy/Create Creative') {
+        createParams['ad_input_id'] = this.selectedObject.namestring.namestring.ad_input_id;
       }
-    );
+      this._creative.createInput(createParams).subscribe(
 
+        (result) => {
+          this.creativeInputObject = result;
+          // Store the object for exporting
+          this._history.storeInput(result);
+          // this._tree.createCreativeTree(result);
+          // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
+          this.creativeTagFinal.emit(result);
+          this.selectedObject.action = null;
+          this.creativeInput = {};
+          this.showSave = false;
+  
+        },
+        (error) => {
+          console.log('ERROR', error);
+        }
+      );
+
+    } else {}
   }
 
   selectInput(tag) {
@@ -251,33 +304,36 @@ export class CreativeComponent implements OnInit {
   }
 
   checkAttributes() {
-    if(this.creativeInput.creativeMessage && this._adtype.videoAdType(this.placementInput) &&
+    if(this.creativeInput.creative_message && this._adtype.videoAdType(this.selectedObject.namestring.placementParent) &&
       this.creativeInput.custom &&
-      this.creativeInput.creativeVersion &&
-      this.creativeInput.abtestLabel &&
-      this.creativeInput.videoLength &&
-      this.creativeInput.startMonth &&
-      this.creativeInput.startDay &&
-      this.creativeInput.endMonth &&
-      this.creativeInput.endDay
+      this.creativeInput.creative_version_number &&
+      this.creativeInput.abtest_label &&
+      this.creativeInput.start_month &&
+      this.creativeInput.start_day &&
+      this.creativeInput.end_month &&
+      this.creativeInput.end_day
     ){
-      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.campaignInput, this.placementInput, this.adInput, this.creativeInput)
+      if(this.creativeInput.video_length) {
+        this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.adParent, this.creativeInput)
+        this.showSave = true;
+      }
       if(this.creativeInput.creativeInputTag){
         this.verifyTag();
       }
       this.invalid = false;
     
     } else if (
-      this.creativeInput.creativeMessage &&
+      this.creativeInput.creative_message &&
       this.creativeInput.custom &&
-      this.creativeInput.creativeVersion &&
-      this.creativeInput.abtestLabel &&
-      this.creativeInput.startMonth &&
-      this.creativeInput.startDay &&
-      this.creativeInput.endMonth &&
-      this.creativeInput.endDay
+      this.creativeInput.creative_version_number &&
+      this.creativeInput.abtest_label&&
+      this.creativeInput.start_month &&
+      this.creativeInput.start_day &&
+      this.creativeInput.end_month &&
+      this.creativeInput.end_day
     ){
-      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.campaignInput, this.placementInput, this.adInput, this.creativeInput)
+      this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.adParent, this.creativeInput)
+      this.showSave = true;
       if(this.creativeInput.creativeInputTag){
         this.verifyTag();
       }
@@ -286,64 +342,34 @@ export class CreativeComponent implements OnInit {
 
   }
 
-  newTagSection() {
-    this.creativeInput.custom = "XX";
-    this.creativeRange = [new Date(), new Date()];
-    this.showButtons = true;
-    this.showSelectors = true;
-  }
-
-  cancelInput() {
-    if(this._adtype.videoAdType(this.placementInput)) {
-      this.selectComponent.setSelections(this.videoLengthLabel);
-    }
-    this.selectComponent.setSelections(this.creativeMessageLabel);
-    this.creativeInput.custom = "XX";
-    this. creativeRange = [new Date(), new Date()];
-    this.selectComponent.setSelections(this.abTestLabel);
-    this.creativeInput.creativeInputTag = null;
-  }
-
   duplicate() {
-    this.showButtons = true;
-    this.showFinal = false;
-    this.existingCreativeInput = false;
-    this.invalid = true;
-
-    if(this._adtype.videoAdType(this.placementInput)) {
-      this.defaultVideoLength = this.creativeInput.videoLength = this.videoLengths.find(x => x['name'] == this.creativeInputObject.video_length.name);
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)) {
+      this.defaultVideoLength = this.creativeInput.video_length = this.videoLengths.find(x => x['name'] == this.selectedObject.namestring.namestring.video_length.name);
     }
      // Set the default values for each of the selectors and set the object attributes
-     this.defaultCreativeMessage = this.creativeInput.creativeMessage = this.creativeMessages.find(x => x['name'] == this.creativeInputObject.creative_message.name);
-     this.creativeInput.custom = this.creativeInputObject.custom;
-     this.defaultCreativeVersion = this.creativeInput.creativeVersion = this.creativeInputObject.creative_version_number;
-     this.defaultAbLabel = this.creativeInput.abtestLabel = this.abtestLabels.find(x => x['name'] == this.creativeInputObject.abtest_label.name);
-     this.creativeInput.startMonth = this.creativeInputObject.start_month;
-     this.creativeInput.endMonth = this.creativeInputObject.end_month;
-     this.creativeInput.endDay = this.creativeInputObject.end_day;
-     this.creativeInput.startDay = this.creativeInputObject.start_day;
-     this.creativeInput.endYear = this.creativeInputObject.end_year;
-     this.creativeInput.startYear = this.creativeInputObject.start_year;
+     this.defaultCreativeMessage = this.creativeInput.creative_message = this.creativeMessages.find(x => x['id'] == this.selectedObject.namestring.namestring.creative_message_id);
+     this.creativeInput.custom = this.selectedObject.namestring.namestring.custom;
+     this.defaultCreativeVersion = this.creativeInput.creative_version_number = this.selectedObject.namestring.namestring.creative_version_number;
+     this.defaultAbLabel = this.creativeInput.abtest_label = this.abtestLabels.find(x => x['id'] == this.selectedObject.namestring.namestring.abtest_label_id);
+     this.creativeInput.start_month = this.selectedObject.namestring.namestring.start_month;
+     this.creativeInput.end_month = this.selectedObject.namestring.namestring.end_month;
+     this.creativeInput.end_day = this.selectedObject.namestring.namestring.end_day;
+     this.creativeInput.start_day = this.selectedObject.namestring.namestring.start_day;
+     this.creativeInput.end_year = this.selectedObject.namestring.namestring.end_year;
+     this.creativeInput.start_year = this.selectedObject.namestring.namestring.start_year;
 
-    this.showSelectors = true;
     // Checks to see if the ngIf has changed and the selectors are showing.
     this.changeDetector.detectChanges();
 
      // Set the selectors to the current value
-    if(this._adtype.videoAdType(this.placementInput)) {
+    if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)) {
       this.selectComponent.setSelections(this.videoLengthLabel);
     }
     this.selectComponent.setSelections(this.creativeMessageLabel);
     this.selectComponent.setSelections(this.abTestLabel);
     // Set the creativeRange
     var date = new Date();
-    this.creativeRange = [new Date(this.creativeInputObject.start_year, this.creativeInputObject.start_month - 1, this.creativeInputObject.start_day), new Date(this.creativeInputObject.end_year, this.creativeInputObject.end_month - 1, this.creativeInputObject.end_day)]
-    
-    // this.monthSelectComponent.setSelections(this.creativeVersionLabel);
-    // this.monthSelectComponent.setSelections(this.startMonthLabel);
-    // this.monthSelectComponent.setSelections(this.endMonthLabel);
-    // this.daySelectComponent.setSelections(this.startDayLabel);
-    // this.daySelectComponent.setSelections(this.endDayLabel);
+    this.creativeRange = [new Date(this.selectedObject.namestring.namestring.start_year, this.selectedObject.namestring.namestring.start_month - 1, this.selectedObject.namestring.namestring.start_day), new Date(this.selectedObject.namestring.namestring.end_year, this.selectedObject.namestring.namestring.end_month - 1, this.selectedObject.namestring.namestring.end_day)]
   }
   
 }

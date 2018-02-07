@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { BsDatepickerModule } from 'ngx-bootstrap';
 import { TypeaheadModule, TabsModule } from 'ngx-bootstrap';
+import { ModalModule } from 'ngx-bootstrap';
 
 import { AppComponent } from './app.component';
 import { CampaignComponent } from './campaign.component';
@@ -32,6 +33,7 @@ import { AdTypeService } from '../services/ad_type_service';
 import { CampaignTypeService } from '../services/campaign_type_service';
 import { HistoryService } from '../services/history_service';
 import { TreeService } from '../services/tree_service';
+import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe'
 
 @NgModule({
@@ -60,13 +62,14 @@ import {RangePipe} from '../shared/range.pipe'
     TabsModule.forRoot(),
     TypeaheadModule.forRoot(),
     TimepickerModule.forRoot(),
-    BsDatepickerModule.forRoot()
+    BsDatepickerModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [MetadataService, CampaignInputService, 
               PackageInputService, PlacementInputService, 
               AdInputService, CreativeInputService, 
               AdTypeService, CampaignTypeService,
-              HistoryService, TreeService],
+              HistoryService, TreeService, DateFormatService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

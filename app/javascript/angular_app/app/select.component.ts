@@ -4,7 +4,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
   selector: 'select-component',
   template: `
     <label for="{{label}}">{{label}}</label>
-    <select class="form-control" id="{{label}}" required (change)="optionSelected()" [(ngModel)]="chosenOption">
+    <select class="form-control" id="{{label}}" [disabled]="disabled" required (change)="optionSelected()" [(ngModel)]="chosenOption">
     <option disabled hidden [value]="placeholder">Select {{label}}</option>
     <option *ngFor="let option of options" [ngValue]="option">{{option.name}}</option>
   `
@@ -14,6 +14,7 @@ export class SelectComponent implements OnInit {
   @Input() label: string;
   @Input() options: any;
   @Input() default: any;
+  @Input() disabled: any;
   @Output() selected = new EventEmitter();
 
   private chosenOption: any;

@@ -4,29 +4,28 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 @Component({
   selector: 'tree',
   template: `
-    <div class="tree-container">
-      <div class="row">
-        <section class="tree">
+    <div class="tree-container flexbox-item-grow flexbox-parent">
+        <section class="tree flexbox-item-grow">
           <div *ngIf="all_inputs && all_inputs.length > 0">
             <ul *ngFor="let input of all_inputs">
-              <children-component [parentType]="'campaign'" [childType]="'package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
-              
+              <children-component [campaignParent]="input" [currentCreated]="current_created_input" [parentType]="'Campaign'" [childType]="'Package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
+
               <span *ngIf="input.package_inputs && input.package_inputs.length > 0">
                 <span *ngFor="let package_input of input.package_inputs">
-                  <children-component [parentType]="'package'" [childType]="'placement'" [children]=package_input.placement_inputs [parent]=package_input (selectedNamestring)="selectedString($event)"></children-component>
-                 
+                  <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Package'" [childType]="'Placement'" [children]=package_input.placement_inputs [parent]=package_input (selectedNamestring)="selectedString($event)"></children-component>
+
                   <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
                     <span *ngFor="let placement_input of package_input.placement_inputs">
-                      <children-component [parentType]="'placement'" [childType]="'ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
-                     
+                      <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [placementParent]="placement_input" [currentCreated]="current_created_input" [parentType]="'Placement'" [childType]="'Ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
+
                       <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
                         <span *ngFor="let ad_input of placement_input.ad_inputs">
-                           <children-component [parentType]="'ad'" [childType]="'creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
-                          
+                           <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Ad'" [childType]="'Creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
+
                            <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
                             <span *ngFor="let creative_input of ad_input.creative_inputs">
-                            <children-component [parentType]="'creative'" [childType]=null [children]=[] [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
-                            
+                             <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Creative'" [childType]=null [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
+
                             </span>
                           </span>
                         </span>
@@ -38,9 +37,7 @@ import { Angular2Csv } from 'angular2-csv/Angular2-csv';
             </ul>
           </div>
         </section>
-      </div>
     </div>
-  
   `
 })
 
@@ -50,7 +47,8 @@ export class TreeComponent {
   @Input() current_exports: any[];
   @Input() all_inputs: any[];
   @Input() all_exports: any[];
-  @Output() selectedNamestring = new EventEmitter(); 
+  @Input() action: any;
+  @Output() selectedNamestring = new EventEmitter();
 
   parentType: any;
   childType: any;
@@ -127,7 +125,7 @@ export class TreeComponent {
                         }
                         data.push(inputObject);
                       }
-                      
+
                     }
                   } else {
                     if(export_all){
@@ -151,7 +149,7 @@ export class TreeComponent {
                       }
                       data.push(inputObject);
                     }
-                    
+
                   }
                 }
               } else {
@@ -176,7 +174,7 @@ export class TreeComponent {
                   }
                   data.push(inputObject);
                 }
-                
+
 
               }
             }
@@ -203,7 +201,7 @@ export class TreeComponent {
               }
               data.push(inputObject);
             }
-            
+
 
           }
         }
@@ -230,7 +228,7 @@ export class TreeComponent {
           data.push(inputObject);
         }
       }
-        
+
       }
     new Angular2Csv(data, 'Output', { headers: Object.keys(data[0])} );
   }

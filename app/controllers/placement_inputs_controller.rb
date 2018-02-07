@@ -5,20 +5,14 @@ class PlacementInputsController < ApplicationController
                                                :episode_start, :episode_end)
                                      .find_by(placement_input_tag: params['placement_input_tag'])
     if @placement_input
-      render json: @placement_input, except: %i[ad_type_id tactic_id device_id ad_type_id targeting_type_1_id
-                                                targeting_type_2_id targeting_type_3_id targeting_type_4_id
-                                                episode_start_id episode_end_id],
-             include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
+      render json: @placement_input, include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
                        :targeting_type_3, :targeting_type_4, :episode_start, :episode_end,
                        package_input: { include: [:campaign_input] }], status: 200
     else
       @placement_input = PlacementInput.includes(:ad_inputs, :tactic, :device, :ad_type, :targeting_type_1,
                                                  :targeting_type_2, :targeting_type_3, :targeting_type_4,
                                                  :episode_start, :episode_end).create!(permitted_params)
-      render json: @placement_input, except: %i[ad_type_id tactic_id device_id ad_type_id targeting_type_1_id
-                                                targeting_type_2_id targeting_type_3_id targeting_type_4_id
-                                                episode_start_id episode_end_id],
-             include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
+      render json: @placement_input, include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
                        :targeting_type_3, :targeting_type_4, :episode_start, :episode_end,
                        package_input: { include: [:campaign_input] }], status: 201
     end
@@ -41,6 +35,38 @@ class PlacementInputsController < ApplicationController
       head :no_content
     end
   end
+
+  def update 
+    ActiveRecord::Base.transaction do 
+      # Update the creative namestrings
+      params['creativeParams'].each do |creative|
+        current_creative = CreativeInput.find(creative['id'])
+        if current_creative
+          current_creative.update_attribute(:creative_input_tag, creative['creative_input_tag'])
+        end 
+      end 
+      # Update the ad namestrings
+      params['adParams'].each do |ad|
+        current_ad = AdInput.find(ad['id'])
+        if current_ad
+          current_ad.update_attribute(:ad_input_tag, ad['ad_input_tag'])
+        end 
+      end 
+      @placement_input = PlacementInput.includes(:ad_inputs, :tactic, :device, :ad_type, :targeting_type_1,
+          :targeting_type_2, :targeting_type_3, :targeting_type_4,
+          :episode_start, :episode_end).find(params[:id])
+      if @placement_input
+        if @placement_input.update!(permitted_params)
+          render json: @placement_input, include: [:ad_type, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
+                       :targeting_type_3, :targeting_type_4, :episode_start, :episode_end, ad_inputs: {include: :creative_inputs}], status: 200 
+        else 
+          head :no_content
+         end 
+      else
+        head :no_content
+      end 
+    end 
+  end 
 
   private
 

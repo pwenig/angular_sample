@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import {AdInputService} from '../services/ad_input_service';
 import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
@@ -7,53 +7,59 @@ import {HistoryService} from '../services/history_service';
 @Component({
   selector: 'ad',
   template: `
-  <h2 class="campaign-title">Ad Input</h2>
-  <p *ngIf="showFinal" class="final-string">{{ adInput.adInputTag }}<button class="duplicate" id="duplicateAd" type="submit" (click)="duplicate()">Duplicate</button></p>
-  <div class="input-tag-container">
-    <div class="row">
-      <section class="input-tag" *ngIf="(!showButtons && !showSelectors) && !showFinal">
-        <select-string-component  [options]="adTags" (selected)="selectInput($event)"></select-string-component>
-        <button class="new-tag" type="submit" (click)="newTagSection()">New Ad String</button>
-      </section>
-      <section class="input-tag" *ngIf="showButtons">
-        <input [ngModel]="adInput.adInputTag" class="form-control" [disabled]=true>
-        <button class="new-tag" *ngIf="showSave" type="submit" (click)="saveInput()" [disabled]="invalid">Save Ad String</button>
-        <button class="new-tag" *ngIf="showSelect" type="submit" (click)="selectInput(adInput.adInputTag)">Select Ad String</button>
-        <button class="cancel-tag" *ngIf="showButtons" type="submit" (click)="cancelInput()">Clear</button>
-      </section>
-    </div>
-  </div>
 
-  <div *ngIf="showSelectors">
-    <div class="select-container">
-      <div class="row">
-        <section class="select">
-          <div class="column" *ngIf="creativeGroups && creativeGroups.length > 0">
-            <select-component [label]="creativeGroupLabel" [default]="defaultCreativeGroup" [options]="creativeGroups" (selected)="attributeUpdated($event, 'creativeGroup')"></select-component>
+    <div *ngIf="selectedObject.action">
+      <div [config]="{ show: true }" (onHide)=closeModal() bsModal #autoShownModal="bs-modal" #Modal="bs-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content campaign">
+            <div class="modal-header">
+              <h4 class="modal-title pull-left">{{selectedObject.action}}</h4>
+              <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="select-container">
+                <div class="row">
+                  <section class="select">
+                  <div class="column" *ngIf="creativeGroups && creativeGroups.length > 0">
+                    <select-component [label]="creativeGroupLabel" [default]="defaultCreativeGroup" [options]="creativeGroups" (selected)="attributeUpdated($event, 'creative_group')"></select-component>
+                  </div>
+                  <div class="custom-column">
+                    <label for="customAd">Ad Custom</label><br>
+                    <input type="text" id="customAd" [(ngModel)]="adInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+                  </div>
+                  </section>
+                  <section class="select">
+                    <div class="action-column">
+                      <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Ad</button>
+                      <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}} Ad</button>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="custom-column">
-            <label for="customAd">Ad Custom</label><br>
-            <input type="text" id="customAd" [(ngModel)]="adInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
-          </div>
-        </section>
+        </div>
       </div>
-    </div>
   </div>
   
   `
 })
 
-export class AdComponent implements OnInit {
+export class AdComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
 
+  // Remove this.
   @Input() campaignInput: {};
-  @Input() packageInput: {};
-  @Input() placementInput: {};
+  @Input() selectedObject: any = {};
   @Input() adTags: any[];
   @Input() creativeGroups: any[];
+
   @Output() adTagFinal = new EventEmitter();
   @Output() adObjectCreated = new EventEmitter();
+  @Output() adTagUpdate = new EventEmitter();
 
   creativeGroupLabel: string = 'Creative Group';
   adInput: any = {};
@@ -66,15 +72,32 @@ export class AdComponent implements OnInit {
   adInputObject: any = {};
   showSave: boolean = false;
   showSelect: boolean = false;
+  action: any = 'Create';
 
   constructor( private _ad: AdInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
   ngOnInit() {
-    if(!this.adTags || this.adTags.length == 0) {
-      this.showButtons = true;
-      this.showSelectors = true;
+    if(this.selectedObject.action == 'New Ad') {
+      this.adInput.custom = "XX";
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.selectedObject.currentValue.action == 'Edit Ad') {
+      this.action = 'Update'
+      this.duplicate();
+    }
+    if(changes.selectedObject.currentValue.action == 'Copy/Create Ad') {
+      this.action = 'Create';
+      this.duplicate();
+    }
+  }
+
+  closeModal() {
+    this.selectedObject.action = null;
+    this.adInput = {};
     this.adInput.custom = "XX";
+    this.showSave = false;
   }
 
   verifyTag() {
@@ -85,11 +108,13 @@ export class AdComponent implements OnInit {
         this.existingAdInput = result;
         this.showSave = true;
         if(result) {
+          // What needs to happen here??
+
           // This is the object that will be used to copy
           this.adInputObject = result;
           this.showSelect = true;
           this._history.storeInput(result);
-          this._tree.createAdTree(result);
+          // this._tree.createAdTree(result);
           this.adObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
           this.adTagFinal.emit(result)
         }
@@ -101,29 +126,60 @@ export class AdComponent implements OnInit {
     )
   }
 
-  saveInput() {
-    let create_params = {
-      placement_input_id: this.placementInput['id'],
-      creative_group_id: this.adInput.creativeGroup.id,
+  saveInput(action) {
+    let createParams = {
+      placement_input_id: this.selectedObject.namestring.namestring.id,
+      creative_group_id: this.adInput.creative_group.id,
+      creative_group: this.adInput.creative_group,
       custom: this.adInput.custom,
       ad_input_tag: this.adInput.adInputTag
     }
-    this._ad.createInput(create_params).subscribe(
+    if(action == 'Update') {
+      createParams['placement_input_id'] = this.selectedObject.namestring.namestring.placement_input_id;
+      // Need to get ids of the creative inputs and update each 
+      // of the namestrings.
+      this._ad.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent).subscribe(
 
-      (result) => {
-        this.showSelectors = false;
-        this.showButtons = false;
-        this.showFinal = true;
-        this.adInputObject = result;
-        this._history.storeInput(result);
-        this._tree.createAdTree(result);
-        this.adObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-        this.adTagFinal.emit(result);
-      },
-      (error) => {
-        console.log('ERROR', error);
+        (result) => {
+          this.adInput = result;
+          this.adInput.placement_input.package_input = this.selectedObject.namestring.packageParent;
+          this.adInput.placement_input.package_input.campaign_input = this.selectedObject.namestring.campaignParent;
+          this._history.storeInput(this.adInput);
+          // this._tree.createAdTree(this.adInput);
+          this.adTagUpdate.emit(this.adInput);
+          this.selectedObject.action = null;
+          this.selectedObject.namestring.namestring = {};
+          this.showSave = false;
+        }
+      )
+
+
+
+    } else if(action == 'Create') {
+      if(this.selectedObject.action == 'Copy/Create Ad') {
+       createParams['placement_input_id'] = this.selectedObject.namestring.namestring.placement_input_id;
       }
-    );
+      this._ad.createInput(createParams).subscribe(
+
+        (result) => {
+          this.adInputObject = result;
+          // this._history.storeInput(result);
+          // this._tree.createAdTree(result);
+          this.adObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
+          this.adTagFinal.emit(result);
+          this.selectedObject.action = null;
+          this.adInput = {};
+          this.adInput.custom = "XX";
+          this.showSave = false;
+  
+        },
+        (error) => {
+          console.log('ERROR', error);
+        }
+      );
+
+    } else {}
+    
   }
 
    // Updates the attribute when it is selected from child components
@@ -134,12 +190,12 @@ export class AdComponent implements OnInit {
 
   // Checks to see if everything is selected before creating the tag
   checkAttributes() {
-    if(this.adInput.creativeGroup && this.adInput.custom) {
-      this.adInput.adInputTag = this._ad.createAdString(this.campaignInput, this.packageInput, this.placementInput, this.adInput)
+    if(this.adInput.creative_group && this.adInput.custom) {
+      this.adInput.adInputTag = this._ad.createAdString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent, this.selectedObject.namestring.placementParent, this.adInput)
+      this.showSave = true;
       if(this.adInput.adInputTag) {
         this.verifyTag();
       }
-      this.invalid = false;
     }
   }
 
@@ -151,29 +207,16 @@ export class AdComponent implements OnInit {
     this.verifyTag();
   }
 
-  newTagSection() {
-    this.showButtons = true ;
-    this.showSelectors = true;
-    this.adInput.custom = "XX";
-  }
 
-  cancelInput() {
-    this.selectComponent.setSelections(this.creativeGroupLabel);
-    this.adInput.custom = "XX";
-    this.adInput.adInputTag = null;
-  }
+  // cancelInput() {
+  //   this.selectComponent.setSelections(this.creativeGroupLabel);
+  //   this.adInput.custom = "XX";
+  //   this.adInput.adInputTag = null;
+  // }
 
   duplicate() {
-    this.showButtons = true;
-    this.showFinal = false;
-    this.existingAdInput = false;
-    this.invalid = true;
-    // Hide the creative input section
-    this.adTagFinal.emit(null);
-    // Set default values
-    this.defaultCreativeGroup = this.adInput.creativeGroup = this.creativeGroups.find(x => x['name'] == this.adInputObject.creative_group.name);
-    this.adInput.custom = this.adInputObject.custom;
-    this.showSelectors = true;
+    this.defaultCreativeGroup = this.adInput.creative_group = this.creativeGroups.find(x => x['id'] == this.selectedObject.namestring.namestring.creative_group.id);
+    this.adInput.custom = this.selectedObject.namestring.namestring.custom;
     // Checks to see if the ngIf has changed and the selectors are showing.
     this.changeDetector.detectChanges();
     this.selectComponent.setSelections(this.creativeGroupLabel);

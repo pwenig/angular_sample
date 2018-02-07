@@ -2,11 +2,13 @@ import {Component, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
+import { CreativeInputService } from '../services/creative_input_service';
+
 
 @Injectable()
 export class AdInputService {
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient, private _creative: CreativeInputService){}
 
   // Ad String format
   // Network_Program_Season_CreativeGroup_Publisher_Size_CustomDimension
@@ -15,7 +17,7 @@ export class AdInputService {
       let adString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
-      adObj.creativeGroup.abbrev + '_' +
+      adObj.creative_group.abbrev + '_' +
       packageObj['publisher']['abbrev'] + '_' +
       placementObj.width + 'x' +
       placementObj.height + '_' +
@@ -26,7 +28,7 @@ export class AdInputService {
       let adString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
-      adObj.creativeGroup.abbrev + '_' +
+      adObj.creative_group.abbrev + '_' +
       packageObj['publisher']['abbrev'] + '_' +
       adObj.custom
     return adString;
@@ -67,4 +69,32 @@ export class AdInputService {
       return subject.asObservable();
   }
 
+  updateInput(currentAdInput, newAdInput, campaignObj, placementObj): Observable<any> {
+    // Need to update the creative strings Send
+    // with params
+    newAdInput.creativeParams  = [];
+    for(let creativeInput of currentAdInput.creative_inputs) {
+    let namestring = this._creative.createCreativeString(campaignObj, placementObj, newAdInput, creativeInput);
+        let creativeParams  = {
+          id: creativeInput.id,
+          creative_input_tag: namestring
+        }
+        newAdInput.creativeParams.push(creativeParams);
+    }
+   
+    let subject: Subject<any> = new Subject;
+    this.http.put('/ad_inputs/' + currentAdInput.id, newAdInput).subscribe(
+
+      (success) => {
+        subject.next(success);
+      },
+      (error) => {
+        console.log('Error', error);
+        subject.error(error);
+      }
+    )
+    return subject.asObservable();
+  }
+
 }
+

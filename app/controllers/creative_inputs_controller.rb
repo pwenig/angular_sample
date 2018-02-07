@@ -15,7 +15,6 @@ class CreativeInputsController < ApplicationController
                                    .find_by(creative_input_tag: params['creative_input_tag'])
     if @creative_input
       render json: @creative_input,
-             except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
              include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
                       [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
                        :creative_message, :abtest_label, :video_length],
@@ -24,7 +23,6 @@ class CreativeInputsController < ApplicationController
       @creative_input = CreativeInput.includes(:ad_input, :creative_message,
                                                :abtest_label, :video_length).create!(permitted_params)
       render json: @creative_input,
-             except: %i[ad_input_id creative_message_id abtest_label_id video_length_id],
              include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
                       [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
                        :creative_message, :abtest_label, :video_length], status: 201
@@ -44,6 +42,24 @@ class CreativeInputsController < ApplicationController
       head :no_content
     end
   end
+
+  def update
+    @creative_input = CreativeInput.includes(:ad_input, :creative_message, :abtest_label, :video_length)
+                                   .find(params[:id])
+    if @creative_input
+      if @creative_input.update!(permitted_params)
+        render json: @creative_input,
+              include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
+                      [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
+                        :creative_message, :abtest_label, :video_length], status: 200
+      else
+        head :no_content
+      end
+    else
+      head :no_content
+
+    end
+  end 
 
   private
 
