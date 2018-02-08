@@ -3,6 +3,7 @@ import { MetadataService } from '../services/metadata_service';
 import {CampaignComponent} from './campaign.component';
 import {CampaignInputService} from '../services/campaign_input_service';
 import {CreativeInputService} from '../services/creative_input_service';
+import {ExportService} from '../services/export_service';
 import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflector';
 
 @Component({
@@ -11,7 +12,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
    <div class="flexbox-item">
     <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
    </div>
-      <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
+      <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
       <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
     </div>
@@ -72,13 +73,13 @@ export class AppComponent implements OnInit {
   newCreatedCampaign: any = {};
   // Object that has current campaign object arrays for the current heirarchy
   current_created_input: any = {};
-  // Current array of mamestrings that can be exported
+  // Current array of mamestrings that can be exported. Remove? No longer being passed to tree comp
   current_exports: any = [];
   all_inputs: any = [];
-  // All namestrings that have been created
+  // All namestrings that have been created. Remove? No longer being passed to tree comp.
   all_exports: any = [];
 
-  constructor( private _metadata: MetadataService, private _campaign: CampaignInputService, private _creative: CreativeInputService) {}
+  constructor( private _metadata: MetadataService, private _campaign: CampaignInputService, private _creative: CreativeInputService, private _export: ExportService) {}
 
   ngOnInit() {
     // Call MetadataService
@@ -158,7 +159,6 @@ export class AppComponent implements OnInit {
     if(action.includes('Campaign')) {
       this.changeModals(true, false, false, false, false);
     }
-
     if(action.includes('Package')) {
       this.changeModals(false, true, false, false, false);
     }
@@ -170,6 +170,9 @@ export class AppComponent implements OnInit {
     }
     if(action.includes('Creative')) {
       this.changeModals(false, false, false, false, true)
+    }
+    if(action.includes('Export')) {
+      this._export.export(this.selectedObject.namestring);
     }
   }
 

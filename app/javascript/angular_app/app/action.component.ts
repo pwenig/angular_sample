@@ -8,7 +8,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
     <button class="btn btn-primary action" (click)="actionSelected('Copy/Create ' + selectedNameString.parent)" [disabled]="namestringSelected">Copy/Create</button>
     <button class="btn btn-primary action" (click)="actionSelected('Edit ' + selectedNameString.parent)" [disabled]="namestringSelected">Edit</button>
     <button class="btn btn-primary action" (click)="actionSelected('Delete ' + selectedNameString.parent)" [disabled]="true">Delete</button>
-    <button class="btn btn-primary action" (click)="actionSelected('Export ' + selectedNameString.parent)" [disabled]="true">Export</button>
+    <button class="btn btn-primary action" (click)="actionSelected('Export')" [disabled]="namestringSelected">Export</button>
     <button class="btn btn-primary action" *ngIf="selectedNameString && selectedNameString.child" (click)="actionSelected('New ' + selectedNameString.child)" [disabled]="namestringSelected">New {{selectedNameString.child}}</button>
   </div>
 

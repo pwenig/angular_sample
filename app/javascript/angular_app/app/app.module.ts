@@ -33,6 +33,7 @@ import { AdTypeService } from '../services/ad_type_service';
 import { CampaignTypeService } from '../services/campaign_type_service';
 import { HistoryService } from '../services/history_service';
 import { TreeService } from '../services/tree_service';
+import { ExportService } from '../services/export_service';
 import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe'
 
@@ -69,7 +70,7 @@ import {RangePipe} from '../shared/range.pipe'
               PackageInputService, PlacementInputService, 
               AdInputService, CreativeInputService, 
               AdTypeService, CampaignTypeService,
-              HistoryService, TreeService, DateFormatService],
+              HistoryService, TreeService, ExportService, DateFormatService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
