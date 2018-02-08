@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-// import { Angular2Csv } from 'angular2-csv/Angular2-csv';
 
 @Component({
   selector: 'tree',
@@ -42,11 +41,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 
 export class TreeComponent {
-   // Not being used yet
   @Input() current_created_input: any = {};
-  // @Input() current_exports: any[];
   @Input() all_inputs: any[];
-  // @Input() all_exports: any[];
   @Input() action: any;
   @Output() selectedNamestring = new EventEmitter();
 
@@ -58,6 +54,6 @@ export class TreeComponent {
   selectedString(nameStringObject) {
     // Send the selected namestring to app-component
     this.selectedNamestring.emit(nameStringObject);
-  }
+  };
 
 }
