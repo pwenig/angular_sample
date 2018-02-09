@@ -122,6 +122,9 @@ export class CreativeComponent implements OnInit, OnChanges {
       this.action = 'Create';
       this.duplicate();
     }
+    if(changes.selectedObject.currentValue.action == 'Delete Creative') {
+      debugger
+    }
   }
 
   closeModal() {

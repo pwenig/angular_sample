@@ -45,6 +45,16 @@ class AdInputsController < ApplicationController
     end
   end 
 
+  def destroy
+    @ad_input = AdInput.find(params['id'])
+    if @ad_input
+      @ad_input.delete
+      render json: @ad_input, status: 200
+    else 
+      head :no_content
+    end 
+  end 
+
   private
 
   def permitted_params

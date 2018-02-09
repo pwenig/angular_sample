@@ -537,4 +537,18 @@ button.duplicate {
   .modal-content.ad {
     width: 500px;
   }
+  .modal-content.delete {
+    width: 400px;
+  }
+  .modal-footer.delete {
+    text-align: center;
+  }
+  .btn.btn-primary.action {
+    background-color: $primary-color;
+    margin: 3px 15px 3px 15px;
+    font-size: 15px;
+    border-radius: 4px;
+    border-color: $primary-color;
+  }
+
 }

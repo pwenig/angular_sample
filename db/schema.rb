@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171206234115) do
+ActiveRecord::Schema.define(version: 20180208200649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -311,25 +311,25 @@ ActiveRecord::Schema.define(version: 20171206234115) do
   end
 
   add_foreign_key "ad_inputs", "creative_groups"
-  add_foreign_key "ad_inputs", "placement_inputs"
+  add_foreign_key "ad_inputs", "placement_inputs", on_delete: :cascade
   add_foreign_key "campaign_inputs", "campaign_types"
   add_foreign_key "campaign_inputs", "networks"
   add_foreign_key "campaign_inputs", "programs"
   add_foreign_key "campaign_inputs", "seasons"
   add_foreign_key "creative_inputs", "abtest_labels"
-  add_foreign_key "creative_inputs", "ad_inputs"
+  add_foreign_key "creative_inputs", "ad_inputs", on_delete: :cascade
   add_foreign_key "creative_inputs", "creative_messages"
   add_foreign_key "creative_inputs", "video_lengths"
   add_foreign_key "package_inputs", "agencies"
   add_foreign_key "package_inputs", "buy_methods"
-  add_foreign_key "package_inputs", "campaign_inputs"
+  add_foreign_key "package_inputs", "campaign_inputs", on_delete: :cascade
   add_foreign_key "package_inputs", "inventory_types"
   add_foreign_key "package_inputs", "publishers"
   add_foreign_key "placement_inputs", "ad_types"
   add_foreign_key "placement_inputs", "devices"
   add_foreign_key "placement_inputs", "episodes", column: "episode_end_id"
   add_foreign_key "placement_inputs", "episodes", column: "episode_start_id"
-  add_foreign_key "placement_inputs", "package_inputs"
+  add_foreign_key "placement_inputs", "package_inputs", on_delete: :cascade
   add_foreign_key "placement_inputs", "tactics"
   add_foreign_key "placement_inputs", "targeting_types", column: "targeting_type_1_id"
   add_foreign_key "placement_inputs", "targeting_types", column: "targeting_type_2_id"

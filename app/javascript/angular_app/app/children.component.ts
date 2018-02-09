@@ -90,16 +90,22 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     // If the same namstring was selected twice, reverse
     if(parentType + '-' + namestring.id == localStorage.getItem('selected')) {
       var oldElement = document.getElementById(localStorage.getItem('selected'));
-      oldElement.style.fontWeight = 'normal';
-      oldElement.style.backgroundColor = 'white';
-      localStorage.removeItem('selected');
-      this.selectedNamestring.emit(null);
+      if(oldElement) {
+        oldElement.style.fontWeight = 'normal';
+        oldElement.style.backgroundColor = 'white';
+        localStorage.removeItem('selected');
+        this.selectedNamestring.emit(null);
+      }
+      
     } else {
         // Change old one that was selected from bold to normal
         if(localStorage.getItem('selected')) {
           var oldElement = document.getElementById(localStorage.getItem('selected'));
-          oldElement.style.fontWeight = 'normal';
-          oldElement.style.backgroundColor = 'white';
+          if(oldElement) {
+            oldElement.style.fontWeight = 'normal';
+            oldElement.style.backgroundColor = 'white';
+          }
+         
         } 
         // Change current one that was selected from normal to bold
         localStorage.setItem('selected', parentType + '-' + namestring.id);
