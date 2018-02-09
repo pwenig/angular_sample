@@ -61,6 +61,16 @@ class CreativeInputsController < ApplicationController
     end
   end 
 
+  def destroy
+    @creative_input = CreativeInput.find(params['id'])
+    if @creative_input
+      @creative_input.delete
+      render json: @creative_input, status: 200
+    else 
+      head :no_content
+    end 
+  end 
+
   private
 
   def permitted_params

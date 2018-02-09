@@ -61,6 +61,16 @@ class PackageInputsController < ApplicationController
     end 
   end
 
+  def destroy
+    @package_input = PackageInput.find(params['id'])
+    if @package_input
+      @package_input.delete
+      render json: @package_input, status: 200
+    else 
+      head :no_content
+    end 
+  end 
+
   private
 
   def permitted_params

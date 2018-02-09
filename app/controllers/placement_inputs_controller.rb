@@ -68,6 +68,16 @@ class PlacementInputsController < ApplicationController
     end 
   end 
 
+  def destroy
+    @placement_input = PlacementInput.find(params['id'])
+    if @placement_input
+      @placement_input.delete
+      render json: @placement_input, status: 200
+    else 
+      head :no_content
+    end 
+  end 
+
   private
 
   def permitted_params

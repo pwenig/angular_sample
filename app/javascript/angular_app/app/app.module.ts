@@ -22,6 +22,7 @@ import {SearchComponent} from './search.component';
 import {TreeComponent} from './tree.component';
 import {ChildrenComponent} from './children.component';
 import {ActionComponent} from './action.component';
+import {DeleteComponent} from './delete.component';
 
 import { MetadataService } from '../services/metadata_service';
 import { CampaignInputService } from '../services/campaign_input_service';
@@ -33,6 +34,8 @@ import { AdTypeService } from '../services/ad_type_service';
 import { CampaignTypeService } from '../services/campaign_type_service';
 import { HistoryService } from '../services/history_service';
 import { TreeService } from '../services/tree_service';
+import { ExportService } from '../services/export_service';
+import { DeleteService } from '../services/delete_service';
 import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe'
 
@@ -53,6 +56,7 @@ import {RangePipe} from '../shared/range.pipe'
     TreeComponent,
     ChildrenComponent,
     ActionComponent,
+    DeleteComponent,
     RangePipe
   ],
   imports: [
@@ -69,7 +73,7 @@ import {RangePipe} from '../shared/range.pipe'
               PackageInputService, PlacementInputService, 
               AdInputService, CreativeInputService, 
               AdTypeService, CampaignTypeService,
-              HistoryService, TreeService, DateFormatService],
+              HistoryService, TreeService, ExportService, DeleteService, DateFormatService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

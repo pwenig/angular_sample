@@ -86,6 +86,16 @@ class CampaignInputsController < ApplicationController
     end 
   end 
 
+  def destroy
+    @campaign_input = CampaignInput.find(params['id'])
+    if @campaign_input
+      @campaign_input.delete
+      render json: @campaign_input, status: 200
+    else 
+      head :no_content
+    end 
+  end 
+
   private
 
   def permitted_params

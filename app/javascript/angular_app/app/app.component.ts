@@ -3,6 +3,7 @@ import { MetadataService } from '../services/metadata_service';
 import {CampaignComponent} from './campaign.component';
 import {CampaignInputService} from '../services/campaign_input_service';
 import {CreativeInputService} from '../services/creative_input_service';
+import {ExportService} from '../services/export_service';
 import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflector';
 
 @Component({
@@ -11,7 +12,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
    <div class="flexbox-item">
     <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
    </div>
-      <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" [all_exports]="all_exports" [current_exports]="current_exports" (selectedNamestring)="selectedString($event)"></tree>
+      <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
       <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
     </div>
@@ -26,6 +27,9 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
     </div>
     <div *ngIf="creativeAction">
       <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
+    </div>
+    <div *ngIf="deleteAction">
+      <delete [selectedObject]="selectedObject" (cancelDelete)="cancelDelete()" (namestringDeleted)="removeInput($event)"></delete>
     </div>
   `
 })
@@ -68,17 +72,18 @@ export class AppComponent implements OnInit {
   placementAction: boolean;
   adAction: boolean;
   creativeAction: boolean;
+  deleteAction: boolean;
   action: any;
   newCreatedCampaign: any = {};
   // Object that has current campaign object arrays for the current heirarchy
   current_created_input: any = {};
-  // Current array of mamestrings that can be exported
+  // Current array of mamestrings that can be exported. Remove? No longer being passed to tree comp
   current_exports: any = [];
   all_inputs: any = [];
-  // All namestrings that have been created
+  // All namestrings that have been created. Remove? No longer being passed to tree comp.
   all_exports: any = [];
 
-  constructor( private _metadata: MetadataService, private _campaign: CampaignInputService, private _creative: CreativeInputService) {}
+  constructor( private _metadata: MetadataService, private _campaign: CampaignInputService, private _creative: CreativeInputService, private _export: ExportService) {}
 
   ngOnInit() {
     // Call MetadataService
@@ -158,7 +163,6 @@ export class AppComponent implements OnInit {
     if(action.includes('Campaign')) {
       this.changeModals(true, false, false, false, false);
     }
-
     if(action.includes('Package')) {
       this.changeModals(false, true, false, false, false);
     }
@@ -171,6 +175,17 @@ export class AppComponent implements OnInit {
     if(action.includes('Creative')) {
       this.changeModals(false, false, false, false, true)
     }
+    if(action.includes('Export')) {
+      this._export.export(this.selectedObject.namestring);
+    }
+    if(action.includes('Delete')) {
+      this.deleteAction = true;
+      this.changeModals(false, false, false, false, false);
+    }
+  }
+
+  cancelDelete() {
+    this.deleteAction = false;
   }
 
   changeModals(campaignModal, packageModal, placementModal, adModal, creativeModal) {
@@ -337,6 +352,72 @@ export class AppComponent implements OnInit {
     this.all_inputs.unshift(campaignTag);
     this.action = 'Edit';
     this.campaignAction = false;
+  }
+
+  removeInput(input) {
+    if(input.namestring.parent == 'Campaign') {
+      this.removeCampaign(input);
+    }
+    if(input.namestring.parent == 'Package') {
+      this.removePackage(input);
+    }
+    if(input.namestring.parent == 'Placement') {
+      this.removePlacement(input);
+    }
+    if(input.namestring.parent == 'Ad') {
+      this.removeAd(input);
+    }
+    if(input.namestring.parent == 'Creative') {
+      this.removeCreative(input);
+    }
+  }
+  
+  removeCampaign(input) {
+    let removedCampaign = this.all_inputs.find( x => x.id == input.namestring.namestring.id);
+    let index = this.all_inputs.indexOf(removedCampaign);
+    this.all_inputs.splice(index, 1);
+  }
+
+  removePackage(input) {
+    let updatedCampaign = this.all_inputs.find(x => x.id == input.namestring.campaignParent.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let removedPackage = updatedCampaign.package_inputs.find(x => x.id == input.namestring.namestring.id);
+    let packageIndex = updatedCampaign.package_inputs.indexOf(removedPackage);
+    updatedCampaign.package_inputs.splice(packageIndex, 1);
+    this.all_inputs[index] = updatedCampaign;
+  }
+
+  removePlacement(input) {
+    let updatedCampaign = this.all_inputs.find( x => x.id == input.namestring.campaignParent.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == input.namestring.packageParent.id);
+    let removedPlacement = updatedPackage.placement_inputs.find(x => x.id == input.namestring.namestring.id);
+    let placementIndex = updatedPackage.placement_inputs.indexOf(removedPlacement);
+    updatedPackage.placement_inputs.splice(placementIndex, 1);
+    this.all_inputs[index] = updatedCampaign;
+  }
+
+  removeAd(input) {
+    let updatedCampaign = this.all_inputs.find( x => x.id == input.namestring.campaignParent.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == input.namestring.packageParent.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find( x => x.id == input.namestring.placementParent.id);
+    let removedAd = updatedPlacement.ad_inputs.find(x => x.id == input.namestring.namestring.id);
+    let adIndex = updatedPlacement.ad_inputs.indexOf(removedAd);
+    updatedPlacement.ad_inputs.splice(adIndex, 1);
+    this.all_inputs[index] = updatedCampaign;
+  }
+
+  removeCreative(input) {
+    let updatedCampaign = this.all_inputs.find( x => x.id == input.namestring.campaignParent.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == input.namestring.packageParent.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find( x => x.id == input.namestring.placementParent.id);
+    let updatedAd = updatedPlacement.ad_inputs.find(x => x.id == input.namestring.adParent.id);
+    let removedCreative = updatedAd.creative_inputs.find(x => x.id == input.namestring.namestring.id);
+    let creativeIndex = updatedAd.creative_inputs.indexOf(removedCreative);
+    updatedAd.creative_inputs.splice(creativeIndex, 1);
+    this.all_inputs[index] = updatedCampaign;
   }
 
 }
