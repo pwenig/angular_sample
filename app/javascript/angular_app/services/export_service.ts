@@ -38,7 +38,7 @@ export class ExportService {
 
   // Creates the omniture code from an input
   createOmniCode(input) {
-    if(input != null) {
+    if(input != null && input.campaignParent.program && input.campaignParent.season && input.packageParent.publisher) {
       var omnitureCode = '/?xrs=crm_' + input.campaignParent.network.abbrev + '_'
       + input.campaignParent.program.abbrev + '_' +
       input.campaignParent.season.abbrev + '_' +
