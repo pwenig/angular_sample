@@ -153,8 +153,13 @@ export class AppComponent implements OnInit {
 
   // This function is called when a namestring has been selected from the children-component
   selectedString(nameStringObject) {
-    this.selectedNameString = nameStringObject;
-    this.disableActions = false;
+    if(nameStringObject == null) {
+      this.selectedNameString = null
+      this.disableActions = true;
+    } else {
+      this.selectedNameString = nameStringObject;
+      this.disableActions = false;
+    }
   }
 
   // This is called when an action has been selected

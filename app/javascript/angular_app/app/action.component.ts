@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'actions',
@@ -15,17 +15,13 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
   `
 })
 
-export class ActionComponent implements OnInit {
+export class ActionComponent {
 
   @Input() selectedNameString: any = {};
   @Input() namestringSelected: boolean;
   @Output() namestringAction = new EventEmitter();
 
   
-  ngOnInit() {
-    this.selectedNameString.child = 'Package';
-  }
-
   actionSelected(action) {
     this.namestringAction.emit(action);
   }
