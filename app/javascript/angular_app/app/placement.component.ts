@@ -43,7 +43,7 @@ import {HistoryService} from '../services/history_service';
                   <select-component [label]="deviceLabel" [default]="defaultDevice" [options]="devices" (selected)="attributeUpdated($event, 'device')"></select-component>
                 </div>
                 <div class="column" *ngIf="adTypes && adTypes.length > 0">
-                  <select-component [disabled]="editDisable"  [label]="adTypeLabel" [default]="defaultAdType" [options]="adTypes" (selected)="attributeUpdated($event, 'ad_type')"></select-component>
+                  <select-component [label]="adTypeLabel" [default]="defaultAdType" [options]="adTypes" (selected)="attributeUpdated($event, 'ad_type')"></select-component>
                 </div>
                 </section>
                 <section class="select" *ngIf="placementInput.ad_type">
@@ -103,6 +103,7 @@ export class PlacementComponent implements OnInit, OnChanges {
   @Input() tactics: any[];
   @Input() devices: any[];
   @Input() adTypes: any[];
+  @Input() allAdTypes: any[];
   @Input() targetingTypes: any[];
   @Output() placementTagFinal = new EventEmitter();
   @Output() placementObjectCreated = new EventEmitter();
@@ -136,7 +137,6 @@ export class PlacementComponent implements OnInit, OnChanges {
   showSave: boolean = false;
   showSelect: boolean = false;
   action: string = 'Create';
-  editDisable: boolean = false;
 
   constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService,  private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
@@ -154,7 +154,6 @@ export class PlacementComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if(changes.selectedObject.currentValue.action == 'Edit Placement') {
       this.action = 'Update'
-      this.editDisable = true;
       this.duplicate();
     }
     if(changes.selectedObject.currentValue.action == 'Copy/Create Placement') {
@@ -167,6 +166,7 @@ export class PlacementComponent implements OnInit, OnChanges {
   closeModal() {
     this.selectedObject.action = null;
     this.placementInput = {};
+    this.adTypes = this.allAdTypes;
     this.cancelInput();
     this.showSave = false;
   }
@@ -228,8 +228,8 @@ export class PlacementComponent implements OnInit, OnChanges {
         if(result) {
           this.placementObject = result;
           this.showSelect = true;
-          this._history.storeInput(result);
-          this._tree.createPlacementTree(result);
+          // this._history.storeInput(result);
+          // this._tree.createPlacementTree(result);
           this.placementObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
           this.placementTagFinal.emit(result)
         }
@@ -381,6 +381,19 @@ export class PlacementComponent implements OnInit, OnChanges {
   }
 
   duplicate() {
+
+    if(this.selectedObject.namestring.namestring.ad_inputs && this.selectedObject.namestring.namestring.ad_inputs.length > 0 && this.selectedObject.namestring.namestring.ad_type.abbrev == 'SVD' || this.selectedObject.namestring.namestring.ad_type.abbrev == 'NSV') {
+      // Remove non-video options since children could be effected.
+      this.adTypes = [];
+      this.adTypes.push(this.allAdTypes.find( x => x.abbrev == 'SVD'));
+      this.adTypes.push(this.allAdTypes.find( x => x.abbrev == 'NSV'));
+    }
+
+    if(this.selectedObject.namestring.namestring.ad_inputs && this.selectedObject.namestring.namestring.ad_inputs.length > 0 && this.selectedObject.namestring.namestring.ad_type.abbrev != 'SVD' && this.selectedObject.namestring.namestring.ad_type.abbrev != 'NSV') {
+      // Remove the video options since children could be effected.
+      this.adTypes = this.adTypes.filter( x => x.abbrev != 'SVD' && x.abbrev != 'NSV')
+    }
+
     if(this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
       this.placementInput.tentpole = this.selectedObject.namestring.namestring.tentpole;
     }

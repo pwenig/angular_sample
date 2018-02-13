@@ -29,7 +29,7 @@ import {HistoryService} from '../services/history_service';
                     <select-component [label]="programLabel" [default]="defaultProgram" [options]="campaignInput.network.programs" (selected)="attributeUpdated($event, 'program')"></select-component>
                   </div>
                   <div class="column" *ngIf="campaignInput.network">
-                    <select-component [label]="seasonLabel" [disabled]="editDisable" [default]="defaultSeason" [options]="seasons" (selected)="attributeUpdated($event, 'season')"></select-component>
+                    <select-component [label]="seasonLabel" [default]="defaultSeason" [options]="seasons" (selected)="attributeUpdated($event, 'season')"></select-component>
                   </div>
                 </section>
                 <section class="select">
@@ -68,6 +68,7 @@ export class CampaignComponent implements OnInit, OnChanges {
 
   @Input() networks: any = [];
   @Input() seasons: any = [];
+  @Input() allSeasons: any = [];
   @Input() campaignTypes: any = [];
   @Input() campaignTags: any = [];
   @Input() selectedObject: any = {};
@@ -104,7 +105,6 @@ export class CampaignComponent implements OnInit, OnChanges {
   showSelect: boolean = false;
   showModal: boolean;
   action: string = 'Create';
-  editDisable: boolean = false;
   
   constructor( private _campaign: CampaignInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
 
@@ -117,7 +117,6 @@ export class CampaignComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
       if(changes.selectedObject.currentValue.action == 'Edit Campaign') {
         this.action = 'Update'
-        this.editDisable = true;
         this.duplicate();
       }
       if(changes.selectedObject.currentValue.action == 'Copy/Create Campaign') {
@@ -129,6 +128,7 @@ export class CampaignComponent implements OnInit, OnChanges {
   closeModal() {
     this.selectedObject.action = null;
     this.campaignInput = {};
+    this.seasons = this.allSeasons;
     this.cancelInput();
     this.showSave = false;
   }
@@ -305,6 +305,16 @@ export class CampaignComponent implements OnInit, OnChanges {
   }
 
   duplicate() {
+    if(this.selectedObject.namestring.namestring.package_inputs && this.selectedObject.namestring.namestring.package_inputs.length > 0 && this.selectedObject.namestring.namestring.season.name != 'Tentpole') {
+      // Remove the tentpole option since there are children that will be effected.
+      this.seasons = this.seasons.filter(x => x.name != 'Tentpole');
+    }
+    
+    // Remove the season options since there are children that will be effected.
+    if(this.selectedObject.namestring.namestring.package_inputs && this.selectedObject.namestring.namestring.package_inputs.length > 0 && this.selectedObject.namestring.namestring.season.name == 'Tentpole') {
+      this.seasons = this.seasons.filter(x => x.name == 'Tentpole');
+    }
+
     // Set default values
     this.defaultNetwork = this.campaignInput.network = this.networks.find(x => x['id'] == this.selectedObject.namestring.namestring.network.id);
     this.defaultProgram = this.campaignInput.program = this.campaignInput.network.programs.find(x => x['id'] == this.selectedObject.namestring.namestring.program.id);
