@@ -43,7 +43,9 @@ export class DeleteComponent implements OnInit {
   children: any = [];
 
   ngOnInit() {
-    this.children = this.selectedObject.namestring.namestring[this.selectedObject.namestring.child.toLowerCase() + '_inputs'];
+    if(this.selectedObject.namestring.child) {
+      this.children = this.selectedObject.namestring.namestring[this.selectedObject.namestring.child.toLowerCase() + '_inputs'];
+    }
     this.namestring = this.selectedObject.namestring.namestring[this.selectedObject.namestring.parent.toLowerCase() + '_input_tag'];
     this.selectedObject.endpoint = '/' + this.selectedObject.namestring.parent.toLowerCase() + '_inputs' + '/';
   }
