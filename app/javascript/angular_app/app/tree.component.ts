@@ -4,9 +4,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   selector: 'tree',
   template: `
     <div class="tree-container flexbox-item-grow flexbox-parent">
+    <div class="search">
+      <input type="text" [(ngModel)]="queryString" id="search" placeholder="Search Network/Program Name/Abbrev">
+     </div>
         <section class="tree flexbox-item-grow">
           <div *ngIf="all_inputs && all_inputs.length > 0">
-            <ul *ngFor="let input of all_inputs">
+            <ul *ngFor="let input of all_inputs | FilterPipe: queryString">
               <children-component [campaignParent]="input" [currentCreated]="current_created_input" [parentType]="'Campaign'" [childType]="'Package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
 
               <span *ngIf="input.package_inputs && input.package_inputs.length > 0">

@@ -38,6 +38,7 @@ import { ExportService } from '../services/export_service';
 import { DeleteService } from '../services/delete_service';
 import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe'
+import {FilterPipe} from '../shared/filter.pipe'
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import {RangePipe} from '../shared/range.pipe'
     ChildrenComponent,
     ActionComponent,
     DeleteComponent,
-    RangePipe
+    RangePipe,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
