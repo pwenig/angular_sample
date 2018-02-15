@@ -3160,6 +3160,16 @@ ngx-bootstrap@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-1.9.3.tgz#28e75d14fb1beaee609383d7694de4eb3ba03b26"
 
+ngx-clipboard@^9.1.3:
+  version "9.1.3"
+  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-9.1.3.tgz#7d5aa709ac5d4c92f6c1a5098e29a361df5d4122"
+  dependencies:
+    ngx-window-token "0.0.4"
+
+ngx-window-token@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/ngx-window-token/-/ngx-window-token-0.0.4.tgz#47e7aaa465411c4ab5f7ba17601bc593c956c736"
+
 node-forge@0.6.33:
   version "0.6.33"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.6.33.tgz#463811879f573d45155ad6a9f43dc296e8e85ebc"

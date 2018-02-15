@@ -6,6 +6,8 @@ import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { BsDatepickerModule } from 'ngx-bootstrap';
 import { TypeaheadModule, TabsModule } from 'ngx-bootstrap';
 import { ModalModule } from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { AppComponent } from './app.component';
 import { CampaignComponent } from './campaign.component';
@@ -65,11 +67,13 @@ import {FilterPipe} from '../shared/filter.pipe'
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ClipboardModule,
     TabsModule.forRoot(),
     TypeaheadModule.forRoot(),
     TimepickerModule.forRoot(),
     BsDatepickerModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    TooltipModule.forRoot()
   ],
   providers: [MetadataService, CampaignInputService, 
               PackageInputService, PlacementInputService, 
