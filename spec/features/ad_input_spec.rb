@@ -84,10 +84,10 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     click_on('New Ad')
     expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On', 'Consumer Product'])
     expect(page).to have_field('customAd')
-    fill_in('customAd', with: 'XX')
+    fill_in('customAd', with: 'X')
     select('Always On', from: 'Creative Group')
     click_on('Create Ad')
-    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_X')
   end
 
   it 'clears an ad input' do

@@ -12,7 +12,8 @@ import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@
       </li>
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'Creative'">
       <span class="parent-type" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
-    </li>
+      <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
+      </li>
   `,
 })
 
@@ -68,9 +69,13 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   namestringUpdated(namestring, parentType, childType, campaignParent, packageParent, placementParent, adParent) {
     localStorage.setItem('selected', parentType + '-' + namestring.id);
+    localStorage.setItem('clip', parentType + '-' + namestring.id + '-clip' )
     var newElement = document.getElementById(parentType + '-' + namestring.id);
     newElement.style.fontWeight = 'bold';
     newElement.style.backgroundColor = 'lightblue';
+    var clip = document.getElementById(parentType + '-' + namestring.id + '-clip');
+    clip.style.visibility = 'visible';
+        
 
     // if(childType) {
     //   var formattedChild = childType.charAt(0).toUpperCase() + childType.slice(1);
@@ -93,11 +98,13 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       var oldClip = document.getElementById(localStorage.getItem('clip'));
       var oldElement = document.getElementById(localStorage.getItem('selected'));
       if(oldElement) {
-        oldClip.style.visibility = 'hidden';
         oldElement.style.fontWeight = 'normal';
         oldElement.style.backgroundColor = 'white';
         localStorage.removeItem('selected');
         this.selectedNamestring.emit(null);
+      }
+      if(oldClip) {
+        oldClip.style.visibility = 'hidden';
       }
       
     } else {
@@ -109,8 +116,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
           if(oldElement) {
             oldElement.style.fontWeight = 'normal';
             oldElement.style.backgroundColor = 'white';
+          }
+          if(oldClip) {
             oldClip.style.visibility = 'hidden'
-            
           }
          
         } 
@@ -118,7 +126,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
         localStorage.setItem('clip', parentType + '-' + namestring.id + '-clip' )
         localStorage.setItem('selected', parentType + '-' + namestring.id);
         var clip = document.getElementById(parentType + '-' + namestring.id + '-clip');
-        clip.style.visibility = 'visible';
+        if(clip) {
+          clip.style.visibility = 'visible';
+        }
         var newElement = document.getElementById(parentType + '-' + namestring.id);
         newElement.style.fontWeight = 'bold';
         newElement.style.backgroundColor = 'lightblue';
