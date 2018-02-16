@@ -15,7 +15,7 @@ import {DeleteService} from '../services/delete_service';
             </button>
           </div>
           <div class="modal-body">
-            <p>Are you sure you want to delete?</p>
+            <p>Are you sure you want to delete the following namestring<span *ngIf="children.length > 0"> and it's children</span>?</p>
             <p>{{namestring}}</p>
           </div>
           <div class="modal-footer delete">
@@ -40,8 +40,12 @@ export class DeleteComponent implements OnInit {
   constructor(private _delete: DeleteService) {}
 
   namestring: any;
+  children: any = [];
 
   ngOnInit() {
+    if(this.selectedObject.namestring.child) {
+      this.children = this.selectedObject.namestring.namestring[this.selectedObject.namestring.child.toLowerCase() + '_inputs'];
+    }
     this.namestring = this.selectedObject.namestring.namestring[this.selectedObject.namestring.parent.toLowerCase() + '_input_tag'];
     this.selectedObject.endpoint = '/' + this.selectedObject.namestring.parent.toLowerCase() + '_inputs' + '/';
   }

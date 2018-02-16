@@ -6,6 +6,8 @@ import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { BsDatepickerModule } from 'ngx-bootstrap';
 import { TypeaheadModule, TabsModule } from 'ngx-bootstrap';
 import { ModalModule } from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { AppComponent } from './app.component';
 import { CampaignComponent } from './campaign.component';
@@ -38,6 +40,7 @@ import { ExportService } from '../services/export_service';
 import { DeleteService } from '../services/delete_service';
 import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe'
+import {FilterPipe} from '../shared/filter.pipe'
 
 @NgModule({
   declarations: [
@@ -57,17 +60,20 @@ import {RangePipe} from '../shared/range.pipe'
     ChildrenComponent,
     ActionComponent,
     DeleteComponent,
-    RangePipe
+    RangePipe,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ClipboardModule,
     TabsModule.forRoot(),
     TypeaheadModule.forRoot(),
     TimepickerModule.forRoot(),
     BsDatepickerModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    TooltipModule.forRoot()
   ],
   providers: [MetadataService, CampaignInputService, 
               PackageInputService, PlacementInputService, 

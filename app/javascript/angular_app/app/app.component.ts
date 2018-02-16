@@ -14,13 +14,13 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
    </div>
       <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
-      <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
+      <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [allSeasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
     </div>
     <div *ngIf="packageAction">
       <package [selectedObject]="selectedObject" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)" (packageTagUpdate)="updatePackageTag($event)"></package>
     </div>
     <div *ngIf="placementAction">
-      <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)"></placement>
+      <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [allAdTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)"></placement>
     </div>
     <div *ngIf="adAction">
       <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adTagUpdate)="updateAdTag($event)"></ad>
@@ -321,7 +321,7 @@ export class AppComponent implements OnInit {
     let index = this.all_inputs.indexOf(updatedCampaign);
     let updatedPackage = updatedCampaign.package_inputs.find( x => x.id = placementTag.package_input.id);
     let updatedPlacement = updatedPackage.placement_inputs.find( x => x.id == placementTag.id);
-    updatedPlacement.ad_inputs = placementTag.ad_inputs;
+    if(updatedPlacement.ad_inputs && updatedPlacement.ad_inputs.length > 0) {updatedPlacement.ad_inputs = placementTag.ad_inputs;}
     let placementIndex = updatedPackage.placement_inputs.indexOf(updatedPlacement);
     updatedPackage.placement_inputs.splice(placementIndex, 1);
     updatedPackage.placement_inputs.unshift(placementTag);

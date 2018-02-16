@@ -406,8 +406,8 @@ body
     li {
       text-align: left;
       font-size: 15px;
-      // margin-bottom: -5px;
       width: 50%;
+      height: 35px;
 
       .expand-children, .collapse-children {
         font-size: 22px;
@@ -432,6 +432,18 @@ body
         text-transform: capitalize;
         cursor: pointer;
       }
+
+      .clipboard {
+        visibility: hidden;
+        cursor: pointer;
+        margin-left: 5px;
+
+        :active {
+          transform: translateY(4px);
+        }
+
+      }
+
 
     }
 
@@ -528,6 +540,16 @@ button.duplicate {
     }
   }
 
+}
+
+.search {
+  input#search {
+    float: left;
+    margin-left: 40px;
+    margin-bottom: 20px;
+    width: 400px;
+
+  }
 }
 
 .modal-dialog{

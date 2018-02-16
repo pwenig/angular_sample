@@ -8,10 +8,12 @@ import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@
       <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children && children.length > 0">-</span>
       <span class="no-children" *ngIf="!children || children.length == 0"></span>
       <span class="parent-type" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
-    </li>
+      <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
+      </li>
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'Creative'">
       <span class="parent-type" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
-    </li>
+      <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
+      </li>
   `,
 })
 
@@ -67,9 +69,13 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   namestringUpdated(namestring, parentType, childType, campaignParent, packageParent, placementParent, adParent) {
     localStorage.setItem('selected', parentType + '-' + namestring.id);
+    localStorage.setItem('clip', parentType + '-' + namestring.id + '-clip' )
     var newElement = document.getElementById(parentType + '-' + namestring.id);
     newElement.style.fontWeight = 'bold';
     newElement.style.backgroundColor = 'lightblue';
+    var clip = document.getElementById(parentType + '-' + namestring.id + '-clip');
+    clip.style.visibility = 'visible';
+        
 
     // if(childType) {
     //   var formattedChild = childType.charAt(0).toUpperCase() + childType.slice(1);
@@ -89,6 +95,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   namestringSelected(namestring, parentType, childType, campaignParent, packageParent, placementParent, adParent) {
     // If the same namstring was selected twice, reverse
     if(parentType + '-' + namestring.id == localStorage.getItem('selected')) {
+      var oldClip = document.getElementById(localStorage.getItem('clip'));
       var oldElement = document.getElementById(localStorage.getItem('selected'));
       if(oldElement) {
         oldElement.style.fontWeight = 'normal';
@@ -96,19 +103,32 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
         localStorage.removeItem('selected');
         this.selectedNamestring.emit(null);
       }
+      if(oldClip) {
+        oldClip.style.visibility = 'hidden';
+      }
       
     } else {
         // Change old one that was selected from bold to normal
         if(localStorage.getItem('selected')) {
+
+          var oldClip = document.getElementById(localStorage.getItem('clip'));
           var oldElement = document.getElementById(localStorage.getItem('selected'));
           if(oldElement) {
             oldElement.style.fontWeight = 'normal';
             oldElement.style.backgroundColor = 'white';
           }
+          if(oldClip) {
+            oldClip.style.visibility = 'hidden'
+          }
          
         } 
         // Change current one that was selected from normal to bold
+        localStorage.setItem('clip', parentType + '-' + namestring.id + '-clip' )
         localStorage.setItem('selected', parentType + '-' + namestring.id);
+        var clip = document.getElementById(parentType + '-' + namestring.id + '-clip');
+        if(clip) {
+          clip.style.visibility = 'visible';
+        }
         var newElement = document.getElementById(parentType + '-' + namestring.id);
         newElement.style.fontWeight = 'bold';
         newElement.style.backgroundColor = 'lightblue';

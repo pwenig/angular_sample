@@ -84,10 +84,10 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     click_on('New Ad')
     expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On', 'Consumer Product'])
     expect(page).to have_field('customAd')
-    fill_in('customAd', with: 'XX')
+    fill_in('customAd', with: 'X')
     select('Always On', from: 'Creative Group')
     click_on('Create Ad')
-    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_X')
   end
 
   it 'clears an ad input' do
@@ -152,10 +152,10 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     click_on('New Ad')
     expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On', 'Consumer Product'])
     expect(page).to have_field('customAd')
-    fill_in('customAd', with: 'XX')
+    fill_in('customAd', with: 'X')
     select('Always On', from: 'Creative Group')
     click_on('Cancel Ad')
-    expect(page).to_not have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to_not have_text('CCL_CLTF_S00_AON_ABCX_100x300_X')
   end
 
   it 'edits an ad input' do 
@@ -188,12 +188,12 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     expect(page).to have_select('Buy Method', options: ['Select Buy Method', 'CPA'])
     select('CPA', from: 'Buy Method')
     expect(page).to have_field('customPackage')
-    fill_in('customPackage', with: 'XX')
+    fill_in('customPackage', with: 'X')
     expect(page).to have_select('Inventory Type', options: ['Select Inventory Type', 'Partner Social Distribution'])
     select('Partner Social Distribution', from: 'Inventory Type')
     expect(page).to have_text('Create Package')
     click_on('Create Package')
-    expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
+    expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_X')
     expect(page).to have_text('New Placement')
     click_on('New Placement')
     expect(page).to have_select('Episode Start', options: ['Select Episode Start', 'E01', 'E02'])
@@ -220,14 +220,14 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     click_on('New Ad')
     expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On', 'Consumer Product'])
     expect(page).to have_field('customAd')
-    fill_in('customAd', with: 'XX')
+    fill_in('customAd', with: 'X')
     select('Always On', from: 'Creative Group')
     click_on('Create Ad')
-    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_X')
     click_on('Edit')
     select('Consumer Product', from: 'Creative Group')
     click_on('Update Ad')
-    expect(page).to have_text('CCL_CLTF_S00_CP_ABCX_100x300_XX')
+    expect(page).to have_text('CCL_CLTF_S00_CP_ABCX_100x300_X')
   end 
 
   it 'copies an ad input' do
@@ -292,14 +292,14 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     click_on('New Ad')
     expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On', 'Consumer Product'])
     expect(page).to have_field('customAd')
-    fill_in('customAd', with: 'XX')
+    fill_in('customAd', with: 'X')
     select('Always On', from: 'Creative Group')
     click_on('Create Ad')
-    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_X')
     click_on('Copy/Create')
     select('Consumer Product', from: 'Creative Group')
     click_on('Create Ad')
-    expect(page).to have_text('CCL_CLTF_S00_CP_ABCX_100x300_XX')
+    expect(page).to have_text('CCL_CLTF_S00_CP_ABCX_100x300_X')
   end
 
   it 'deletes an ad input' do 
@@ -364,13 +364,13 @@ RSpec.feature 'Ad Input', type: :feature, js: true do
     click_on('New Ad')
     expect(page).to have_select('Creative Group', options: ['Select Creative Group', 'Always On', 'Consumer Product'])
     expect(page).to have_field('customAd')
-    fill_in('customAd', with: 'XX')
+    fill_in('customAd', with: 'X')
     select('Always On', from: 'Creative Group')
     click_on('Create Ad')
-    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to have_text('CCL_CLTF_S00_AON_ABCX_100x300_X')
     click_on('Delete')
     click_on('Yes')
-    expect(page).to_not have_text('CCL_CLTF_S00_AON_ABCX_100x300_XX')
+    expect(page).to_not have_text('CCL_CLTF_S00_AON_ABCX_100x300_X')
   end 
   
 end
