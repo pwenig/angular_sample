@@ -4,8 +4,8 @@ import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@
   selector: 'children-component',
   template: `
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType != 'Creative'">
-      <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children && children.length > 0">+</span>
-      <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children && children.length > 0">-</span>
+      <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-plus" style="font-size: 13px;"></i></span>
+      <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-minus" style="font-size: 13px;"></i></span>
       <span class="no-children" *ngIf="!children || children.length == 0"></span>
       <span class="parent-type" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
       <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
@@ -182,7 +182,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
           this.changeCollapse('Placement', child, 'Ad', child.ad_inputs);
           // Change creative
           for(let adChild of child.ad_inputs) {
-            this.changeCollapse('Ad', adChild, 'Preative', adChild.creative_inputs);
+            this.changeCollapse('Ad', adChild, 'Creative', adChild.creative_inputs);
           }
         }
       }
