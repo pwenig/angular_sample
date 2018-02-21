@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit} from '@angular/core';
 
 @Component({
   selector: 'children-component',
@@ -7,13 +7,20 @@ import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@
       <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-plus" style="font-size: 13px;"></i></span>
       <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-minus" style="font-size: 13px;"></i></span>
       <span class="no-children" *ngIf="!children || children.length == 0"></span>
-      <span class="parent-type" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
+      <span [popover]="tooltip" triggers="mouseenter:mouseleave" (mouseenter)="getNames(parentType, parent, campaignParent, packageParent, null)">
+        <span class="parent-type" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}"
+        (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">
+        {{inputTag}}
+        </span>
+      </span>
       <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
-      </li>
+    </li>
     <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'Creative'">
-      <span class="parent-type" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
+      <span [popover]="tooltip" triggers="mouseenter:mouseleave" (mouseenter)="getNames(parentType, parent, campaignParent, null, adParent)">
+        <span class="parent-type" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
+      </span>
       <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
-      </li>
+    </li>
   `,
 })
 
@@ -32,6 +39,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   @Output() selectedNamestring = new EventEmitter();
 
   inputTag: string;
+  tooltip: string;
 
   ngOnInit() {
     this.inputTag = this.parent[this.parentType.toLowerCase() + '_input_tag'];
@@ -67,6 +75,41 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getNames(type, namestring, campaignParent, packageParent, adParent) {
+    let spacer = '_'
+    let campaignNames = campaignParent.network.name + spacer + campaignParent.program.name + spacer + campaignParent.season.name + spacer
+    if(type == 'Campaign') {
+      this.tooltip = campaignNames + namestring.campaign_type.name
+    }
+    if(type == 'Package') {
+      this.tooltip = campaignNames +
+                     namestring.agency.name + spacer + 
+                     namestring.publisher.name + spacer + 
+                     namestring.buy_method.name + spacer + 
+                     namestring.inventory_type.name
+    }
+    if(type == 'Placement') {
+      this.tooltip = campaignNames + 
+                     packageParent.agency.name + spacer + 
+                     namestring.tactic.name + spacer + 
+                     namestring.device.name + spacer +
+                     packageParent.publisher.name + spacer +
+                     packageParent.buy_method.name + spacer +
+                     namestring.ad_type.name
+    }
+    if(type == 'Ad') {
+      this.tooltip = campaignNames +
+                     namestring.creative_group.name + spacer +
+                     packageParent.publisher.name
+    }
+    if(type == 'Creative') {
+      this.tooltip = campaignNames +
+                     adParent.creative_group.name + spacer +
+                     namestring.creative_message.name + spacer +
+                     namestring.abtest_label.name
+    }
+  }
+
   namestringUpdated(namestring, parentType, childType, campaignParent, packageParent, placementParent, adParent) {
     localStorage.setItem('selected', parentType + '-' + namestring.id);
     localStorage.setItem('clip', parentType + '-' + namestring.id + '-clip' )
@@ -93,7 +136,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   }
 
   namestringSelected(namestring, parentType, childType, campaignParent, packageParent, placementParent, adParent) {
-    // If the same namstring was selected twice, reverse
     if(parentType + '-' + namestring.id == localStorage.getItem('selected')) {
       var oldClip = document.getElementById(localStorage.getItem('clip'));
       var oldElement = document.getElementById(localStorage.getItem('selected'));
