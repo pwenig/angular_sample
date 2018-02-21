@@ -76,17 +76,17 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   }
 
   getNames(type, namestring, campaignParent, packageParent, adParent) {
-    let spacer = '_'
-    let campaignNames = campaignParent.network.name + spacer + campaignParent.program.name + spacer + campaignParent.season.name + spacer
+    let spacer = '_';
+    let campaignNames = campaignParent.network.name + spacer + campaignParent.program.name + spacer + campaignParent.season.name + spacer;
     if(type == 'Campaign') {
-      this.tooltip = campaignNames + namestring.campaign_type.name
+      this.tooltip = campaignNames + namestring.campaign_type.name;
     }
     if(type == 'Package') {
       this.tooltip = campaignNames +
                      namestring.agency.name + spacer + 
                      namestring.publisher.name + spacer + 
                      namestring.buy_method.name + spacer + 
-                     namestring.inventory_type.name
+                     namestring.inventory_type.name;
     }
     if(type == 'Placement') {
       this.tooltip = campaignNames + 
@@ -95,18 +95,18 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
                      namestring.device.name + spacer +
                      packageParent.publisher.name + spacer +
                      packageParent.buy_method.name + spacer +
-                     namestring.ad_type.name
+                     namestring.ad_type.name;
     }
     if(type == 'Ad') {
       this.tooltip = campaignNames +
                      namestring.creative_group.name + spacer +
-                     packageParent.publisher.name
+                     packageParent.publisher.name;
     }
     if(type == 'Creative') {
       this.tooltip = campaignNames +
                      adParent.creative_group.name + spacer +
                      namestring.creative_message.name + spacer +
-                     namestring.abtest_label.name
+                     namestring.abtest_label.name;
     }
   }
 
@@ -118,11 +118,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     newElement.style.backgroundColor = 'lightblue';
     var clip = document.getElementById(parentType + '-' + namestring.id + '-clip');
     clip.style.visibility = 'visible';
-        
-
-    // if(childType) {
-    //   var formattedChild = childType.charAt(0).toUpperCase() + childType.slice(1);
-    // }
     var nameStringObject = {
       namestring: namestring,
       parent: parentType,
