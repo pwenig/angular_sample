@@ -7,6 +7,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap';
 import { TypeaheadModule, TabsModule } from 'ngx-bootstrap';
 import { ModalModule } from 'ngx-bootstrap';
 import { TooltipModule } from 'ngx-bootstrap';
+import { PopoverModule } from 'ngx-bootstrap';
 import { ClipboardModule } from 'ngx-clipboard';
 
 import { AppComponent } from './app.component';
@@ -73,7 +74,8 @@ import {FilterPipe} from '../shared/filter.pipe';
     TimepickerModule.forRoot(),
     BsDatepickerModule.forRoot(),
     ModalModule.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    PopoverModule.forRoot()
   ],
   providers: [MetadataService, CampaignInputService, 
               PackageInputService, PlacementInputService, 
