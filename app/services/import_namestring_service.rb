@@ -8,35 +8,76 @@ class ImportNamestringService
       csv_template
     )
 
+    missing_networks = {}
+    missing_programs = {}
+    missing_seasons = {}
+    missing_publishers = {}
+    missing_buy_methods = {}
+    missing_inventory_types = {}
+    missing_creative_groups = {}
+    missing_creative_messages = {}
+    missing_abtest_labels = {}
+    error_count = 0
     data.each_with_index do |row, index|
-      puts "Validating Row: #{index}"
       if !row[:network] || !Network.find_by_name(row[:network])
-        puts "No such network: #{row[:network]}"
+        missing_networks[row[:network]] = true
+        error_count += 1
       end
       if !row[:program] || !Program.find_by_name(row[:program])
-        puts "No such program: #{row[:program]}"
+        missing_programs[row[:program]] = true
+        error_count += 1
       end
       if !row[:season] || !Season.find_by_name(row[:season])
-        puts "No such season: #{row[:season]}"
+        missing_seasons[row[:season]] = true
+        error_count += 1
       end
       if !row[:publisher] || !Publisher.find_by_name(row[:publisher])
-        puts "No such publisher: #{row[:publisher]}"
+        missing_publishers[row[:publisher]] = true
+        error_count += 1
       end
       if !row[:buy_method] || !BuyMethod.find_by_name(row[:buy_method])
-        puts "No such Buy Method: #{row[:buy_method]}"
+        missing_buy_methods[row[:buy_method]] = true
+        error_count += 1
       end
       if !row[:inventory_type] || !InventoryType.find_by_name(row[:inventory_type])
-        puts "No such inventory type: #{row[:inventory_type]}"
+        missing_inventory_types[row[:inventory_type]] = true
+        error_count += 1
       end
       if !row[:creative_group] || !CreativeGroup.find_by_name(row[:creative_group])
-        puts "No such creative group: #{row[:creative_group]}"
+        missing_creative_groups[row[:creative_group]] = true
+        error_count += 1
       end
       if !row[:creative_message] || !CreativeMessage.find_by_name(row[:creative_message])
-        puts "No such creative message: #{row[:creative_message]}"
+        missing_creative_messages[row[:creative_message]] = true
+        error_count += 1
       end
       if !row[:abtest_label] || !AbtestLabel.find_by_name(row[:abtest_label])
-        puts "No such abtest label: #{row[:abtest_label]}"
+        missing_abtest_labels[row[:abtest_label]] = true
+        error_count += 1
       end
+    end
+    if error_count == 0
+      puts "All namestrings are valid. No missing references."
+    else
+      display_missing("Missing Networks", missing_networks)
+      display_missing("Missing Programs", missing_programs)
+      display_missing("Missing Seasons", missing_seasons)
+      display_missing("Missing Publishers", missing_publishers)
+      display_missing("Missing Buy Methods", missing_buy_methods)
+      display_missing("Missing Inventory Types", missing_inventory_types)
+      display_missing("Missing Creative Groups", missing_creative_groups)
+      display_missing("Missing Creative Messages", missing_creative_messages)
+      display_missing("Missing A/B Test Labels", missing_abtest_labels)
+    end
+  end
+
+  def self.display_missing(name, object)
+    if object.keys.length > 0
+      puts name
+      object.keys.each do |key|
+        puts key
+      end
+      puts
     end
   end
 
