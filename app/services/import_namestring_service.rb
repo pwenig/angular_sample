@@ -59,24 +59,26 @@ class ImportNamestringService
     if error_count == 0
       puts "All namestrings are valid. No missing references."
     else
-      display_missing("Missing Networks", missing_networks)
-      display_missing("Missing Programs", missing_programs)
-      display_missing("Missing Seasons", missing_seasons)
-      display_missing("Missing Publishers", missing_publishers)
-      display_missing("Missing Buy Methods", missing_buy_methods)
-      display_missing("Missing Inventory Types", missing_inventory_types)
-      display_missing("Missing Creative Groups", missing_creative_groups)
-      display_missing("Missing Creative Messages", missing_creative_messages)
-      display_missing("Missing A/B Test Labels", missing_abtest_labels)
+      display_missing("Networks", missing_networks)
+      display_missing("Programs", missing_programs)
+      display_missing("Seasons", missing_seasons)
+      display_missing("Publishers", missing_publishers)
+      display_missing("Buy Methods", missing_buy_methods)
+      display_missing("Inventory Types", missing_inventory_types)
+      display_missing("Creative Groups", missing_creative_groups)
+      display_missing("Creative Messages", missing_creative_messages)
+      display_missing("A/B Test Labels", missing_abtest_labels)
     end
   end
 
   def self.display_missing(name, object)
     if object.keys.length > 0
-      puts name
+      puts "Missing #{name}"
+      puts "==================="
       object.keys.each do |key|
-        puts key
+        puts "'#{key}'"
       end
+      puts
       puts
     end
   end

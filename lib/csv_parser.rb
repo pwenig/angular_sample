@@ -38,7 +38,7 @@ class CsvParser
       if row[exp[:name]]
         begin
           key = exp[:parsed_name] ? exp[:parsed_name] : exp[:name]
-          parsed_row[key] = exp[:parser].call(row[exp[:name]])
+          parsed_row[key] = exp[:parser].call(row[exp[:name]].strip)
         rescue Exception => ex
           raise Exception.new("Error on line: #{line_number}. Invalid format for column: #{exp[:name]}, value: #{row[exp[:name]]}")
         end
