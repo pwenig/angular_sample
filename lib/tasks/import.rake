@@ -258,6 +258,20 @@ namespace :import do
     puts 'Upload finished!'
   end
 
+  task validate_namestrings: :environment do
+    puts 'Starting Namestring Validation'
+    puts ''
+    ImportNamestringService.validate_namestring_file(Rails.root.join('lib', 'csv_data', 'namestrings.csv'))
+    puts 'Validation finished'
+  end
+
+  task import_namestrings: :environment do
+    puts 'Starting Namestring Import'
+    puts ''
+    ImportNamestringService.import_namestring_file(Rails.root.join('lib', 'csv_data', 'namestrings.csv'))
+    puts 'Import finished'
+  end
+
   task all: :environment do
     Rake::Task['import:networks'].invoke
     Rake::Task['import:programs'].invoke

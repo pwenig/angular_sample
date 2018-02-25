@@ -1,3 +1,4 @@
+# This should probably be removed. 
 class Campaign < ApplicationRecord
   validates_presence_of :name
   validates_presence_of :abbrev

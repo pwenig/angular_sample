@@ -1,4 +1,6 @@
 class PlacementInput < ApplicationRecord
+  after_initialize :set_placement_input_tag
+
   belongs_to :tactic
   belongs_to :device
   belongs_to :ad_type
@@ -14,6 +16,17 @@ class PlacementInput < ApplicationRecord
   validate :tentpole_details_must_be_present
   validate :episode_dates_must_be_present
 
+  validates_presence_of :package_input
+  validates_presence_of :tactic
+  validates_presence_of :device
+  validates_presence_of :ad_type
+  validates_presence_of :targeting_type_1
+  validates_presence_of :targeting_type_2
+  validates_presence_of :targeting_type_3
+  validates_presence_of :targeting_type_4
+
+  private
+
   def tentpole_details_must_be_present
     return unless package_input.campaign_input.season.name == 'Tentpole' && tentpole_details.blank?
     errors.add(:tentpole_details, "can't be blank")
@@ -21,9 +34,35 @@ class PlacementInput < ApplicationRecord
 
   def episode_dates_must_be_present
     return unless package_input.campaign_input.season.name != 'Tentpole' &&
+                  package_input.campaign_input.season.name != 'N/A' &&
                   episode_start_id.blank? &&
                   episode_end_id.blank?
     errors.add(:episode_start_id, "can't be blank")
     errors.add(:episode_end_id, "can't be blank")
+  end
+
+  def set_placement_input_tag
+    if !self.placement_input_tag
+      c = package_input.campaign_input
+      self.placement_input_tag = [
+        c.network.abbrev,
+        c.program.abbrev,
+        c.season.abbrev,
+        episode_start ? episode_start.abbrev : 'X',
+        episode_end ? episode_end.abbrev : 'X',
+        package_input.agency.abbrev,
+        tactic.abbrev,
+        device.abbrev,
+        ad_type.abbrev,
+        targeting_type_1.abbrev,
+        targeting_type_2.abbrev,
+        targeting_type_3.abbrev,
+        targeting_type_4.abbrev,
+        audience_type,
+        "#{width}x#{height}",
+        "#{c.start_year}#{c.start_month.to_s.rjust(2,"0")}#{c.start_day.to_s.rjust(2,"0")}",
+        "#{c.end_year}#{c.end_month.to_s.rjust(2,"0")}#{c.end_day.to_s.rjust(2,"0")}"
+      ].join("_")
+    end
   end
 end
