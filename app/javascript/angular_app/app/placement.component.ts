@@ -98,7 +98,6 @@ export class PlacementComponent implements OnInit, OnChanges {
   // Remove this?
   @Input() campaignInput: {};
   @Input() selectedObject: any = {};
-  @Input() placementTags: any[];
   @Input() episodes: any[];
   @Input() tactics: any[];
   @Input() devices: any[];
@@ -106,7 +105,7 @@ export class PlacementComponent implements OnInit, OnChanges {
   @Input() allAdTypes: any[];
   @Input() targetingTypes: any[];
   @Output() placementTagFinal = new EventEmitter();
-  @Output() placementObjectCreated = new EventEmitter();
+  @Output() placementObjectSelected = new EventEmitter();
   @Output() placementTagUpdate = new EventEmitter();
 
   episodeStartLabel: string = 'Episode Start';
@@ -162,8 +161,7 @@ export class PlacementComponent implements OnInit, OnChanges {
     }
   }
 
-
-  closeModal() {
+closeModal() {
     this.selectedObject.action = null;
     this.placementInput = {};
     this.adTypes = this.allAdTypes;
@@ -219,28 +217,6 @@ export class PlacementComponent implements OnInit, OnChanges {
 
   }
 
-  verifyTag() {
-    this._placement.verifyInput(this.placementInput.placementInputTag).subscribe(
-
-      (result) => {
-        this.existingPlacementInput = result;
-        this.showSave = true;
-        if(result) {
-          this.placementObject = result;
-          this.showSelect = true;
-          // this._history.storeInput(result);
-          // this._tree.createPlacementTree(result);
-          this.placementObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.placementTagFinal.emit(result)
-        }
-        
-      },
-      (error) => {
-        console.log('Error', error)
-      }
-    )
-  }
-
   saveInput(action) {
     // Create the params
     let createParams = {};
@@ -288,7 +264,6 @@ export class PlacementComponent implements OnInit, OnChanges {
           this.placementInput = result;
           this.placementInput.package_input = this.selectedObject.namestring.packageParent;
           this.placementInput.package_input.campaign_input = this.selectedObject.namestring.campaignParent;
-          this._history.storeInput(this.placementInput);
           this.placementTagUpdate.emit(this.placementInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -306,12 +281,12 @@ export class PlacementComponent implements OnInit, OnChanges {
       this._placement.createInput(createParams).subscribe(
 
         (result) => {
-          this.placementObject = result;
-  
-          // this._history.storeInput(result);
-          // this._tree.createPlacementTree(result);
-          this.placementObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.placementTagFinal.emit(result);
+          this.placementObject = result[0];
+          if(result[1]['status'] == 200) {
+            this.placementObjectSelected.emit(this.placementObject);
+          } else {
+            this.placementTagFinal.emit(this.placementObject);
+          }
           this.selectedObject.action = null;
           // Reset everything
           this.placementInput = {};
@@ -330,19 +305,6 @@ export class PlacementComponent implements OnInit, OnChanges {
       );
 
     } else {}
-  }
-
-  selectInput(tag) {
-    this.placementInput.placementInputTag = tag;
-    this.showFinal = true;
-    this.showSelectors = false;
-    this.showButtons = false;
-    this.verifyTag();
-  }
-
-  newTagSection() {
-    this.showButtons = true ;
-    this.showSelectors = true;
   }
 
   // Clears the selected options
@@ -373,11 +335,7 @@ export class PlacementComponent implements OnInit, OnChanges {
 
   createString() {
     this.placementInput.placementInputTag = this._placement.createPlacementString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent, this.placementInput)
-    if(this.placementInput.placementInputTag){
-      this.verifyTag();
-    }
-   this.invalid = false;
-
+    this.invalid = false;
   }
 
   duplicate() {

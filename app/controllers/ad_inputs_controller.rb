@@ -2,12 +2,12 @@ class AdInputsController < ApplicationController
   def create
     @ad_input = AdInput.includes(:creative_inputs).find_by(ad_input_tag: params[:ad_input_tag])
     if @ad_input
-      render json: @ad_input, except: %i[creative_group_id],
+      render json: [@ad_input, {status: 200}], except: %i[creative_group_id],
              include: [:creative_group, :creative_inputs, placement_input:
              { include: [package_input: { include: [:campaign_input] }] }], status: 200
     else
       @ad_input = AdInput.create!(permitted_params)
-      render json: @ad_input, include: [:creative_group, :creative_inputs, placement_input: { include: [package_input:
+      render json: [@ad_input, {status: 201}], include: [:creative_group, :creative_inputs, placement_input: { include: [package_input:
              { include: [:campaign_input] }] }], status: 201
     end
   end

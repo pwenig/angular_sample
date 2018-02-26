@@ -58,15 +58,13 @@ export class PackageComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
   
-  // @Input() campaignInput: {};
   @Input() selectedObject: any = {};
   @Input() agency: {};
   @Input() publishers: any[];
   @Input() buyMethods: any[];
   @Input() inventoryTypes: any[];
-  @Input() packageTags: any[];
   @Output() packageInputTagFinal = new EventEmitter();
-  @Output() packageObjectCreated = new EventEmitter();
+  @Output() packageObjectSelected = new EventEmitter();
   @Output() packageTagUpdate = new EventEmitter();
 
   publisherLabel: string = 'Publisher';
@@ -133,37 +131,7 @@ export class PackageComponent implements OnInit, OnChanges {
       ){ 
         this.showSave = true;
         this.packageInput.packageInputTag = this._package.createPackageString(this.selectedObject.namestring.campaignParent, this.packageInput, this.agency)
-        if(this.packageInput.packageInputTag) {
-          this.verifyTag();
-        }
       };
-  }
-
-  // Check to see if package input exists
-  verifyTag() {
-    this._package.verifyInput(this.packageInput.packageInputTag).subscribe(
-
-      (result) => {
-        this.existingPackageInput = result;
-        this.showSave = true;
-        this.showSelect = false;
-        if(result) {
-          this.packageObject = result;
-          this.showSelect = true;
-          this.showSave = false;
-          this._history.storeInput(result);
-          // Add to the heiarchy tree
-          this._tree.createPackageTree(result);
-          // Send it to the app comp so the tree comp is updated
-          this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.packageInputTagFinal.emit(result);
-        }
-        
-      },
-      (error) => {
-        console.log('Error', error)
-      }
-    )
   }
 
   saveInput(action) {
@@ -187,7 +155,6 @@ export class PackageComponent implements OnInit, OnChanges {
 
         (result) => {
           this.packageInput = result;
-          this._history.storeInput(this.packageInput);
           this.packageTagUpdate.emit(this.packageInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -201,13 +168,12 @@ export class PackageComponent implements OnInit, OnChanges {
       this._package.createInput(createParams).subscribe(
 
         (result) => {
-          this.packageObject = result;
-          this._history.storeInput(result);
-          // Add to the heiarchy tree
-          // this._tree.createPackageTree(result);
-          // Send it to the app comp so the tree comp is updated
-          this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.packageInputTagFinal.emit(result);
+          this.packageObject = result[0];
+          if(result[1]['status'] == 200) {
+            this.packageObjectSelected.emit(this.packageObject);
+          } else {
+            this.packageInputTagFinal.emit(this.packageObject);
+          }
           this.selectedObject.action = null;
           this.packageInput = {};
         },
@@ -217,20 +183,6 @@ export class PackageComponent implements OnInit, OnChanges {
       );
 
     } else {}
-  }
-
-  selectInput(tag) {
-    this.packageInput.packageInputTag = tag;
-    this.showFinal = true;
-    this.showSelectors = false;
-    this.showButtons = false;
-    this.verifyTag();
-  }
-
-  newTagSection() {
-    this.showButtons = true 
-    this.showSelectors = true
-    this.packageInput.custom = "XX";
   }
 
   // Clears the selected options
