@@ -161,8 +161,7 @@ export class PlacementComponent implements OnInit, OnChanges {
     }
   }
 
-
-  closeModal() {
+closeModal() {
     this.selectedObject.action = null;
     this.placementInput = {};
     this.adTypes = this.allAdTypes;
@@ -218,28 +217,6 @@ export class PlacementComponent implements OnInit, OnChanges {
 
   }
 
-  // verifyTag() {
-  //   this._placement.verifyInput(this.placementInput.placementInputTag).subscribe(
-
-  //     (result) => {
-  //       this.existingPlacementInput = result;
-  //       this.showSave = true;
-  //       if(result) {
-  //         this.placementObject = result;
-  //         this.showSelect = true;
-  //         // this._history.storeInput(result);
-  //         // this._tree.createPlacementTree(result);
-  //         this.placementObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-  //         this.placementTagFinal.emit(result)
-  //       }
-        
-  //     },
-  //     (error) => {
-  //       console.log('Error', error)
-  //     }
-  //   )
-  // }
-
   saveInput(action) {
     // Create the params
     let createParams = {};
@@ -287,7 +264,6 @@ export class PlacementComponent implements OnInit, OnChanges {
           this.placementInput = result;
           this.placementInput.package_input = this.selectedObject.namestring.packageParent;
           this.placementInput.package_input.campaign_input = this.selectedObject.namestring.campaignParent;
-          this._history.storeInput(this.placementInput);
           this.placementTagUpdate.emit(this.placementInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -306,9 +282,6 @@ export class PlacementComponent implements OnInit, OnChanges {
 
         (result) => {
           this.placementObject = result[0];
-  
-          // this._history.storeInput(result);
-          // this._tree.createPlacementTree(result);
           if(result[1]['status'] == 200) {
             this.placementObjectSelected.emit(this.placementObject);
           } else {
@@ -362,11 +335,7 @@ export class PlacementComponent implements OnInit, OnChanges {
 
   createString() {
     this.placementInput.placementInputTag = this._placement.createPlacementString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent, this.placementInput)
-    // if(this.placementInput.placementInputTag){
-    //   this.verifyTag();
-    // }
-   this.invalid = false;
-
+    this.invalid = false;
   }
 
   duplicate() {

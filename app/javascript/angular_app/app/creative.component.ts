@@ -178,35 +178,6 @@ export class CreativeComponent implements OnInit, OnChanges {
     this.checkAttributes();
   }
 
-
-  // verifyTag() {
-  //   this._creative.verifyInput(this.creativeInput.creativeInputTag).subscribe(
-
-  //     (result) => {
-  //       // This is the object that sets the create/select button
-  //       this.existingCreativeInput = result;
-  //       this.showSave = true;
-
-  //       if(result) {
-  //         this.showSelect = false;
-  //         // This is the object that will be used to copy
-  //         this.creativeInputObject = result;
-  //          // Store the object for exporting
-  //         this._history.storeInput(result);
-  //         // Add to the heiarchy tree
-  //         // this._tree.createCreativeTree(result);
-  //         // Send it to the app comp so the tree comp is updated
-  //         this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
-  //         this.creativeTagFinal.emit(result);
-  //       }
-  //     },
-  //     (error) => {
-  //       console.log('Error', error)
-  //     }
-  //   )
-
-  // }
-
   saveInput(action) {
     let createParams = {};
     if(this._adtype.videoAdType(this.selectedObject.namestring.placementParent)){
@@ -248,10 +219,6 @@ export class CreativeComponent implements OnInit, OnChanges {
 
         (result) => {
           this.creativeInput = result;
-          // Store the object for exporting
-          this._history.storeInput(result);
-          // this._tree.createCreativeTree(result);
-          // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
           this.creativeTagUpdate.emit(result);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -271,10 +238,6 @@ export class CreativeComponent implements OnInit, OnChanges {
 
         (result) => {
           this.creativeInputObject = result[0];
-          // Store the object for exporting
-          // this._history.storeInput(result);
-          // this._tree.createCreativeTree(result);
-          // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
           if(result[1]['status'] == 200) {
             this.creativeObjectSelected.emit(this.creativeInputObject);
           } else {

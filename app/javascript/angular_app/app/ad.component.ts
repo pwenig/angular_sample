@@ -51,8 +51,6 @@ export class AdComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
 
-  // Remove this.
-  @Input() campaignInput: {};
   @Input() selectedObject: any = {};
   @Input() adTags: any[];
   @Input() creativeGroups: any[];
@@ -100,32 +98,6 @@ export class AdComponent implements OnInit, OnChanges {
     this.showSave = false;
   }
 
-  // verifyTag() {
-  //   this._ad.verifyInput(this.adInput.adInputTag).subscribe(
-
-  //     (result) => {
-  //       // This is the object that sets the create/select button
-  //       this.existingAdInput = result;
-  //       this.showSave = true;
-  //       if(result) {
-  //         // What needs to happen here??
-
-  //         // This is the object that will be used to copy
-  //         this.adInputObject = result;
-  //         this.showSelect = true;
-  //         this._history.storeInput(result);
-  //         // this._tree.createAdTree(result);
-  //         this.adObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-  //         this.adTagFinal.emit(result)
-  //       }
-
-  //     },
-  //     (error) => {
-  //       console.log('Error', error);
-  //     }
-  //   )
-  // }
-
   saveInput(action) {
     let createParams = {
       placement_input_id: this.selectedObject.namestring.namestring.id,
@@ -144,8 +116,6 @@ export class AdComponent implements OnInit, OnChanges {
           this.adInput = result;
           this.adInput.placement_input.package_input = this.selectedObject.namestring.packageParent;
           this.adInput.placement_input.package_input.campaign_input = this.selectedObject.namestring.campaignParent;
-          this._history.storeInput(this.adInput);
-          // this._tree.createAdTree(this.adInput);
           this.adTagUpdate.emit(this.adInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -163,8 +133,6 @@ export class AdComponent implements OnInit, OnChanges {
 
         (result) => {
           this.adInputObject = result[0];
-          // this._history.storeInput(result);
-          // this._tree.createAdTree(result);
           if(result[1]['status'] == 200) {
             this.adObjectSelected.emit(this.adInputObject);
           } else {
@@ -196,9 +164,6 @@ export class AdComponent implements OnInit, OnChanges {
     if(this.adInput.creative_group && this.adInput.custom) {
       this.adInput.adInputTag = this._ad.createAdString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent, this.selectedObject.namestring.placementParent, this.adInput)
       this.showSave = true;
-      // if(this.adInput.adInputTag) {
-      //   this.verifyTag();
-      // }
     }
   }
 

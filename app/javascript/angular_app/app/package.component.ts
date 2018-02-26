@@ -58,7 +58,6 @@ export class PackageComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
   
-  // @Input() campaignInput: {};
   @Input() selectedObject: any = {};
   @Input() agency: {};
   @Input() publishers: any[];
@@ -135,33 +134,6 @@ export class PackageComponent implements OnInit, OnChanges {
       };
   }
 
-  // Check to see if package input exists
-  // verifyTag() {
-  //   this._package.verifyInput(this.packageInput.packageInputTag).subscribe(
-
-  //     (result) => {
-  //       this.existingPackageInput = result;
-  //       this.showSave = true;
-  //       this.showSelect = false;
-  //       if(result) {
-  //         this.packageObject = result;
-  //         this.showSelect = true;
-  //         this.showSave = false;
-  //         this._history.storeInput(result);
-  //         // Add to the heiarchy tree
-  //         this._tree.createPackageTree(result);
-  //         // Send it to the app comp so the tree comp is updated
-  //         this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-  //         this.packageInputTagFinal.emit(result);
-  //       }
-        
-  //     },
-  //     (error) => {
-  //       console.log('Error', error)
-  //     }
-  //   )
-  // }
-
   saveInput(action) {
     // Create the params
     var createParams = {
@@ -183,7 +155,6 @@ export class PackageComponent implements OnInit, OnChanges {
 
         (result) => {
           this.packageInput = result;
-          this._history.storeInput(this.packageInput);
           this.packageTagUpdate.emit(this.packageInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -198,11 +169,6 @@ export class PackageComponent implements OnInit, OnChanges {
 
         (result) => {
           this.packageObject = result[0];
-          // this._history.storeInput(result);
-          // Add to the heiarchy tree
-          // this._tree.createPackageTree(result);
-          // Send it to the app comp so the tree comp is updated
-          // this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
           if(result[1]['status'] == 200) {
             this.packageObjectSelected.emit(this.packageObject);
           } else {

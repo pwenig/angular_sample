@@ -193,35 +193,6 @@ export class CampaignComponent implements OnInit, OnChanges {
       };
   }
 
-  // Need to update this function
-  // verifyTag() {
-  //   this._campaign.verifyInput(this.campaignInput.campaignInputTag).subscribe(
-      
-  //     (result) => {
-  //       debugger
-  //       // Show either select or create button
-  //       this.existingCampaignInput = result;
-  //       this.showSave = true;
-  //       this.showSelect = false;
-  //       if(result) {
-  //         this.campaignInputObject = result;
-  //         this.showSelect = true;
-  //         this.showSave = false;
-  //         this._history.storeInput(result);
-  //         // Add to the heiarchy tree
-  //         this._tree.createCampaignTree(result);
-  //         // Send it to the app comp so the tree comp is updated
-  //         this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
-  //         this.campaignInputTagFinal.emit(result);
-  //       }
-
-  //     },
-  //     (error) => {
-  //       console.log('Error', error)
-  //     }
-  //   )
-
-  // }
   saveInput(action) {
     // Create the params
     var createParams = {
@@ -247,7 +218,6 @@ export class CampaignComponent implements OnInit, OnChanges {
 
         (result) => {
           this.campaignInput = result;
-          // this._history.storeInput(this.campaignInput);
           this.campaignTagUpdate.emit(this.campaignInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -261,12 +231,6 @@ export class CampaignComponent implements OnInit, OnChanges {
 
         (result) => {
           this.campaignInputObject = result[0];
-          // // Store the object for exporting
-          // this._history.storeInput(result);
-           // Add to heirarchy
-          // this._tree.createCampaignTree(result);
-          // this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
-
           // 200 means it already exists. Don't add it to the array
           if(result[1]['status'] ==  200) {
             this.campaignObject.emit(this.campaignInputObject);
