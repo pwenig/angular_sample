@@ -1,25 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe PackageInput, type: :model do
-  it 'should belong to a campaign input' do
-    should belong_to(:campaign_input)
-  end
-
-  it 'should belong to an agency' do
-    should belong_to(:agency)
-  end
-
-  it 'should belong to a publisher' do
-    should belong_to(:publisher)
-  end
-
-  it 'should belong to a buy method' do
-    should belong_to(:buy_method)
-  end
-
-  it 'should belong to an inventory type' do
-    should belong_to(:inventory_type)
-  end
 
   it 'should create a package input' do
     # Create the campaign input
@@ -47,6 +28,7 @@ RSpec.describe PackageInput, type: :model do
       custom: 'xx',
       package_input_tag: 'CCL_CLTF_S00_SC_ABCX_CPA_PSD_xx'
     )
+    expect(package_input.campaign_input.season.name).to eq 'S00'
     expect(package_input.agency.name).to include('Sterling Cooper')
     expect(package_input.publisher.name).to include('ABC')
     expect(package_input.buy_method.name).to include('CPA')
