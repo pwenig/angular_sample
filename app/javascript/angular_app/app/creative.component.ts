@@ -78,9 +78,8 @@ export class CreativeComponent implements OnInit, OnChanges {
   @Input() videoLengths: any[];
   @Input() creativeTags: any[];
 
-
   @Output() creativeTagFinal = new EventEmitter();
-  @Output() creativeObject = new EventEmitter();
+  @Output() creativeObjectSelected = new EventEmitter();
   @Output() creativeTagUpdate = new EventEmitter();
 
   creativeInput: any = {};
@@ -121,9 +120,6 @@ export class CreativeComponent implements OnInit, OnChanges {
     if(changes.selectedObject.currentValue.action == 'Copy/Create Creative') {
       this.action = 'Create';
       this.duplicate();
-    }
-    if(changes.selectedObject.currentValue.action == 'Delete Creative') {
-      debugger
     }
   }
 
@@ -179,36 +175,37 @@ export class CreativeComponent implements OnInit, OnChanges {
     } else {
       this.creativeInput.end_day = endDay.toString();
     }
+    this.checkAttributes();
   }
 
 
-  verifyTag() {
-    this._creative.verifyInput(this.creativeInput.creativeInputTag).subscribe(
+  // verifyTag() {
+  //   this._creative.verifyInput(this.creativeInput.creativeInputTag).subscribe(
 
-      (result) => {
-        // This is the object that sets the create/select button
-        this.existingCreativeInput = result;
-        this.showSave = true;
+  //     (result) => {
+  //       // This is the object that sets the create/select button
+  //       this.existingCreativeInput = result;
+  //       this.showSave = true;
 
-        if(result) {
-          this.showSelect = false;
-          // This is the object that will be used to copy
-          this.creativeInputObject = result;
-           // Store the object for exporting
-          this._history.storeInput(result);
-          // Add to the heiarchy tree
-          // this._tree.createCreativeTree(result);
-          // Send it to the app comp so the tree comp is updated
-          this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.creativeTagFinal.emit(result);
-        }
-      },
-      (error) => {
-        console.log('Error', error)
-      }
-    )
+  //       if(result) {
+  //         this.showSelect = false;
+  //         // This is the object that will be used to copy
+  //         this.creativeInputObject = result;
+  //          // Store the object for exporting
+  //         this._history.storeInput(result);
+  //         // Add to the heiarchy tree
+  //         // this._tree.createCreativeTree(result);
+  //         // Send it to the app comp so the tree comp is updated
+  //         this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
+  //         this.creativeTagFinal.emit(result);
+  //       }
+  //     },
+  //     (error) => {
+  //       console.log('Error', error)
+  //     }
+  //   )
 
-  }
+  // }
 
   saveInput(action) {
     let createParams = {};
@@ -273,12 +270,16 @@ export class CreativeComponent implements OnInit, OnChanges {
       this._creative.createInput(createParams).subscribe(
 
         (result) => {
-          this.creativeInputObject = result;
+          this.creativeInputObject = result[0];
           // Store the object for exporting
-          this._history.storeInput(result);
+          // this._history.storeInput(result);
           // this._tree.createCreativeTree(result);
           // this.creativeObject.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.creativeTagFinal.emit(result);
+          if(result[1]['status'] == 200) {
+            this.creativeObjectSelected.emit(this.creativeInputObject);
+          } else {
+            this.creativeTagFinal.emit(this.creativeInputObject);
+          }
           this.selectedObject.action = null;
           this.creativeInput = {};
           this.showSave = false;
@@ -290,14 +291,6 @@ export class CreativeComponent implements OnInit, OnChanges {
       );
 
     } else {}
-  }
-
-  selectInput(tag) {
-    this.creativeInput.creativeInputTag = tag;
-    this.showFinal = true;
-    this.showSelectors = false;
-    this.showButtons = false;
-    this.verifyTag();
   }
 
    // Updates the attribute when it is selected from child components
@@ -320,9 +313,6 @@ export class CreativeComponent implements OnInit, OnChanges {
         this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.adParent, this.creativeInput)
         this.showSave = true;
       }
-      if(this.creativeInput.creativeInputTag){
-        this.verifyTag();
-      }
       this.invalid = false;
     
     } else if (
@@ -337,9 +327,6 @@ export class CreativeComponent implements OnInit, OnChanges {
     ){
       this.creativeInput.creativeInputTag = this._creative.createCreativeString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.placementParent, this.selectedObject.namestring.adParent, this.creativeInput)
       this.showSave = true;
-      if(this.creativeInput.creativeInputTag){
-        this.verifyTag();
-      }
       this.invalid = false;
     }  
 

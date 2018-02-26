@@ -14,19 +14,19 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
    </div>
       <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
-      <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [allSeasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
+      <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [allSeasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignObject)="selectCampaignTag($event)" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
     </div>
     <div *ngIf="packageAction">
-      <package [selectedObject]="selectedObject" [agency]="agency" [packageTags]="packageTags" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageInputTagFinal)="setPackageTag($event)" (packageTagUpdate)="updatePackageTag($event)"></package>
+      <package [selectedObject]="selectedObject" [agency]="agency" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageObjectSelected)="selectPackageTag($event)" (packageInputTagFinal)="setPackageTag($event)" (packageTagUpdate)="updatePackageTag($event)"></package>
     </div>
     <div *ngIf="placementAction">
-      <placement [selectedObject]="selectedObject" [placementTags]="placementTags" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [allAdTypes]="adTypes" [targetingTypes]="targetingTypes" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)"></placement>
+      <placement [selectedObject]="selectedObject" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [allAdTypes]="adTypes" [targetingTypes]="targetingTypes" (placementObjectSelected)="selectPlacementTag($event)" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)"></placement>
     </div>
     <div *ngIf="adAction">
-      <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adTagUpdate)="updateAdTag($event)"></ad>
+      <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adObjectSelected)="selectAdTag($event)" (adTagUpdate)="updateAdTag($event)"></ad>
     </div>
     <div *ngIf="creativeAction">
-      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
+      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeObjectSelected)="selectCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
     </div>
     <div *ngIf="deleteAction">
       <delete [selectedObject]="selectedObject" (cancelDelete)="cancelDelete()" (namestringDeleted)="removeInput($event)"></delete>
@@ -60,10 +60,8 @@ export class AppComponent implements OnInit {
   adInput: any = {};
   creativeInput: any = {};
   campaignTags: any = [];
-  packageTags: any = [];
   adTags: any = [];
   creativeTags: any = [];
-  placementTags: any = [];
   selectedNameString: any = {};
   disableActions: boolean = true;
   selectedObject: any = {};
@@ -207,11 +205,17 @@ export class AppComponent implements OnInit {
     this.all_inputs.unshift(campaignTag);
     this.campaignTags.push(campaignTag.campaign_input_tag);
     this.campaignAction = false;
-    if(this.campaignInput.package_inputs && this.campaignInput.package_inputs.length > 0) {
-      this.packageTags = this.campaignInput.package_inputs.map(n=> n['package_input_tag']);
-    } else {
-      this.packageTags = [];
-    }
+  }
+
+  selectCampaignTag(campaignTag) {
+    this.campaignInput = campaignTag;
+    this.current_created_input = {namestring: campaignTag, parentType: 'Campaign', childType: 'Package'};
+    let updatedCampaign = this.all_inputs.find(x => x.id == campaignTag.id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    this.all_inputs.splice(index, 1);
+    this.all_inputs.unshift(campaignTag);
+    this.action = 'Edit';
+    this.campaignAction = false;
   }
 
   setPackageTag(packageTag) {
@@ -223,11 +227,18 @@ export class AppComponent implements OnInit {
     updatedCampaign.package_inputs.unshift(packageTag);
     this.all_inputs[index] = updatedCampaign;
     this.packageAction = false;
-    if(this.packageInput.placement_inputs && this.packageInput.placement_inputs.length > 0) {
-      this.placementTags = this.packageInput.placement_inputs.map(n=> n['placement_input_tag']);
-    } else {
-      this.placementTags = [];
-    }
+  }
+
+  selectPackageTag(packageTag) {
+    this.packageInput = packageTag;
+    this.current_created_input = {namestring: packageTag, parentType: 'Package', childType: 'Placement'};
+    let updatedCampaign = this.all_inputs.find(x => x.id == packageTag.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let packageIndex = updatedCampaign.package_inputs.find(x => x.id == packageTag.id);
+    updatedCampaign.package_inputs.splice(packageIndex, 1);
+    updatedCampaign.package_inputs.unshift(packageTag);
+    this.all_inputs[index] = updatedCampaign;
+    this.packageAction = false;
   }
 
   setPlacementTag(placementTag) {
@@ -238,13 +249,27 @@ export class AppComponent implements OnInit {
     let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == placementTag.package_input.id);
     updatedPackage.placement_inputs.unshift(placementTag);
     this.all_inputs[index] = updatedCampaign;
-    this.placementInput = false;
+    this.placementAction = false;
     if(this.placementInput.ad_inputs && this.placementInput.ad_inputs.length > 0) {
       this.adTags = this.placementInput.ad_inputs.map(n=> n['ad_input_tag']);
     } else {
       this.adTags = [];
     }
   }
+
+  selectPlacementTag(placementTag) {
+    this.placementInput = placementTag;
+    this.current_created_input = {namestring: placementTag, parentType: 'Placement', childType: 'Ad'};
+    let updatedCampaign = this.all_inputs.find(x => x.id == placementTag.package_input.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == placementTag.package_input.id);
+    let placementIndex = updatedPackage.placement_inputs.find(x => x.id == placementTag.id);
+    updatedPackage.placement_inputs.splice(placementIndex, 1);
+    updatedPackage.placement_inputs.unshift(placementTag);
+    this.all_inputs[index] = updatedCampaign;
+    this.placementAction = false;
+  }
+
 
   setAdTag(adTag) {
     this.adInput = adTag;
@@ -264,6 +289,20 @@ export class AppComponent implements OnInit {
     }
   }
 
+  selectAdTag(adTag) {
+    this.adInput = adTag;
+    this.current_created_input = {namestring: adTag, parentType: 'Ad', childType: 'Creative'};
+    let updatedCampaign = this.all_inputs.find(x => x.id == adTag.placement_input.package_input.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == adTag.placement_input.package_input.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == adTag.placement_input_id);
+    let adIndex = updatedPlacement.ad_inputs.find(x => x.id == adTag.id);
+    updatedPlacement.ad_inputs.splice(adIndex, 1);
+    updatedPlacement.ad_inputs.unshift(adTag);
+    this.all_inputs[index] = updatedCampaign;
+    this.adAction = false;
+  }
+
   setCreativeTag(creativeTag) {
     this.creativeInput = creativeTag;
     this.current_created_input = {namestring: creativeTag, parentType: 'Creative', childType: null };
@@ -275,6 +314,21 @@ export class AppComponent implements OnInit {
     updatedAd.creative_inputs.unshift(creativeTag);
     this.all_inputs[index] = updatedCampaign;
     this.selectedNameString.namestring = creativeTag;
+    this.creativeAction = false;
+  }
+
+  selectCreativeTag(creativeTag) {
+    this.creativeInput = creativeTag;
+    this.current_created_input = {namestring: creativeTag, parentType: 'Creative', childType: null };
+    let updatedCampaign = this.all_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.campaign_input_id);
+    let index = this.all_inputs.indexOf(updatedCampaign);
+    let updatedPackage = updatedCampaign.package_inputs.find(x => x.id == creativeTag.ad_input.placement_input.package_input.id);
+    let updatedPlacement = updatedPackage.placement_inputs.find(x => x.id == creativeTag.ad_input.placement_input.id);
+    let updatedAd = updatedPlacement.ad_inputs.find( x => x.id == creativeTag.ad_input.id);
+    let creativeIndex = updatedAd.creative_inputs.find(x => x.id == creativeTag.ad);
+    updatedAd.creative_inputs.splice(creativeIndex, 1);
+    updatedAd.creative_inputs.unshift(creativeTag);
+    this.all_inputs[index] = updatedCampaign;
     this.creativeAction = false;
   }
 

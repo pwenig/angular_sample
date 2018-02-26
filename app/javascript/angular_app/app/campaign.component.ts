@@ -165,6 +165,7 @@ export class CampaignComponent implements OnInit, OnChanges {
     } else {
       this.campaignInput.end_day = endDay.toString();
     }
+    this.checkAttributes();
   }
 
   // Updates the attribute when it is selected from child components
@@ -189,40 +190,38 @@ export class CampaignComponent implements OnInit, OnChanges {
       ){ 
         this.showSave = true;
         this.campaignInput.campaignInputTag = this._campaign.createCampaignString(this.campaignInput)
-        if(this.campaignInput.campaignInputTag) {
-          this.verifyTag();
-        }
       };
   }
 
   // Need to update this function
-  verifyTag() {
-    this._campaign.verifyInput(this.campaignInput.campaignInputTag).subscribe(
+  // verifyTag() {
+  //   this._campaign.verifyInput(this.campaignInput.campaignInputTag).subscribe(
       
-      (result) => {
-        // Show either select or create button
-        this.existingCampaignInput = result;
-        this.showSave = true;
-        this.showSelect = false;
-        if(result) {
-          this.campaignInputObject = result;
-          this.showSelect = true;
-          this.showSave = false;
-          this._history.storeInput(result);
-          // Add to the heiarchy tree
-          this._tree.createCampaignTree(result);
-          // Send it to the app comp so the tree comp is updated
-          this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.campaignInputTagFinal.emit(result);
-        }
+  //     (result) => {
+  //       debugger
+  //       // Show either select or create button
+  //       this.existingCampaignInput = result;
+  //       this.showSave = true;
+  //       this.showSelect = false;
+  //       if(result) {
+  //         this.campaignInputObject = result;
+  //         this.showSelect = true;
+  //         this.showSave = false;
+  //         this._history.storeInput(result);
+  //         // Add to the heiarchy tree
+  //         this._tree.createCampaignTree(result);
+  //         // Send it to the app comp so the tree comp is updated
+  //         this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
+  //         this.campaignInputTagFinal.emit(result);
+  //       }
 
-      },
-      (error) => {
-        console.log('Error', error)
-      }
-    )
+  //     },
+  //     (error) => {
+  //       console.log('Error', error)
+  //     }
+  //   )
 
-  }
+  // }
   saveInput(action) {
     // Create the params
     var createParams = {
@@ -248,7 +247,7 @@ export class CampaignComponent implements OnInit, OnChanges {
 
         (result) => {
           this.campaignInput = result;
-          this._history.storeInput(this.campaignInput);
+          // this._history.storeInput(this.campaignInput);
           this.campaignTagUpdate.emit(this.campaignInput);
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
@@ -261,13 +260,19 @@ export class CampaignComponent implements OnInit, OnChanges {
       this._campaign.createInput(createParams).subscribe(
 
         (result) => {
-          this.campaignInputObject = result;
+          this.campaignInputObject = result[0];
           // // Store the object for exporting
-          this._history.storeInput(result);
+          // this._history.storeInput(result);
            // Add to heirarchy
           // this._tree.createCampaignTree(result);
-          this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.campaignInputTagFinal.emit(result);
+          // this.campaignObject.emit(JSON.parse(localStorage.getItem('inputs')));
+
+          // 200 means it already exists. Don't add it to the array
+          if(result[1]['status'] ==  200) {
+            this.campaignObject.emit(this.campaignInputObject);
+          } else {
+            this.campaignInputTagFinal.emit(this.campaignInputObject);
+          }
           this.selectedObject.action = null;
           this.campaignInput = {};
           
@@ -288,20 +293,6 @@ export class CampaignComponent implements OnInit, OnChanges {
     this.campaignInput.custom = 'XX';
     this.campaignRange = [new Date(), new Date()];
     this.campaignInput.campaignInputTag = null;
-  }
-
-  selectInput() {
-    this.showFinal = true;
-    this.showSelectors = false;
-    this.showButtons = false;
-    this.campaignInputTagFinal.emit(this.existingCampaignInput);
-  }
-
-  tagSelected(tag) {
-    this.campaignInput.campaignInputTag = tag;
-    this.showFinal = true;
-    this.showSearch = false;
-    this.verifyTag();
   }
 
   duplicate() {

@@ -5,14 +5,14 @@ class PlacementInputsController < ApplicationController
                                                :episode_start, :episode_end)
                                      .find_by(placement_input_tag: params['placement_input_tag'])
     if @placement_input
-      render json: @placement_input, include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
+      render json: [@placement_input, {status: 200}], include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
                        :targeting_type_3, :targeting_type_4, :episode_start, :episode_end,
                        package_input: { include: [:campaign_input] }], status: 200
     else
       @placement_input = PlacementInput.includes(:ad_inputs, :tactic, :device, :ad_type, :targeting_type_1,
                                                  :targeting_type_2, :targeting_type_3, :targeting_type_4,
                                                  :episode_start, :episode_end).create!(permitted_params)
-      render json: @placement_input, include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
+      render json: [@placement_input, {status: 201}], include: [:ad_type, :ad_inputs, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
                        :targeting_type_3, :targeting_type_4, :episode_start, :episode_end,
                        package_input: { include: [:campaign_input] }], status: 201
     end

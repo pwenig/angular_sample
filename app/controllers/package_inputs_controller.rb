@@ -8,12 +8,12 @@ class PackageInputsController < ApplicationController
     @package_input = PackageInput.includes(:placement_inputs, :agency, :publisher, :buy_method, :inventory_type)
                                  .find_by(package_input_tag: params['package_input_tag'])
     if @package_input
-      render json: @package_input, except: %i[agency_id publisher_id buy_method_id inventory_type_id],
+      render json: [@package_input, {status: 200}], except: %i[agency_id publisher_id buy_method_id inventory_type_id],
              include: %i[agency publisher buy_method inventory_type placement_inputs campaign_input], status: 200
     else
       @package_input = PackageInput.includes(:placement_inputs, :agency, :publisher, :buy_method, :inventory_type)
                                    .create!(permitted_params)
-      render json: @package_input, include: %i[agency publisher buy_method inventory_type placement_inputs campaign_input], status: 201
+      render json: [@package_input, {status: 201}], include: %i[agency publisher buy_method inventory_type placement_inputs campaign_input], status: 201
     end
   end
 

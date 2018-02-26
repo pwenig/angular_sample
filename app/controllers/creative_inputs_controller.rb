@@ -14,7 +14,7 @@ class CreativeInputsController < ApplicationController
                                              :abtest_label, :video_length)
                                    .find_by(creative_input_tag: params['creative_input_tag'])
     if @creative_input
-      render json: @creative_input,
+      render json: [@creative_input, {status: 200}],
              include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
                       [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
                        :creative_message, :abtest_label, :video_length],
@@ -22,7 +22,7 @@ class CreativeInputsController < ApplicationController
     else
       @creative_input = CreativeInput.includes(:ad_input, :creative_message,
                                                :abtest_label, :video_length).create!(permitted_params)
-      render json: @creative_input,
+      render json: [@creative_input, {status: 201}],
              include: [{ ad_input: { include: { placement_input: { include: { package_input: { include:
                       [:publisher, { campaign_input: { include: %i[network program season] } }] } } } } } },
                        :creative_message, :abtest_label, :video_length], status: 201

@@ -16,12 +16,12 @@ class CampaignInputsController < ApplicationController
     @campaign_input = CampaignInput.includes(:package_inputs, :network, :program, :season, :campaign_type)
                                    .find_by(campaign_input_tag: params['campaign_input_tag'])
     if @campaign_input
-      render json: @campaign_input, except: %i[network_id program_id season_id],
+      render json: [@campaign_input, {status: 200}], except: %i[network_id program_id season_id],
              include: %i[network season program package_inputs campaign_type], status: 200
     else
       @campaign_input = CampaignInput.includes(:package_inputs, :network, :program, :season, :campaign_type)
                                      .create!(permitted_params)
-      render json: @campaign_input, except: %i[network_id program_id season_id],
+      render json: [@campaign_input, {status: 201}], except: %i[network_id program_id season_id],
              include: %i[network season program package_inputs campaign_type], status: 201
     end
   end

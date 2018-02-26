@@ -64,9 +64,8 @@ export class PackageComponent implements OnInit, OnChanges {
   @Input() publishers: any[];
   @Input() buyMethods: any[];
   @Input() inventoryTypes: any[];
-  @Input() packageTags: any[];
   @Output() packageInputTagFinal = new EventEmitter();
-  @Output() packageObjectCreated = new EventEmitter();
+  @Output() packageObjectSelected = new EventEmitter();
   @Output() packageTagUpdate = new EventEmitter();
 
   publisherLabel: string = 'Publisher';
@@ -133,38 +132,35 @@ export class PackageComponent implements OnInit, OnChanges {
       ){ 
         this.showSave = true;
         this.packageInput.packageInputTag = this._package.createPackageString(this.selectedObject.namestring.campaignParent, this.packageInput, this.agency)
-        if(this.packageInput.packageInputTag) {
-          this.verifyTag();
-        }
       };
   }
 
   // Check to see if package input exists
-  verifyTag() {
-    this._package.verifyInput(this.packageInput.packageInputTag).subscribe(
+  // verifyTag() {
+  //   this._package.verifyInput(this.packageInput.packageInputTag).subscribe(
 
-      (result) => {
-        this.existingPackageInput = result;
-        this.showSave = true;
-        this.showSelect = false;
-        if(result) {
-          this.packageObject = result;
-          this.showSelect = true;
-          this.showSave = false;
-          this._history.storeInput(result);
-          // Add to the heiarchy tree
-          this._tree.createPackageTree(result);
-          // Send it to the app comp so the tree comp is updated
-          this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.packageInputTagFinal.emit(result);
-        }
+  //     (result) => {
+  //       this.existingPackageInput = result;
+  //       this.showSave = true;
+  //       this.showSelect = false;
+  //       if(result) {
+  //         this.packageObject = result;
+  //         this.showSelect = true;
+  //         this.showSave = false;
+  //         this._history.storeInput(result);
+  //         // Add to the heiarchy tree
+  //         this._tree.createPackageTree(result);
+  //         // Send it to the app comp so the tree comp is updated
+  //         this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
+  //         this.packageInputTagFinal.emit(result);
+  //       }
         
-      },
-      (error) => {
-        console.log('Error', error)
-      }
-    )
-  }
+  //     },
+  //     (error) => {
+  //       console.log('Error', error)
+  //     }
+  //   )
+  // }
 
   saveInput(action) {
     // Create the params
@@ -201,13 +197,17 @@ export class PackageComponent implements OnInit, OnChanges {
       this._package.createInput(createParams).subscribe(
 
         (result) => {
-          this.packageObject = result;
-          this._history.storeInput(result);
+          this.packageObject = result[0];
+          // this._history.storeInput(result);
           // Add to the heiarchy tree
           // this._tree.createPackageTree(result);
           // Send it to the app comp so the tree comp is updated
-          this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
-          this.packageInputTagFinal.emit(result);
+          // this.packageObjectCreated.emit(JSON.parse(localStorage.getItem('inputs')));
+          if(result[1]['status'] == 200) {
+            this.packageObjectSelected.emit(this.packageObject);
+          } else {
+            this.packageInputTagFinal.emit(this.packageObject);
+          }
           this.selectedObject.action = null;
           this.packageInput = {};
         },
@@ -217,20 +217,6 @@ export class PackageComponent implements OnInit, OnChanges {
       );
 
     } else {}
-  }
-
-  selectInput(tag) {
-    this.packageInput.packageInputTag = tag;
-    this.showFinal = true;
-    this.showSelectors = false;
-    this.showButtons = false;
-    this.verifyTag();
-  }
-
-  newTagSection() {
-    this.showButtons = true 
-    this.showSelectors = true
-    this.packageInput.custom = "XX";
   }
 
   // Clears the selected options
