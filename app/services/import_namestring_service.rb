@@ -107,6 +107,10 @@ class ImportNamestringService
     program = Program.find_by_name(row[:program])
     season = Season.find_by_name(row[:season])
     campaign_type = CampaignType.find_by_name(row[:campaign_type])
+    # some exported rows don't have end years.
+    if !row[:end_year]
+      row[:end_year] = row[:start_year]
+    end
     params = {
       network: network,
       program: program,
@@ -140,7 +144,8 @@ class ImportNamestringService
       agency: agency,
       publisher: publisher,
       buy_method: buy_method,
-      inventory_type: inventory_type
+      inventory_type: inventory_type,
+      custom: row[:package_custom]
     }
     package_input = PackageInput.where(params).take
     if !package_input
@@ -158,6 +163,8 @@ class ImportNamestringService
       tactic: Tactic.find_by_name(row[:tactic]),
       device: Device.find_by_name(row[:device]),
       ad_type: AdType.find_by_name(row[:ad_type]),
+      width: row[:width],
+      height: row[:height],
       targeting_type_1: TargetingType.find_by_name(row[:targeting_type_1]),
       targeting_type_2: TargetingType.find_by_name(row[:targeting_type_2]),
       targeting_type_3: TargetingType.find_by_name(row[:targeting_type_3]),
@@ -199,7 +206,7 @@ class ImportNamestringService
     params = {
       ad_input: ad_input,
       creative_message: CreativeMessage.find_by_name(row[:creative_message]),
-      custom: row[:creative_version_custom],
+      custom: row[:creative_theme_custom],
       creative_version_number: row[:creative_version_number],
       abtest_label: abtest_label,
       video_length: video_length,

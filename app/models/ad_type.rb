@@ -5,7 +5,7 @@ class AdType < ApplicationRecord
   validates_uniqueness_of :abbrev
 
   def video?
-    abbrev in ['NSV', 'SVD']
+    ['NSV', 'SVD'].include?(abbrev)
   end
 
 end

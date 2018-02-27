@@ -12,6 +12,14 @@ class CampaignInput < ApplicationRecord
   validates_presence_of :season
   validates_presence_of :campaign_type
 
+  def tentpole?
+    season&.abbrev == 'TPL'
+  end
+
+  def season?
+    !tentpole? && season&.name != 'N/A'
+  end
+
   private
 
   # if namestring is not provided, this will create it based upon the

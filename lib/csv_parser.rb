@@ -13,7 +13,9 @@ class CsvParser
     header = rows[0]
     self.validate_header(header, column_metadata)
     (1..(rows.length - 1)).each do |index|
-      parsed_lines.append self.parse_row(line_number, rows[index], column_metadata)
+      if (rows[index].length > 0)
+        parsed_lines.append self.parse_row(line_number, rows[index], column_metadata)
+      end
       line_number += 1
     end
     parsed_lines

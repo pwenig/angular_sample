@@ -265,10 +265,14 @@ namespace :import do
     puts 'Validation finished'
   end
 
-  task import_namestrings: :environment do
+  # by default, this imports from lib/csv_data/namestrings.csv
+  # otherwise, if a filename argument is provided,
+  # this will read from lib/csv_data/<basename>.csv
+  task :namestrings, [:basename] => :environment do |t, args|
     puts 'Starting Namestring Import'
     puts ''
-    ImportNamestringService.import_namestring_file(Rails.root.join('lib', 'csv_data', 'namestrings.csv'))
+    filename = args.basename.present? ? "#{args.basename}.csv" : 'namestrings.csv'
+    ImportNamestringService.import_namestring_file(Rails.root.join('lib', 'csv_data', 'namestrings', filename))
     puts 'Import finished'
   end
 
