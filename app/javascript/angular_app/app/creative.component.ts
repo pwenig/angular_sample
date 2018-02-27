@@ -6,6 +6,7 @@ import {HistoryService} from '../services/history_service';
 import {CampaignInputService} from '../services/campaign_input_service';
 import {TreeService} from '../services/tree_service';
 import {DateFormatService} from '../services/date_format_service'
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'creative',
@@ -69,7 +70,7 @@ import {DateFormatService} from '../services/date_format_service'
 export class CreativeComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent: SelectComponent;
-
+  @ViewChild('Modal') public modal: ModalDirective;
 
   @Input() campaignInput: {};
   @Input() selectedObject: any = {};
@@ -81,6 +82,7 @@ export class CreativeComponent implements OnInit, OnChanges {
   @Output() creativeTagFinal = new EventEmitter();
   @Output() creativeObjectSelected = new EventEmitter();
   @Output() creativeTagUpdate = new EventEmitter();
+  @Output() errorHandler = new EventEmitter();
 
   creativeInput: any = {};
   existingCreativeInput: any;
@@ -226,6 +228,8 @@ export class CreativeComponent implements OnInit, OnChanges {
   
         },
         (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Updating Creative');
           console.log('ERROR', error);
         }
       );
@@ -249,6 +253,8 @@ export class CreativeComponent implements OnInit, OnChanges {
   
         },
         (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Creating Creative');
           console.log('ERROR', error);
         }
       );

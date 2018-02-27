@@ -3,6 +3,7 @@ import { PackageInputService } from '../services/package_input_service';
 import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
 import {HistoryService} from '../services/history_service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'package',
@@ -57,6 +58,7 @@ import {HistoryService} from '../services/history_service';
 export class PackageComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
+  @ViewChild('Modal') public modal: ModalDirective;
   
   @Input() selectedObject: any = {};
   @Input() agency: {};
@@ -66,6 +68,7 @@ export class PackageComponent implements OnInit, OnChanges {
   @Output() packageInputTagFinal = new EventEmitter();
   @Output() packageObjectSelected = new EventEmitter();
   @Output() packageTagUpdate = new EventEmitter();
+  @Output() errorHandler = new EventEmitter();
 
   publisherLabel: string = 'Publisher';
   buyMethodLabel: string = 'Buy Method';
@@ -159,6 +162,11 @@ export class PackageComponent implements OnInit, OnChanges {
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
           this.showSave = false;
+        },
+        (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Updating Package');
+          console.log('Error', error);
         }
       )
     } else if(action == 'Create') {
@@ -178,7 +186,9 @@ export class PackageComponent implements OnInit, OnChanges {
           this.packageInput = {};
         },
         (error) => {
-          console.log('ERROR', error)
+          this.modal.hide();
+          this.errorHandler.emit('Creating Package');
+          console.log('ERROR', error);
         }
       );
 

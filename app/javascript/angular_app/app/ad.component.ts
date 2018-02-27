@@ -3,6 +3,7 @@ import {AdInputService} from '../services/ad_input_service';
 import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
 import {HistoryService} from '../services/history_service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'ad',
@@ -48,16 +49,16 @@ import {HistoryService} from '../services/history_service';
 })
 
 export class AdComponent implements OnInit, OnChanges {
-  @ViewChild(SelectComponent) 
-  private selectComponent:SelectComponent;
+  @ViewChild(SelectComponent) private selectComponent:SelectComponent;
+  @ViewChild('Modal') public modal: ModalDirective;
 
   @Input() selectedObject: any = {};
   @Input() adTags: any[];
   @Input() creativeGroups: any[];
-
   @Output() adTagFinal = new EventEmitter();
   @Output() adObjectSelected = new EventEmitter();
   @Output() adTagUpdate = new EventEmitter();
+  @Output() errorHandler = new EventEmitter();
 
   creativeGroupLabel: string = 'Creative Group';
   adInput: any = {};
@@ -120,9 +121,13 @@ export class AdComponent implements OnInit, OnChanges {
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
           this.showSave = false;
+        },
+        (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Updating Ad');
+          console.log('Error', error);
         }
       )
-
 
 
     } else if(action == 'Create') {
@@ -142,9 +147,10 @@ export class AdComponent implements OnInit, OnChanges {
           this.adInput = {};
           this.adInput.custom = "XX";
           this.showSave = false;
-  
         },
         (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Creating Ad');
           console.log('ERROR', error);
         }
       );
