@@ -133,6 +133,9 @@ export class AppComponent implements OnInit {
         this.loading = false;
       },
       (error) => {
+        this.loading = false;
+        this.errorOccured = true;
+        this.errorMessage = 'loading Namestrings';
         console.log('Error', error);
       }
     )
@@ -143,17 +146,6 @@ export class AppComponent implements OnInit {
     } else {
       this.current_exports = JSON.parse(localStorage.getItem('inputs'));
     }
-
-    // // Get all of the input strings that have been created
-    // this._creative.getInputs().subscribe(
-    //   (data) => {
-    //     this.all_exports = data.reverse();
-    //   },
-    //   (error) => {
-    //     console.log('Error', error);
-    //   }
-    // )
-
   }
 
   // This function is called when a namestring has been selected from the children-component
