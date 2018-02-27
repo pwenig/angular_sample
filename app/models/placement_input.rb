@@ -41,6 +41,15 @@ class PlacementInput < ApplicationRecord
     errors.add(:episode_end_id, "can't be blank")
   end
 
+
+  def season_field
+    package_input.campaign.tentpole? ? package_input.campaign.tentpole_details : "#{episode_start.abbrev}-#{episode_end.abbrev}"
+  end
+
+  def dimensions_field
+    !ad_type.video? ? "#{width}x#{height}" : nil
+  end
+
   def set_placement_input_tag
     if !self.placement_input_tag
       c = package_input.campaign_input
@@ -48,8 +57,7 @@ class PlacementInput < ApplicationRecord
         c.network.abbrev,
         c.program.abbrev,
         c.season.abbrev,
-        episode_start ? episode_start.abbrev : 'X',
-        episode_end ? episode_end.abbrev : 'X',
+        season_field(),
         package_input.agency.abbrev,
         tactic.abbrev,
         device.abbrev,
@@ -59,10 +67,10 @@ class PlacementInput < ApplicationRecord
         targeting_type_3.abbrev,
         targeting_type_4.abbrev,
         audience_type,
-        "#{width}x#{height}",
+        dimensions_field(),
         "#{c.start_year}#{c.start_month.to_s.rjust(2,"0")}#{c.start_day.to_s.rjust(2,"0")}",
         "#{c.end_year}#{c.end_month.to_s.rjust(2,"0")}#{c.end_day.to_s.rjust(2,"0")}"
-      ].join("_")
+      ].compact().join("_")
     end
   end
 end

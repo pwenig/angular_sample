@@ -18,9 +18,9 @@ class AdInput < ApplicationRecord
         c.season.abbrev,
         creative_group.abbrev,
         placement_input.package_input.publisher.abbrev,
-        "#{placement_input.width}#{placement_input.height}",
+        !placement_input.package_input.campaign.video? ? "#{placement_input.width}x#{placement_input.height}" : nil,
         self.custom
-      ].join('_')
+      ].compact().join('_')
     end
   end
 end
