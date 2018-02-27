@@ -26,6 +26,7 @@ import {TreeComponent} from './tree.component';
 import {ChildrenComponent} from './children.component';
 import {ActionComponent} from './action.component';
 import {DeleteComponent} from './delete.component';
+import {ErrorComponent} from './error.component';
 
 import { MetadataService } from '../services/metadata_service';
 import { CampaignInputService } from '../services/campaign_input_service';
@@ -61,6 +62,7 @@ import {FilterPipe} from '../shared/filter.pipe';
     ChildrenComponent,
     ActionComponent,
     DeleteComponent,
+    ErrorComponent,
     RangePipe,
     FilterPipe
   ],

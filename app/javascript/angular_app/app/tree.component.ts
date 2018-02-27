@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'tree',
@@ -8,7 +8,10 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       <input type="text" [(ngModel)]="queryString" id="search" placeholder="Search Network/Program Name/Abbrev">
      </div>
         <section class="tree flexbox-item-grow">
-          <div *ngIf="all_inputs && all_inputs.length > 0">
+        <div *ngIf="loading"style="float:left; font-size: 18px;">
+          Loading Namestrings...  <span><i class="fa fa-spinner fa-spin" ></i> </span>
+        </div>
+          <div *ngIf="!loading && all_inputs && all_inputs.length > 0">
             <ul *ngFor="let input of all_inputs | FilterPipe: queryString">
               <children-component [campaignParent]="input" [currentCreated]="current_created_input" [parentType]="'Campaign'" [childType]="'Package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
 
@@ -38,21 +41,28 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
               </span>
             </ul>
           </div>
+
+
         </section>
     </div>
   `
 })
 
-export class TreeComponent {
+export class TreeComponent implements OnInit {
   @Input() current_created_input: any = {};
   @Input() all_inputs: any[];
   @Input() action: any;
+  @Input() loading: boolean;
   @Output() selectedNamestring = new EventEmitter();
 
   parentType: any;
   childType: any;
   parent: any = {};
   children: any = [];
+
+  ngOnInit() {
+    console.log('LOADING', this.loading);
+  }
 
   selectedString(nameStringObject) {
     // Send the selected namestring to app-component

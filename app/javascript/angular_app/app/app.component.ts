@@ -12,24 +12,27 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
    <div class="flexbox-item">
     <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
    </div>
-      <tree class="flexbox-item-grow flexbox-parent" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" (selectedNamestring)="selectedString($event)"></tree>
+      <tree class="flexbox-item-grow flexbox-parent" [loading]="loading" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
-      <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [allSeasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignObject)="selectCampaignTag($event)" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)"></campaign>
+      <campaign [selectedObject]="selectedObject" [agency]="agency" [networks]="networks" [seasons]="seasons" [allSeasons]="seasons" [campaignTags]="campaignTags" [campaignTypes]="campaignTypes" (campaignObject)="selectCampaignTag($event)" (campaignInputTagFinal)="setCampaignTag($event)" (campaignTagUpdate)="updateCampaignTag($event)" (errorHandler)="errorEvent($event)"></campaign>
     </div>
     <div *ngIf="packageAction">
-      <package [selectedObject]="selectedObject" [agency]="agency" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageObjectSelected)="selectPackageTag($event)" (packageInputTagFinal)="setPackageTag($event)" (packageTagUpdate)="updatePackageTag($event)"></package>
+      <package [selectedObject]="selectedObject" [agency]="agency" [publishers]="publishers" [buyMethods]="buyMethods" [inventoryTypes]="inventoryTypes" (packageObjectSelected)="selectPackageTag($event)" (packageInputTagFinal)="setPackageTag($event)" (packageTagUpdate)="updatePackageTag($event)" (errorHandler)="errorEvent($event)"></package>
     </div>
     <div *ngIf="placementAction">
-      <placement [selectedObject]="selectedObject" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [allAdTypes]="adTypes" [targetingTypes]="targetingTypes" (placementObjectSelected)="selectPlacementTag($event)" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)"></placement>
+      <placement [selectedObject]="selectedObject" [episodes]="episodes" [tactics]="tactics" [devices]="devices" [adTypes]="adTypes" [allAdTypes]="adTypes" [targetingTypes]="targetingTypes" (placementObjectSelected)="selectPlacementTag($event)" (placementTagFinal)="setPlacementTag($event)" (placementTagUpdate)="updatePlacementTag($event)" (errorHandler)="errorEvent($event)"></placement>
     </div>
     <div *ngIf="adAction">
-      <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adObjectSelected)="selectAdTag($event)" (adTagUpdate)="updateAdTag($event)"></ad>
+      <ad [selectedObject]="selectedObject" [adTags]="adTags" [creativeGroups]="creativeGroups" (adTagFinal)="setAdTag($event)" (adObjectSelected)="selectAdTag($event)" (adTagUpdate)="updateAdTag($event)" (errorHandler)="errorEvent($event)"></ad>
     </div>
     <div *ngIf="creativeAction">
-      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeObjectSelected)="selectCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)"></creative>
+      <creative [selectedObject]="selectedObject" [creativeTags]="creativeTags" [creativeMessages]="creativeMessages" [abtestLabels]="abtestLabels" [videoLengths]="videoLengths" (creativeTagFinal)="setCreativeTag($event)" (creativeObjectSelected)="selectCreativeTag($event)" (creativeTagUpdate)="updateCreativeTag($event)" (errorHandler)="errorEvent($event)"></creative>
     </div>
     <div *ngIf="deleteAction">
       <delete [selectedObject]="selectedObject" (cancelDelete)="cancelDelete()" (namestringDeleted)="removeInput($event)"></delete>
+    </div>
+    <div *ngIf="errorOccured">
+      <error-component [errorMessage]="errorMessage" (errorClosed)="errorClosed()"></error-component>
     </div>
   `
 })
@@ -80,6 +83,9 @@ export class AppComponent implements OnInit {
   all_inputs: any = [];
   // All namestrings that have been created. Remove? No longer being passed to tree comp.
   all_exports: any = [];
+  errorOccured: boolean;
+  errorMessage: any;
+  loading: boolean = true;
 
   constructor( private _metadata: MetadataService, private _campaign: CampaignInputService, private _creative: CreativeInputService, private _export: ExportService) {}
 
@@ -124,6 +130,7 @@ export class AppComponent implements OnInit {
     this._campaign.getInputs().subscribe(
       (data) => {
         this.all_inputs = data.reverse();
+        this.loading = false;
       },
       (error) => {
         console.log('Error', error);
@@ -477,6 +484,15 @@ export class AppComponent implements OnInit {
     let creativeIndex = updatedAd.creative_inputs.indexOf(removedCreative);
     updatedAd.creative_inputs.splice(creativeIndex, 1);
     this.all_inputs[index] = updatedCampaign;
+  }
+
+  errorEvent(error) {
+    this.errorOccured = true;
+    this.errorMessage = error;
+  }
+
+  errorClosed() {
+    this.errorOccured = false;
   }
 
 }

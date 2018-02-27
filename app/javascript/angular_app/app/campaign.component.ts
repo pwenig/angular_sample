@@ -3,6 +3,7 @@ import { CampaignInputService } from '../services/campaign_input_service';
 import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
 import {HistoryService} from '../services/history_service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'campaign',
@@ -65,6 +66,7 @@ import {HistoryService} from '../services/history_service';
 export class CampaignComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
+  @ViewChild('Modal') public modal: ModalDirective;
 
   @Input() networks: any = [];
   @Input() seasons: any = [];
@@ -76,6 +78,7 @@ export class CampaignComponent implements OnInit, OnChanges {
   @Output() campaignInputTagFinal = new EventEmitter();
   @Output() campaignObject = new EventEmitter();
   @Output() campaignTagUpdate = new EventEmitter();
+  @Output() errorHandler = new EventEmitter();
 
   campaignInput: any = {};
   campaignInputTag: any;
@@ -222,6 +225,11 @@ export class CampaignComponent implements OnInit, OnChanges {
           this.selectedObject.action = null;
           this.selectedObject.namestring.namestring = {};
           this.showSave = false;
+        },
+        (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Updating Campaign');
+          console.log('Error', error);
         }
       )
 
@@ -242,6 +250,8 @@ export class CampaignComponent implements OnInit, OnChanges {
           
         },
         (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Creating Campaign');
           console.log('ERROR', error)
         }
       );

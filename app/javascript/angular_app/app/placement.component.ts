@@ -5,6 +5,7 @@ import { CampaignTypeService } from '../services/campaign_type_service';
 import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
 import {HistoryService} from '../services/history_service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'placement',
@@ -94,6 +95,7 @@ import {HistoryService} from '../services/history_service';
 export class PlacementComponent implements OnInit, OnChanges {
   @ViewChild(SelectComponent) 
   private selectComponent:SelectComponent;
+  @ViewChild('Modal') public modal: ModalDirective;
   
   // Remove this?
   @Input() campaignInput: {};
@@ -107,6 +109,7 @@ export class PlacementComponent implements OnInit, OnChanges {
   @Output() placementTagFinal = new EventEmitter();
   @Output() placementObjectSelected = new EventEmitter();
   @Output() placementTagUpdate = new EventEmitter();
+  @Output() errorHandler = new EventEmitter();
 
   episodeStartLabel: string = 'Episode Start';
   episodeEndLabel: string = 'Episode End';
@@ -270,6 +273,8 @@ closeModal() {
           this.showSave = false;
         },
         (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Updating Placement');
           console.log('Error', error);
         }
       )
@@ -300,6 +305,8 @@ closeModal() {
           this.showSave = false;
         },
         (error) => {
+          this.modal.hide();
+          this.errorHandler.emit('Creating Placement');
           console.log('ERROR', error);
         }
       );
