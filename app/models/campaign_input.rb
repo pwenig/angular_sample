@@ -19,7 +19,6 @@ class CampaignInput < ApplicationRecord
   def season?
     !tentpole? && season&.name != 'N/A'
   end
-
   private
 
   # if namestring is not provided, this will create it based upon the

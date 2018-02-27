@@ -34,7 +34,7 @@ class PackageInput < ApplicationRecord
         buy_method.abbrev,
         inventory_type.abbrev,
         custom
-      ].join("_")
+      ].compact().join("_")
     end
   end
 end
