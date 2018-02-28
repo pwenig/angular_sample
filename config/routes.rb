@@ -4,7 +4,6 @@ Rails.application.routes.draw do
     resources :ad_types
     resources :agencies
     resources :buy_methods
-    resources :campaigns
     resources :campaign_types
     resources :creative_groups
     resources :creative_messages
@@ -21,7 +20,7 @@ Rails.application.routes.draw do
     resources :users
     root 'users#index'
   end
-  
+
   root 'pages#index'
   resources :metadata, only: [:index]
   resources :campaign_inputs
@@ -30,17 +29,17 @@ Rails.application.routes.draw do
   resources :ad_inputs
   resources :creative_inputs
   resources :requests, only: [:create]
-  as :requests do 
+  as :requests do
     get 'requests' => 'requests#new'
-  end 
+  end
 
   devise_for :users
   # Cleaning up devise routes
   as :user do
     get 'signin' => 'pages#index'
     get 'invite' => 'devise/invitations#new'
-    
-   
+
+
   end
 
   # Redirects routes to index if a wrong route is entered.

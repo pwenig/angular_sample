@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180208200649) do
+ActiveRecord::Schema.define(version: 20180228185712) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,15 +90,6 @@ ActiveRecord::Schema.define(version: 20180208200649) do
     t.datetime "updated_at", null: false
     t.index ["abbrev"], name: "index_campaign_types_on_abbrev", unique: true
     t.index ["name"], name: "index_campaign_types_on_name", unique: true
-  end
-
-  create_table "campaigns", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "abbrev", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["abbrev"], name: "index_campaigns_on_abbrev", unique: true
-    t.index ["name"], name: "index_campaigns_on_name", unique: true
   end
 
   create_table "creative_groups", force: :cascade do |t|
