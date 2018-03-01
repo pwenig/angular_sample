@@ -25,7 +25,7 @@ export class CreativeInputService {
       creativeObj.start_year +
       creativeObj.start_month +
       creativeObj.start_day + '-' +
-      creativeObj.end_year + 
+      creativeObj.end_year +
       creativeObj.end_month +
       creativeObj.end_day
     return creativeString;
@@ -37,7 +37,7 @@ export class CreativeInputService {
       adObj['creative_group']['abbrev'] + '_' +
       creativeObj.creative_message.abbrev + '_' +
       creativeObj.custom + '_' +
-      creativeObj.creative_version + '_' +
+      creativeObj.creative_version_number + '_' +
       creativeObj.abtest_label.abbrev + '_' +
       creativeObj.video_length.name + '_' +
       creativeObj.start_year +
@@ -48,7 +48,7 @@ export class CreativeInputService {
       creativeObj.end_day
     return creativeString;
     }
-    
+
   }
 
   createInput(creativeInput): Observable<any> {
