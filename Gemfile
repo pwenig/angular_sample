@@ -35,6 +35,7 @@ group :test do
   gem 'database_cleaner'
   gem 'factory_girl_rails', require: false
   gem 'selenium-webdriver'
+  gem 'chromedriver-helper'
   gem 'shoulda', '~> 3.5'
 end
 

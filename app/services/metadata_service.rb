@@ -3,14 +3,21 @@ class MetadataService
 
   def self.fetch_data
     metaobject = {
-      networks: fetch_table_data(Network), seasons: fetch_table_data(Season),
-      campaigns: fetch_table_data(Campaign), campaign_types: fetch_table_data(CampaignType),
+      networks: fetch_table_data(Network),
+      seasons: fetch_table_data(Season),
+      campaign_types: fetch_table_data(CampaignType),
       buy_methods: fetch_table_data(BuyMethod),
-      publishers: fetch_table_data(Publisher), inventory_types: fetch_table_data(InventoryType),
-      ad_types: fetch_table_data(AdType), targeting_types: fetch_table_data(TargetingType),
-      tactics: fetch_table_data(Tactic), devices: fetch_table_data(Device), episodes: fetch_table_data(Episode),
-      creative_groups: fetch_table_data(CreativeGroup), creative_messages: fetch_table_data(CreativeMessage),
-      abtest_labels: fetch_table_data(AbtestLabel), video_lengths: fetch_table_data(VideoLength),
+      publishers: fetch_table_data(Publisher),
+      inventory_types: fetch_table_data(InventoryType),
+      ad_types: fetch_table_data(AdType),
+      targeting_types: fetch_table_data(TargetingType),
+      tactics: fetch_table_data(Tactic),
+      devices: fetch_table_data(Device),
+      episodes: fetch_table_data(Episode),
+      creative_groups: fetch_table_data(CreativeGroup),
+      creative_messages: fetch_table_data(CreativeMessage),
+      abtest_labels: fetch_table_data(AbtestLabel),
+      video_lengths: fetch_table_data(VideoLength),
       campaign_tags: fetch_campaign_tags
     }
     metaobject
