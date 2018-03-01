@@ -1,45 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe PlacementInput, type: :model do
-  it 'should belong to a package input' do
-    should belong_to(:package_input)
-  end
 
-  it 'should belong to a tactic' do
-    should belong_to(:tactic)
-  end
-
-  it 'should belong to a device' do
-    should belong_to(:device)
-  end
-
-  it 'should belong to a ad type' do
-    should belong_to(:ad_type)
-  end
-
-  it 'should belong to a targeting type 1' do
-    should belong_to(:targeting_type_1)
-  end
-
-  it 'should belong to a targeting type 2' do
-    should belong_to(:targeting_type_2)
-  end
-
-  it 'should belong to a targeting type 3' do
-    should belong_to(:targeting_type_3)
-  end
-
-  it 'should belong to a targeting type 4' do
-    should belong_to(:targeting_type_4)
-  end
-
-  it 'should belong to a episode start' do
-    should belong_to(:episode_start)
-  end
-
-  it 'should belong to a episode end' do
-    should belong_to(:episode_end)
-  end
 
   it 'should create a placement input' do
     # Create the campaign input
@@ -134,6 +96,7 @@ RSpec.describe PlacementInput, type: :model do
       placement_input_tag: 'CCL_CLTF_E01_SC_AUD_OTT_ABCX_CPA_GIF_PSD_BT_XO_'
     )
     expect(placement_input).to_not be_valid
+    expect(placement_input.package_input.campaign_input.start_month).to eq '01'
     expect(placement_input.errors.messages[:tentpole_details]).to include("can't be blank")
   end
 
@@ -181,5 +144,14 @@ RSpec.describe PlacementInput, type: :model do
     expect(placement_input).to_not be_valid
     expect(placement_input.errors.messages[:episode_start_id]).to include("can't be blank")
     expect(placement_input.errors.messages[:episode_end_id]).to include("can't be blank")
+    expect(placement_input.tactic.name).to eq "Audio"
+    expect(placement_input.device.name).to eq "Over the Top"
+    expect(placement_input.ad_type.name).to eq 'Animated Gif'
+    expect(placement_input.targeting_type_1.name).to eq  'Behavioral'
+    expect(placement_input.targeting_type_2.name).to eq  'Contextual'
+    expect(placement_input.targeting_type_3.name).to eq  'Day Parting'
+    expect(placement_input.targeting_type_4.name).to eq  'Publisher Data'
+    expect(placement_input.episode_start).to eq nil
+    expect(placement_input.episode_end).to eq nil
   end
 end

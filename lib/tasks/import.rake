@@ -24,10 +24,19 @@ namespace :import do
     ActiveRecord::Base.transaction do
       csv_text = File.read(Rails.root.join('lib', 'csv_data', 'programs.csv')).scrub
       csv = CSV.parse(csv_text, headers: true)
-      csv.each do |row|
-        next if Program.exists?(name: row['Program'])
-        network = Network.find_by(name: row['Network'])
-        Program.create!(name: row['Program'], abbrev: row['Program_abbrev'], network: network)
+      csv.each_with_index do |row, line|
+        begin
+          next if Program.exists?(name: row['Program'])
+          network = Network.find_by(name: row['Network'])
+          if !network
+            puts "No such network: #{row['Network']} for program: #{row['Program']} on line: #{line - 1}."
+          else
+            Program.create!(name: row['Program'], abbrev: row['Program_abbrev'], network: network)
+          end
+        rescue StandardError => ex
+          puts "Failed to create program: #{row['Program']}, line: #{line - 1}"
+          puts ex
+        end
       end
     end
     puts 'Upload finished!'
@@ -256,6 +265,24 @@ namespace :import do
       end
     end
     puts 'Upload finished!'
+  end
+
+  task validate_namestrings: :environment do
+    puts 'Starting Namestring Validation'
+    puts ''
+    ImportNamestringService.validate_namestring_file(Rails.root.join('lib', 'csv_data', 'namestrings', 'namestrings.csv'))
+    puts 'Validation finished'
+  end
+
+  # by default, this imports from lib/csv_data/namestrings.csv
+  # otherwise, if a filename argument is provided,
+  # this will read from lib/csv_data/<basename>.csv
+  task :namestrings, [:basename] => :environment do |t, args|
+    puts 'Starting Namestring Import'
+    puts ''
+    filename = args.basename.present? ? "#{args.basename}.csv" : 'namestrings.csv'
+    ImportNamestringService.import_namestring_file(Rails.root.join('lib', 'csv_data', 'namestrings', filename))
+    puts 'Import finished'
   end
 
   task all: :environment do

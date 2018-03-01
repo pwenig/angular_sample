@@ -1,17 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe AdInput, type: :model do
-  it 'should belong to a placement input' do
-    should belong_to(:placement_input)
-  end
-
-  it 'should belong to a creative group' do
-    should belong_to(:creative_group)
-  end
-
-  it 'should have many creative inputs' do
-    should have_many(:creative_inputs)
-  end
 
   it 'should create an ad input' do
     network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
@@ -68,5 +57,6 @@ RSpec.describe AdInput, type: :model do
     expect(ad_input.placement_input.width).to eq(600)
     expect(ad_input.placement_input.package_input.campaign_input.network.name).to include('Comedy Central')
     expect(ad_input.placement_input.package_input.publisher.name).to include('ABC')
+    expect(ad_input.creative_inputs.length).to eq 0
   end
 end

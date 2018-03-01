@@ -1,21 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CreativeInput, type: :model do
-  it 'should belong to ad input' do
-    should belong_to(:ad_input)
-  end
 
-  it 'should belong to creative message' do
-    should belong_to(:creative_message)
-  end
-
-  it 'should belong to ab test label' do
-    should belong_to(:abtest_label)
-  end
-
-  it 'should belong to video length' do
-    should belong_to(:video_length)
-  end
 
   it 'should create a creative input' do
     network = Network.create!(name: 'Comedy Central', abbrev: 'CCL')
@@ -84,6 +70,8 @@ RSpec.describe CreativeInput, type: :model do
     expect(creative_input.creative_message.name).to include('Coming Soon')
     expect(creative_input.ad_input.creative_group.name).to include('Always On')
     expect(creative_input.ad_input.placement_input.tactic.name).to include('Audio')
+    expect(creative_input.abtest_label.name).to eq 'Copy'
+    expect(creative_input.video_length).to eq nil
   end
 
   it 'should raise an error if video length is not included' do
