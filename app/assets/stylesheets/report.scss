@@ -400,7 +400,7 @@ body
     ul {
       list-style: none;
       padding: 0;
-      margin-bottom: -5px;
+      margin-bottom: 0;
     }
 
     li {
@@ -409,15 +409,18 @@ body
       width: 50%;
       height: 35px;
 
+			span {
+				vertical-align: middle;
+			}
+
       .expand-children, .collapse-children {
-        font-size: 22px;
+        font-size: 15px;
         cursor: pointer;
-        margin: 5px;
       }
 
       .no-children {
-        font-size: 22px;
-        // margin: 14px;
+        font-size: 15px;
+        margin: 0px 0px 0px 18px;
       }
 
       .namestring {
@@ -464,6 +467,9 @@ body
       margin-left: 100px;
       display: none;
       width: 60%;
+			span {
+				vertical-align: middle;
+			}
     }
   }
 }
@@ -532,7 +538,6 @@ button.duplicate {
       transform: translateY(4px);
     }
   }
-
 }
 
 .search {
@@ -541,7 +546,6 @@ button.duplicate {
     margin-left: 40px;
     margin-bottom: 20px;
     width: 400px;
-
   }
 }
 
@@ -565,5 +569,4 @@ button.duplicate {
     border-radius: 4px;
     border-color: $primary-color;
   }
-
 }
