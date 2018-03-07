@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'tree',
@@ -48,7 +48,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
   `
 })
 
-export class TreeComponent implements OnInit {
+export class TreeComponent {
   @Input() current_created_input: any = {};
   @Input() all_inputs: any[];
   @Input() action: any;
@@ -59,10 +59,6 @@ export class TreeComponent implements OnInit {
   childType: any;
   parent: any = {};
   children: any = [];
-
-  ngOnInit() {
-    console.log('LOADING', this.loading);
-  }
 
   selectedString(nameStringObject) {
     // Send the selected namestring to app-component
