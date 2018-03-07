@@ -41,8 +41,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                 </section>
                 <section class="select">
                   <div class="action-column">
-                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Package</button>
-                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{ action }} Package</button>
+                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{ action }}</button>
                   </div>
                 </section>
               </div>
@@ -184,6 +184,7 @@ export class PackageComponent implements OnInit, OnChanges {
           }
           this.selectedObject.action = null;
           this.packageInput = {};
+          this.showSave = false;
         },
         (error) => {
           this.modal.hide();

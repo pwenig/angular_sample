@@ -59,8 +59,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Create Campaign')
-    click_on('Create Campaign')
+    expect(page).to have_text('Create')
+    click_on('Create')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('New Package')
   end
@@ -85,8 +85,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Create Campaign')
-    click_on('Create Campaign')
+    expect(page).to have_text('Create')
+    click_on('Create')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('New Package')
     click_on('New Package')
@@ -100,7 +100,7 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    click_on('Create Package')
+    click_on('Create')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
   end
 
@@ -124,8 +124,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Create Campaign')
-    click_on('Create Campaign')
+    expect(page).to have_text('Create')
+    click_on('Create')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('New Package')
     click_on('New Package')
@@ -139,11 +139,11 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    click_on('Create Package')
+    click_on('Create')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
     click_on('Edit')
     select('Custom Program', from: 'Inventory Type')
-    click_on('Update Package')
+    click_on('Update')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_CSP_XX')
   end 
 
@@ -168,8 +168,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Create Campaign')
-    click_on('Create Campaign')
+    expect(page).to have_text('Create')
+    click_on('Create')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('New Package')
     click_on('New Package')
@@ -183,8 +183,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    expect(page).to have_text('Cancel Package')
-    click_on('Cancel Package')
+    expect(page).to have_text('Cancel')
+    click_on('Cancel')
     expect(page).to_not have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
   end
 
@@ -208,8 +208,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Create Campaign')
-    click_on('Create Campaign')
+    expect(page).to have_text('Create')
+    click_on('Create')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('New Package')
     click_on('New Package')
@@ -223,11 +223,11 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    click_on('Create Package')
+    click_on('Create')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
     click_on('Copy/Create')
     select('Custom Program', from: 'Inventory Type')
-    click_on('Create Package')
+    click_on('Create')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_CSP_XX')
   end
 
@@ -251,8 +251,8 @@ RSpec.feature 'Package Input', type: :feature, js: true do
     expect(page).to have_text('Binge')
     expect(page).to have_field('customCampaign')
     fill_in('customCampaign', with: 'XX')
-    expect(page).to have_text('Create Campaign')
-    click_on('Create Campaign')
+    expect(page).to have_text('Create')
+    click_on('Create')
     expect(page).to have_text("CCL_CLTF_S00_BG_XX_#{date}")
     expect(page).to have_text('New Package')
     click_on('New Package')
@@ -266,7 +266,7 @@ RSpec.feature 'Package Input', type: :feature, js: true do
                                                             'Partner Social Distribution',
                                                             'Custom Program'])
     select('Partner Social Distribution', from: 'Inventory Type')
-    click_on('Create Package')
+    click_on('Create')
     expect(page).to have_text('CCL_CLTF_S00_SC_ABCX_CPA_PSD_XX')
     click_on('Delete')
     click_on('Yes')

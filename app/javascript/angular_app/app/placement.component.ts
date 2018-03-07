@@ -77,8 +77,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                 </section>
                 <section class="select">
                   <div class="action-column">
-                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel Placement</button>
-                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}} Placement</button>
+                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}}</button>
                   </div>
                 </section>
               </div>
