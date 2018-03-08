@@ -36,6 +36,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   @Input() placementParent: any = {};
   @Input() adParent: any = {};
   @Input() action: any;
+  @Input() search: any;
   @Output() selectedNamestring = new EventEmitter();
 
   inputTag: string;
@@ -47,31 +48,47 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   // Checks to make sure all of the data is rendered and then calls the function if currentCreated exists.
   ngAfterViewInit() {
-    if(Object.keys(this.currentCreated).length != 0) {
-      setTimeout(() => {
-          if(this.action == 'Edit' || this.currentCreated.parentType == 'Campaign') {
-            if(localStorage.getItem('selected') != this.currentCreated.parentType + '-' + this.currentCreated.namestring.id ) {
+    if(!this.search) {
+      if(Object.keys(this.currentCreated).length != 0) {
+        setTimeout(() => {
+            if(this.action == 'Edit' || this.currentCreated.parentType == 'Campaign') {
+              if(localStorage.getItem('selected') != this.currentCreated.parentType + '-' + this.currentCreated.namestring.id ) {
+                this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
+              } else {
+                this.namestringUpdated(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
+              }
+            } else if ( this.currentCreated.parentType + '-' + this.currentCreated.namestring.id != localStorage.getItem('selected') ){
               this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
-            } else {
-              this.namestringUpdated(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
+            } else {}
+            
+            if(this.currentCreated.parentType == 'Package') {
+              this.expand('Package', [this.currentCreated.namestring], 'Campaign', this.campaignParent);
             }
-          } else if ( this.currentCreated.parentType + '-' + this.currentCreated.namestring.id != localStorage.getItem('selected') ){
-            this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
-          } else {}
-          
-          if(this.currentCreated.parentType == 'Package') {
-            this.expand('Package', [this.currentCreated.namestring], 'Campaign', this.campaignParent);
-          }
-          if(this.currentCreated.parentType == 'Placement') {
-            this.expand('Placement', [this.currentCreated.namestring], 'Package', this.packageParent);
-          }
-          if(this.currentCreated.parentType == 'Ad') {
-            this.expand('Ad', [this.currentCreated.namestring], 'Placement', this.placementParent);
-          }
-          if(this.currentCreated.parentType == 'Creative') {
-            this.expand('Creative', [this.currentCreated.namestring], 'Ad', this.adParent);
-          }
-      });
+            if(this.currentCreated.parentType == 'Placement') {
+              this.expand('Placement', [this.currentCreated.namestring], 'Package', this.packageParent);
+            }
+            if(this.currentCreated.parentType == 'Ad') {
+              this.expand('Ad', [this.currentCreated.namestring], 'Placement', this.placementParent);
+            }
+            if(this.currentCreated.parentType == 'Creative') {
+              this.expand('Creative', [this.currentCreated.namestring], 'Ad', this.adParent);
+            }
+        });
+      }
+    }
+    
+    if(this.search) {
+      if(localStorage.getItem('selected')) {
+        var oldClip = document.getElementById(localStorage.getItem('clip'));
+        var oldElement = document.getElementById(localStorage.getItem('selected'));
+        if(oldElement) {
+          oldElement.style.fontWeight = 'normal';
+          oldElement.style.backgroundColor = 'white';
+        }
+        if(oldClip) {
+          oldClip.style.visibility = 'hidden'
+        }
+      } 
     }
   }
 
@@ -114,10 +131,16 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     localStorage.setItem('selected', parentType + '-' + namestring.id);
     localStorage.setItem('clip', parentType + '-' + namestring.id + '-clip' )
     var newElement = document.getElementById(parentType + '-' + namestring.id);
-    newElement.style.fontWeight = 'bold';
-    newElement.style.backgroundColor = 'lightblue';
+    if(newElement) {
+      newElement.style.fontWeight = 'bold';
+      newElement.style.backgroundColor = 'lightblue';
+    }
+
     var clip = document.getElementById(parentType + '-' + namestring.id + '-clip');
-    clip.style.visibility = 'visible';
+    if(clip) {
+      clip.style.visibility = 'visible';
+    }
+
     var nameStringObject = {
       namestring: namestring,
       parent: parentType,
@@ -184,10 +207,14 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   expand(childType, children, parentType, parent) {
     var expand = document.getElementById(parentType + '-expand-' + parent.id);
-    expand.style.display = 'none';
+    if(expand) {
+      expand.style.display = 'none';
+    }
 
     var collapse = document.getElementById(parentType + '-collapse-' + parent.id);
-    collapse.style.display = 'inline';
+    if(collapse) {
+      collapse.style.display = 'inline';
+    }
 
     if(children.length > 0) {
       for(let child of children) {

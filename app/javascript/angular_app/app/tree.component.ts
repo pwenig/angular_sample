@@ -1,11 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'tree',
   template: `
     <div class="tree-container flexbox-item-grow flexbox-parent">
     <div class="search">
-      <input type="text" [(ngModel)]="queryString" id="search" placeholder="Search Network/Program Name/Abbrev">
+      <input type="text" [(ngModel)]="queryString" id="search" (input)="searchChange(queryString)" placeholder="Search Network/Program Name/Abbrev">
      </div>
         <section class="tree flexbox-item-grow">
         <div *ngIf="loading"style="float:left; font-size: 18px;">
@@ -13,23 +13,23 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
         </div>
           <div *ngIf="!loading && all_inputs && all_inputs.length > 0">
             <ul *ngFor="let input of all_inputs | FilterPipe: queryString">
-              <children-component [campaignParent]="input" [currentCreated]="current_created_input" [parentType]="'Campaign'" [childType]="'Package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
+              <children-component [campaignParent]="input" [search]="clearSelected" [currentCreated]="current_created_input" [parentType]="'Campaign'" [childType]="'Package'" [children]=input.package_inputs [parent]=input (selectedNamestring)="selectedString($event)"></children-component>
 
               <span *ngIf="input.package_inputs && input.package_inputs.length > 0">
                 <span *ngFor="let package_input of input.package_inputs">
-                  <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Package'" [childType]="'Placement'" [children]=package_input.placement_inputs [parent]=package_input (selectedNamestring)="selectedString($event)"></children-component>
+                  <children-component [action]="action" [search]="clearSelected" [campaignParent]="input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Package'" [childType]="'Placement'" [children]=package_input.placement_inputs [parent]=package_input (selectedNamestring)="selectedString($event)"></children-component>
 
                   <span *ngIf="package_input.placement_inputs && package_input.placement_inputs.length > 0">
                     <span *ngFor="let placement_input of package_input.placement_inputs">
-                      <children-component [action]="action" [campaignParent]="input" [packageParent]="package_input" [placementParent]="placement_input" [currentCreated]="current_created_input" [parentType]="'Placement'" [childType]="'Ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
+                      <children-component [action]="action" [search]="clearSelected" [campaignParent]="input" [packageParent]="package_input" [placementParent]="placement_input" [currentCreated]="current_created_input" [parentType]="'Placement'" [childType]="'Ad'" [children]=placement_input.ad_inputs [parent]=placement_input (selectedNamestring)="selectedString($event)"></children-component>
 
                       <span *ngIf="placement_input.ad_inputs && placement_input.ad_inputs.length > 0">
                         <span *ngFor="let ad_input of placement_input.ad_inputs">
-                           <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Ad'" [childType]="'Creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
+                           <children-component [action]="action" [search]="clearSelected" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Ad'" [childType]="'Creative'" [children]=ad_input.creative_inputs [parent]=ad_input (selectedNamestring)="selectedString($event)"></children-component>
 
                            <span *ngIf="ad_input.creative_inputs && ad_input.creative_inputs.length > 0">
                             <span *ngFor="let creative_input of ad_input.creative_inputs">
-                             <children-component [action]="action" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Creative'" [childType]=null [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
+                             <children-component [action]="action" [search]="clearSelected" [campaignParent]="input" [adParent]="ad_input" [placementParent]="placement_input" [packageParent]="package_input" [currentCreated]="current_created_input" [parentType]="'Creative'" [childType]=null [parent]=creative_input (selectedNamestring)="selectedString($event)"></children-component>
 
                             </span>
                           </span>
@@ -41,14 +41,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
               </span>
             </ul>
           </div>
-
-
         </section>
     </div>
   `
 })
 
-export class TreeComponent {
+export class TreeComponent implements OnChanges {
   @Input() current_created_input: any = {};
   @Input() all_inputs: any[];
   @Input() action: any;
@@ -59,10 +57,24 @@ export class TreeComponent {
   childType: any;
   parent: any = {};
   children: any = [];
+  clearSelected: boolean;
 
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes['current_created_input'] && changes['current_created_input']['previousValue']) {
+      this.clearSelected = false;
+    }
+  }
+  
   selectedString(nameStringObject) {
     // Send the selected namestring to app-component
     this.selectedNamestring.emit(nameStringObject);
+    this.clearSelected = false;
   };
+
+  searchChange(queryString) {
+    // A search was initiated. Clear any namestring that was selected.
+    this.clearSelected = true;
+    this.selectedNamestring.emit(null);
+  }
 
 }
