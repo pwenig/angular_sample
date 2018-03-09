@@ -78,7 +78,7 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     expect(page).to have_select('Targeting Type 1', options: ['Select Targeting Type 1', 'Behavioral', 'None'])
     select('Behavioral', from: 'Targeting Type 1')
     click_on('Create')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
   end
 
   it 'edits a placement input' do 
@@ -138,11 +138,11 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     expect(page).to have_select('Targeting Type 1', options: ['Select Targeting Type 1', 'Behavioral', 'None'])
     select('Behavioral', from: 'Targeting Type 1')
     click_on('Create')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
     click_on('Edit')
     select('Desktop', from: 'Device')
     click_on('Update')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_DXX_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_DXX_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
   end 
 
   it 'clears a placement input' do
@@ -203,7 +203,7 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     select('Behavioral', from: 'Targeting Type 1')
     expect(page).to have_text('Cancel')
     click_on('Cancel')
-    expect(page).to_not have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_0101-0202')
+    expect(page).to_not have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_0101-0202')
   end
 
   it 'copies a placement input' do
@@ -263,11 +263,11 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     expect(page).to have_select('Targeting Type 1', options: ['Select Targeting Type 1', 'Behavioral', 'None'])
     select('Behavioral', from: 'Targeting Type 1')
     click_on('Create')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
     click_on('Copy/Create')
     select('Desktop', from: 'Device')
     click_on('Create')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_DXX_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_DXX_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
   end
 
   it 'deletes a placement input' do 
@@ -327,10 +327,10 @@ RSpec.feature 'Placement Input', type: :feature, js: true do
     expect(page).to have_select('Targeting Type 1', options: ['Select Targeting Type 1', 'Behavioral', 'None'])
     select('Behavioral', from: 'Targeting Type 1')
     click_on('Create')
-    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    expect(page).to have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
     click_on('Delete')
     click_on('Yes')
-    expect(page).to_not have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
+    expect(page).to_not have_text('CCL_CLTF_S00_E01-E02_SC_AUD_OTT_ABCX_CPA_GIF_PSD_BT-XX-XX-XX_LA_100x300_' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s + '-' + Time.now.strftime('%Y').to_s + Time.now.strftime('%m').to_s + Time.now.strftime('%d').to_s)
   end 
   
 end
