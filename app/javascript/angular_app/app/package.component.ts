@@ -148,6 +148,7 @@ export class PackageComponent implements OnInit, OnChanges {
       buy_method_id: this.packageInput.buy_method.id,
       buy_method: this.packageInput.buy_method,
       inventory_type_id: this.packageInput.inventory_type.id,
+      inventory_type: this.packageInput.inventory_type,
       custom: this.packageInput.custom,
       package_input_tag: this.packageInput.packageInputTag
     }

@@ -25,6 +25,7 @@ export class PlacementInputService {
       packageObj['publisher']['abbrev'] + '_' +
       packageObj['buy_method']['abbrev'] + '_' +
       placementObj.ad_type.abbrev + '_' +
+      packageObj.inventory_type.abbrev + '_' +
       placementObj.targeting_type_1.abbrev + '-' +
       placementObj.targeting_type_2.abbrev + '-' +
       placementObj.targeting_type_3.abbrev + '-' +
@@ -47,6 +48,7 @@ export class PlacementInputService {
       packageObj['publisher']['abbrev'] + '_' +
       packageObj['buy_method']['abbrev'] + '_' +
       placementObj.ad_type.abbrev + '_' +
+      packageObj.inventory_type.abbrev + '_' +
       placementObj.targeting_type_1.abbrev + '-' +
       placementObj.targeting_type_2.abbrev + '-' +
       placementObj.targeting_type_3.abbrev + '-' +
