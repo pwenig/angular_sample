@@ -112,7 +112,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
                      namestring.device.name + spacer +
                      packageParent.publisher.name + spacer +
                      packageParent.buy_method.name + spacer +
-                     namestring.ad_type.name;
+                     namestring.ad_type.name + spacer +
+                     packageParent.inventory_type.name
     }
     if(type == 'Ad') {
       this.tooltip = campaignNames +
