@@ -217,6 +217,9 @@ export class CampaignComponent implements OnInit, OnChanges {
     }
 
     if(action == 'Update') {
+      if(createParams.custom == ""){
+        createParams.custom = 'XX';
+      }
       this._campaign.updateInput(this.selectedObject.namestring.namestring, createParams, this.agency).subscribe(
 
         (result) => {
@@ -271,14 +274,16 @@ export class CampaignComponent implements OnInit, OnChanges {
   }
 
   duplicate() {
-    if(this.selectedObject.namestring.namestring.package_inputs && this.selectedObject.namestring.namestring.package_inputs.length > 0 && this.selectedObject.namestring.namestring.season.name != 'Tentpole') {
+    if(this.selectedObject.namestring.namestring.package_inputs && this.selectedObject.namestring.namestring.package_inputs.length > 0 && (this.selectedObject.namestring.namestring.season.name != 'Tentpole' && this.selectedObject.namestring.namestring.season.name != 'N/A')) {
       // Remove the tentpole option since there are children that will be effected.
       this.seasons = this.seasons.filter(x => x.name != 'Tentpole');
+      this.seasons = this.seasons.filter(x => x.name != 'N/A')
     }
-    
     // Remove the season options since there are children that will be effected.
-    if(this.selectedObject.namestring.namestring.package_inputs && this.selectedObject.namestring.namestring.package_inputs.length > 0 && this.selectedObject.namestring.namestring.season.name == 'Tentpole') {
-      this.seasons = this.seasons.filter(x => x.name == 'Tentpole');
+    if(this.selectedObject.namestring.namestring.package_inputs && this.selectedObject.namestring.namestring.package_inputs.length > 0 && (this.selectedObject.namestring.namestring.season.name == 'Tentpole' || this.selectedObject.namestring.namestring.season.name == 'N/A')) {
+      this.seasons = [];
+      this.seasons.push(this.allSeasons.find(x => x.name == 'Tentpole'));
+      this.seasons.push(this.allSeasons.find(x => x.name == 'N/A'));
     }
 
     // Set default values

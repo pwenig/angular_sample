@@ -66,11 +66,11 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                   <label for="type">Audience Type</label><br>
                   <input type="text" id="customAudience" [(ngModel)]="placementInput.audience_type" placeholder="Enter Type" (change)="checkAttributes()">
                 </div>
-                <div class="custom-column" *ngIf="!_adtype.videoAdType(placementInput)"> 
+                <div class="custom-column"> 
                   <label for="type">Width</label><br>
                   <input type="text" id="customWidth" [(ngModel)]="placementInput.width" placeholder="Enter Width" (change)="checkAttributes()">
                 </div>
-                <div class="custom-column" *ngIf="!_adtype.videoAdType(placementInput)"> 
+                <div class="custom-column"> 
                   <label for="type">Height</label><br>
                   <input type="text" id="customHeight" [(ngModel)]="placementInput.height" placeholder="Enter Width" (change)="checkAttributes()">
                 </div>
@@ -360,7 +360,7 @@ closeModal() {
     }
 
     if(this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
-      this.placementInput.tentpole = this.selectedObject.namestring.namestring.tentpole;
+      this.placementInput.tentpole = this.selectedObject.namestring.namestring.tentpole_details;
     }
     if(!this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
       this.defaultEpisodeStart = this.placementInput.episode_start = this.episodes.find(x => x['id'] == this.selectedObject.namestring.namestring.episode_start_id);

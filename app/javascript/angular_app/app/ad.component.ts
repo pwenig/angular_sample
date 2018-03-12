@@ -108,6 +108,9 @@ export class AdComponent implements OnInit, OnChanges {
       ad_input_tag: this.adInput.adInputTag
     }
     if(action == 'Update') {
+      if(createParams.custom == "") {
+        createParams.custom = "XX";
+      }
       createParams['placement_input_id'] = this.selectedObject.namestring.namestring.placement_input_id;
       // Need to get ids of the creative inputs and update each 
       // of the namestrings.

@@ -13,7 +13,7 @@ class CampaignInput < ApplicationRecord
   validates_presence_of :campaign_type
 
   def tentpole?
-    season&.abbrev == 'TPL'
+    season&.abbrev == 'TPL' || season&.abbrev == 'X'
   end
 
   def season?

@@ -56,7 +56,7 @@ class PlacementInput < ApplicationRecord
   end
 
   def dimensions_field
-    !ad_type&.video? ? "#{width}x#{height}" : nil
+    !ad_type&.video? ? "#{width}x#{height}" : "X"
   end
 
   def set_placement_input_tag
@@ -66,7 +66,7 @@ class PlacementInput < ApplicationRecord
         c.network.abbrev,
         c.program.abbrev,
         c.season.abbrev,
-        season_field(),
+        season_field,
         package_input.agency.abbrev,
         tactic.abbrev,
         device.abbrev,
@@ -79,7 +79,7 @@ class PlacementInput < ApplicationRecord
         targeting_type_3.abbrev,
         targeting_type_4.abbrev,
         audience_type,
-        dimensions_field(),
+        dimensions_field,
         "#{c.start_month.to_s.rjust(2,"0")}#{c.start_day.to_s.rjust(2,"0")}",
         "#{c.end_month.to_s.rjust(2,"0")}#{c.end_day.to_s.rjust(2,"0")}"
       ].compact().join("_")
