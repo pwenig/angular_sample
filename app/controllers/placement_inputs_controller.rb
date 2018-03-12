@@ -58,7 +58,7 @@ class PlacementInputsController < ApplicationController
       if @placement_input
         if @placement_input.update!(permitted_params)
           render json: @placement_input, include: [:ad_type, :tactic, :device, :ad_type, :targeting_type_1, :targeting_type_2,
-                       :targeting_type_3, :targeting_type_4, :episode_start, :episode_end, ad_inputs: {include: :creative_inputs}], status: 200 
+                       :targeting_type_3, :targeting_type_4, :episode_start, :episode_end, ad_inputs: {include: [:creative_group, {creative_inputs: {include: [:creative_message, :abtest_label, :video_length] }}]}], status: 200 
         else 
           head :no_content
          end 

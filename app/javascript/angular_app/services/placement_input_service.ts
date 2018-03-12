@@ -70,8 +70,8 @@ export class PlacementInputService {
         non_video_ad_type
       return placementString;
 
-      // Not Tentpole and not video
-    } else if (!this._campaign.tentpole(campaignObj) && !this._adtype.videoAdType(placementObj)) {
+      // Not Tentpole and not video and not season n/a
+    } else if (!this._campaign.tentpole(campaignObj) && !this._adtype.videoAdType(placementObj) && campaignObj.season.name != 'N/A') {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
@@ -80,8 +80,8 @@ export class PlacementInputService {
         non_video_ad_type
       return placementString;
 
-    // Not tentpole and video
-    }else if(!this._campaign.tentpole(campaignObj) && this._adtype.videoAdType(placementObj)) {
+    // Not tentpole and video and not season n/a
+    }else if(!this._campaign.tentpole(campaignObj) && this._adtype.videoAdType(placementObj) && campaignObj.season.name != 'N/A') {
       let placementString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
@@ -96,6 +96,12 @@ export class PlacementInputService {
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
       placementObj.tentpole + '_' +
+      video_ad_type
+    return placementString;
+    } else if(campaignObj.season.name == 'N/A') {
+      let placementString = campaignObj['network']['abbrev'] + '_' +
+      campaignObj['program']['abbrev'] + '_' +
+      campaignObj['season']['abbrev'] + '_' +
       video_ad_type
     return placementString;
     }
