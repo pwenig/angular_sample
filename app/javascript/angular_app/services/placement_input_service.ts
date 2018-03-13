@@ -74,7 +74,7 @@ export class PlacementInputService {
       let placementString = campaignObj['network']['abbrev'] + '_' +
         campaignObj['program']['abbrev'] + '_' +
         campaignObj['season']['abbrev'] + '_' +
-        placementObj.tentpole + '_' +
+        placementObj.tentpole_details + '_' +
         non_video_ad_type
       return placementString;
 
@@ -103,7 +103,7 @@ export class PlacementInputService {
       let placementString = campaignObj['network']['abbrev'] + '_' +
       campaignObj['program']['abbrev'] + '_' +
       campaignObj['season']['abbrev'] + '_' +
-      placementObj.tentpole + '_' +
+      placementObj.tentpole_details + '_' +
       video_ad_type
     return placementString;
     } else {}
