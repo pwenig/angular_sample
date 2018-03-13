@@ -19,6 +19,12 @@ export class PlacementInputService {
   // InventoryType_TargetingType_AudienceType-CustomDimension_Size_CampaignFlightDate
   createPlacementString(campaignObj, packageObj, placementObj){
     let size = '';
+    // Video ad type does not include width and height if null. Otherwise, X
+    if(placementObj.height && placementObj.width) {
+      size = placementObj.width + 'x' + placementObj.height
+    } else {
+      size = 'X';
+    }
     // Non-video ad type includes width and height 
     let non_video_ad_type =
       packageObj['agency']['abbrev'] + '_' +
@@ -33,21 +39,14 @@ export class PlacementInputService {
       placementObj.targeting_type_3.abbrev + '-' +
       placementObj.targeting_type_4.abbrev + '_' +
       placementObj.audience_type + '_' +
-      placementObj.width + 'x' +
-      placementObj.height + '_' +
+      size + '_' +
       campaignObj['start_year'] +
       campaignObj['start_month'] +
       campaignObj['start_day'] + '-' +
       campaignObj['end_year'] +
       campaignObj['end_month'] +
       campaignObj['end_day']
-
-    // Video ad type does not include width and height if null. Otherwise, X
-    if(placementObj.height && placementObj.width) {
-      size = placementObj.width + 'x' + placementObj.height
-    } else {
-      size = 'X';
-    }
+    
     let video_ad_type = 
       packageObj['agency']['abbrev'] + '_' +
       placementObj.tactic.abbrev + '_' +
