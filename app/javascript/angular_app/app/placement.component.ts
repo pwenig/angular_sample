@@ -33,7 +33,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                 </div>
                 <div class="custom-column" *ngIf="_campaign.tentpole(selectedObject.namestring.campaignParent)"> 
                   <label for="customTentpole">Tentpole Details</label><br>
-                  <input type="text" id="customTentpole" [(ngModel)]="placementInput.tentpole" placeholder="Enter Details" (change)="checkAttributes()">
+                  <input type="text" id="customTentpole" [(ngModel)]="placementInput.tentpole_details" placeholder="Enter Details" (change)="checkAttributes()">
                 </div>
                 </section>
                 <section class="select">  
@@ -66,11 +66,11 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                   <label for="type">Audience Type</label><br>
                   <input type="text" id="customAudience" [(ngModel)]="placementInput.audience_type" placeholder="Enter Type" (change)="checkAttributes()">
                 </div>
-                <div class="custom-column" *ngIf="!_adtype.videoAdType(placementInput)"> 
+                <div class="custom-column"> 
                   <label for="type">Width</label><br>
                   <input type="text" id="customWidth" [(ngModel)]="placementInput.width" placeholder="Enter Width" (change)="checkAttributes()">
                 </div>
-                <div class="custom-column" *ngIf="!_adtype.videoAdType(placementInput)"> 
+                <div class="custom-column"> 
                   <label for="type">Height</label><br>
                   <input type="text" id="customHeight" [(ngModel)]="placementInput.height" placeholder="Enter Width" (change)="checkAttributes()">
                 </div>
@@ -149,7 +149,7 @@ export class PlacementComponent implements OnInit, OnChanges {
       this.placementInput.targeting_type_2 = this.defaultTargetingType2;
       this.placementInput.targeting_type_3 = this.defaultTargetingType3;
       this.placementInput.targeting_type_4 = this.defaultTargetingType4;
-      this.placementInput.tentpole = null;
+      this.placementInput.tentpole_details = null;
     }
   }
 
@@ -193,7 +193,7 @@ closeModal() {
 
     // Tentpole and not video ad type
     }else if(this._campaign.tentpole(this.selectedObject.namestring.campaignParent) && !this._adtype.videoAdType(this.placementInput) && this.mainAttributes() &&
-      this.placementInput.tentpole &&
+      this.placementInput.tentpole_details &&
       this.placementInput.height &&
       this.placementInput.width
     ){
@@ -211,7 +211,7 @@ closeModal() {
 
       // Tentpole and is a video ad type
     }else if(this._campaign.tentpole(this.selectedObject.namestring.campaignParent) && this._adtype.videoAdType(this.placementInput) &&
-      this.placementInput.tentpole &&
+      this.placementInput.tentpole_details &&
       this.mainAttributes()
     ){
       this.showSave = true;
@@ -243,7 +243,7 @@ closeModal() {
     } else {
       createParams = {
         package_input_id: this.selectedObject.namestring.packageParent.id,
-        tentpole_details: this.placementInput.tentpole,
+        tentpole_details: this.placementInput.tentpole_details,
         tactic_id: this.placementInput.tactic.id,
         device_id: this.placementInput.device.id,
         ad_type_id: this.placementInput.ad_type.id,
@@ -300,7 +300,7 @@ closeModal() {
           this.placementInput.targeting_type_3 = this.defaultTargetingType2;
           this.placementInput.targeting_type_3 = this.defaultTargetingType3;
           this.placementInput.targeting_type_4 = this.defaultTargetingType4;
-          this.placementInput.tentpole = null;
+          this.placementInput.tentpole_details = null;
          
           this.showSave = false;
         },
@@ -317,7 +317,7 @@ closeModal() {
   // Clears the selected options
   cancelInput() {
     if(this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
-      this.placementInput.tentpole = null;
+      this.placementInput.tentpole_details = null;
     }
     if(!this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
       this.defaultEpisodeStart = undefined;
@@ -360,7 +360,7 @@ closeModal() {
     }
 
     if(this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
-      this.placementInput.tentpole = this.selectedObject.namestring.namestring.tentpole;
+      this.placementInput.tentpole_details = this.selectedObject.namestring.namestring.tentpole_details;
     }
     if(!this._campaign.tentpole(this.selectedObject.namestring.campaignParent)) {
       this.defaultEpisodeStart = this.placementInput.episode_start = this.episodes.find(x => x['id'] == this.selectedObject.namestring.namestring.episode_start_id);

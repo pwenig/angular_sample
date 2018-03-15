@@ -154,6 +154,9 @@ export class PackageComponent implements OnInit, OnChanges {
     }
 
     if(action == 'Update') {
+      if(createParams.custom == "") {
+        createParams.custom = "XX";
+      }
       createParams['campaign_input_id'] = this.selectedObject.namestring.namestring.campaign_input_id;
       this._package.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent).subscribe(
 
