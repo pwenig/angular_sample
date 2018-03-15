@@ -15,8 +15,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
         <div class="modal-content campaign">
           <div class="modal-header">
             <h4 class="modal-title pull-left">{{selectedObject.action}}</h4>
-            <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
+            <button type="button"  class="close pull-right" (click)="Modal.hide()" aria-label="Close">
+              <span aria-hidden="true" tabindex="0">&times;</span>
             </button>
           </div>
           <div class="modal-body">
@@ -24,32 +24,32 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
               <div class="row">
                 <section class="select">
                   <div class="first-column" *ngIf="networks && networks.length > 0">
-                    <select-component [label]="networkLabel" [default]="defaultNetwork" [options]="networks" (selected)="attributeUpdated($event, 'network')"></select-component>
+                    <select-component [label]="networkLabel" tabindex="1" [default]="defaultNetwork" [options]="networks" (selected)="attributeUpdated($event, 'network')"></select-component>
                   </div>
                   <div class="column" *ngIf="campaignInput.network">
-                    <select-component [label]="programLabel" [default]="defaultProgram" [options]="campaignInput.network.programs" (selected)="attributeUpdated($event, 'program')"></select-component>
+                    <select-component [label]="programLabel" tabindex="2" [default]="defaultProgram" [options]="campaignInput.network.programs" (selected)="attributeUpdated($event, 'program')"></select-component>
                   </div>
                   <div class="column" *ngIf="campaignInput.network">
-                    <select-component [label]="seasonLabel" [default]="defaultSeason" [options]="seasons" (selected)="attributeUpdated($event, 'season')"></select-component>
+                    <select-component [label]="seasonLabel" tabindex="3" [default]="defaultSeason" [options]="seasons" (selected)="attributeUpdated($event, 'season')"></select-component>
                   </div>
                 </section>
                 <section class="select">
                   <div class="campaign-type-column"> 
-                    <select-component [label]="campaignTypeLabel" [default]="defaultCampaignType" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component>
+                    <select-component [label]="campaignTypeLabel" tabindex="4" [default]="defaultCampaignType" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component>
                   </div>
                   <div class="custom-column"> 
                     <label for="type">Campaign Custom</label><br>
-                    <input type="text" id="customCampaign" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
+                    <input type="text" id="customCampaign" tabindex="5" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
                   </div>
                   <div class="column">
                     <label>Campaign Start / End Date</label>
-                    <input class="form-control" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="campaignRange" (ngModelChange)="dateChange($event)">
+                    <input class="form-control" tabindex="6" #drp="bsDaterangepicker" bsDaterangepicker [ngModel]="campaignRange" (ngModelChange)="dateChange($event)">
                   </div>
                 </section>
                 <section class="select">
                   <div class="action-column">
-                    <button class="btn btn-primary action" (click)="Modal.hide()">Cancel</button>
-                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}}</button>
+                    <button class="btn btn-primary action" tabindex="0" (click)="Modal.hide()">Cancel</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" tabindex="7" (click)="saveInput(action)">{{action}}</button>
                   </div>
                 </section>
               </div>
