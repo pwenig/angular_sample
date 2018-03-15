@@ -15,7 +15,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
         <div class="modal-content campaign">
           <div class="modal-header">
             <h4 class="modal-title pull-left">{{selectedObject.action}}</h4>
-            <button type="button"  class="close pull-right" (click)="Modal.hide()" aria-label="Close">
+            <button type="button" class="close pull-right" (click)="Modal.hide()" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
