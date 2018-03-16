@@ -95,6 +95,7 @@ body
     color: #fff;
     text-align: center;
     margin-bottom: 20px;
+    min-height: 120px;
 
     img {
       margin: 20px;
@@ -122,7 +123,12 @@ body
   }
 
   .alert {
+    font-size: 14px;
     color: red;
+  }
+
+  .notice {
+    font-size: 14px;
   }
 
 }
