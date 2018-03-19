@@ -305,6 +305,75 @@ namespace :import do
     Rake::Task['import:video_lengths'].invoke
   end
 
+  # Delete and imports data
+  task reset: :environment do
+    puts 'Deleting...'
+    puts 'Campaign Inputs'
+    CampaignInput.destroy_all
+    puts 'Package Inputs'
+    PackageInput.destroy_all
+    puts 'Placement Inputs'
+    PlacementInput.destroy_all
+    puts 'Ad Inputs'
+    AdInput.destroy_all
+    puts 'Creative Inputs'
+    CreativeInput.destroy_all
+    puts 'AB Test Labels'
+    AbtestLabel.destroy_all
+    puts 'Ad Types'
+    AdType.destroy_all
+    puts 'Buy Methods'
+    BuyMethod.destroy_all
+    puts 'Campaign Types'
+    CampaignType.destroy_all
+    puts 'Creative Groups'
+    CreativeGroup.destroy_all
+    puts 'Creative Messages'
+    CreativeMessage.destroy_all
+    puts 'Devices'
+    Device.destroy_all
+    puts 'Episodes'
+    Episode.destroy_all
+    puts 'Inventory Types'
+    InventoryType.destroy_all
+    puts 'Programs'
+    Program.destroy_all
+    puts 'Networks'
+    Network.destroy_all
+    puts 'Publishers'
+    Publisher.destroy_all
+    puts 'Seasons'
+    Season.destroy_all
+    puts 'Tactics'
+    Tactic.destroy_all
+    puts 'Targeting Types'
+    TargetingType.destroy_all
+    puts 'Video Lengths'
+    VideoLength.destroy_all
+    puts 'Finished deleting...'
+    puts ''
+    puts 'Importing new data...'
+    puts ''
+    Rake::Task['import:networks'].invoke
+    Rake::Task['import:programs'].invoke
+    Rake::Task['import:seasons'].invoke
+    Rake::Task['import:campaign_types'].invoke
+    Rake::Task['import:buy_methods'].invoke
+    Rake::Task['import:publishers'].invoke
+    Rake::Task['import:inventory_types'].invoke
+    Rake::Task['import:tactics'].invoke
+    Rake::Task['import:devices'].invoke
+    Rake::Task['import:ad_types'].invoke
+    Rake::Task['import:episodes'].invoke
+    Rake::Task['import:targeting_types'].invoke
+    Rake::Task['import:creative_groups'].invoke
+    Rake::Task['import:creative_messages'].invoke
+    Rake::Task['import:abtest_labels'].invoke
+    Rake::Task['import:video_lengths'].invoke
+    puts ''
+    puts 'Reset completed'
+  end 
+
   def export_to_csv(networks)
     CSV.open('./lib/csv_data/networks_normalized.csv', 'wb') do |csv|
       csv << Network.attribute_names
