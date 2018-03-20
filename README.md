@@ -20,6 +20,9 @@
 * To import all initial data:
   * $rake import:all
 
+* To clear and reset all initial data (except Users and Agencies)
+  * $rake import:reset
+
 * To import initial network data:
   * $rake import:networks
 

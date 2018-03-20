@@ -1,19 +1,23 @@
-DEVICE,DVC ABBR,DATE ADDED
-Desktop/Mobile/Tablet/ConnectedTV,ALL,
-Connected TV,CXX,
-Desktop/Connected TV,DCX,
-Desktop/Mobile/Tablet,DMT,
-Desktop/Mobile,DMX,
-Desktop/Tablet/Connected TV,DTC,
-Desktop/Tablet,DTX,
-Desktop,DXX,
-Digital Billboard,DBB,6/14/2017
-FEP,FEP,
-Mobile/Connected TV,MCX,
-Mobile/Tablet/Connected TV,MTC,
-Mobile/Tablet,MTX,
-Mobile,MXX,
-Tablet/Connected TV,TCX,
-Tablet,TXX,
-Over the Top,OTT,7/7/2017
-VOD,VOD,
+DEVICE,DVC ABBR,DATE ADDED,ADDED BY
+Desktop/Mobile/Tablet/ConnectedTV,ALL,,
+Connected TV,CXX,,
+Desktop/Connected TV,DCX,,
+Desktop/Mobile/Tablet,DMT,,
+Desktop/Mobile,DMX,,
+Desktop/Tablet/Connected TV,DTC,,
+Desktop/Tablet,DTX,,
+Desktop,DXX,,
+Digital Billboard,DBB,6/14/2017,
+FEP,FEP,,
+Mobile,MXX,,
+Mobile In-App,MAP,10/31/2017,TA
+Mobile Web,MWB,1/16/2018,TA
+Mobile/Connected TV,MCX,,
+Mobile/Tablet/Connected TV,MTC,,
+Mobile/Tablet,MTX,,
+Tablet/Connected TV,TCX,,
+Tablet,TXX,,
+Traditional Radio,RXX,1/29/2018,JB
+Over the Top,OTT,7/7/2017,
+VOD,VOD,,
+Gaming Console,GMC,12/14/2017,
