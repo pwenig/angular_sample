@@ -10,7 +10,7 @@ namespace :import do
       csv.each do |row|
         # Only create the network if it does not exist yet
         unless Network.exists?(name: row['Name'])
-          Network.create!(name: row['Name'], abbrev: row['Abbrev'])
+          Network.create!(name: row['Name'].strip, abbrev: row['Abbrev'].strip)
         end
       end
     end
@@ -27,11 +27,11 @@ namespace :import do
       csv.each_with_index do |row, line|
         begin
           next if Program.exists?(name: row['Program'])
-          network = Network.find_by(name: row['Network'])
+          network = Network.find_by(name: row['Network'].strip)
           if !network
             puts "No such network: #{row['Network']} for program: #{row['Program']} on line: #{line - 1}."
           else
-            Program.create!(name: row['Program'], abbrev: row['Program_abbrev'], network: network)
+            Program.create!(name: row['Program'].strip, abbrev: row['Program_abbrev'].strip, network: network)
           end
         rescue StandardError => ex
           puts "Failed to create program: #{row['Program']}, line: #{line - 1}"
@@ -50,7 +50,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless Season.exists?(name: row['SEASON'])
-          Season.create!(name: row['SEASON'], abbrev: row['SN ABBR'])
+          Season.create!(name: row['SEASON'].strip, abbrev: row['SN ABBR'].strip)
         end
       end
     end
@@ -65,7 +65,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless CampaignType.exists?(name: row['CAMPAIGN TYPE'])
-          CampaignType.create!(name: row['CAMPAIGN TYPE'], abbrev: row['CPN TYPE ABBR'])
+          CampaignType.create!(name: row['CAMPAIGN TYPE'].strip, abbrev: row['CPN TYPE ABBR'].strip)
         end
       end
     end
@@ -80,7 +80,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless BuyMethod.exists?(name: row['BUY METHOD'])
-          BuyMethod.create!(name: row['BUY METHOD'], abbrev: row['BUY ABBR'])
+          BuyMethod.create!(name: row['BUY METHOD'].strip, abbrev: row['BUY ABBR'].strip)
         end
       end
     end
@@ -95,7 +95,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless Publisher.exists?(name: row['PUBLISHER'])
-          Publisher.create!(name: row['PUBLISHER'], abbrev: row['PUB ABBR'])
+          Publisher.create!(name: row['PUBLISHER'].strip, abbrev: row['PUB ABBR'].strip)
         end
       end
     end
@@ -110,7 +110,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless Agency.exists?(name: row['AGENCY'])
-          Agency.create!(name: row['AGENCY'], abbrev: row['AGY ABBR'])
+          Agency.create!(name: row['AGENCY'].strip, abbrev: row['AGY ABBR'].strip)
         end
       end
     end
@@ -125,7 +125,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless InventoryType.exists?(name: row['INVENTORY TYPE'])
-          InventoryType.create!(name: row['INVENTORY TYPE'], abbrev: row['INV ABBR'])
+          InventoryType.create!(name: row['INVENTORY TYPE'].strip, abbrev: row['INV ABBR'].strip)
         end
       end
     end
@@ -140,7 +140,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless Tactic.exists?(name: row['TACTIC'])
-          Tactic.create!(name: row['TACTIC'], abbrev: row['TAC ABBR'])
+          Tactic.create!(name: row['TACTIC'].strip, abbrev: row['TAC ABBR'].strip)
         end
       end
     end
@@ -155,7 +155,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless Device.exists?(name: row['DEVICE'])
-          Device.create!(name: row['DEVICE'], abbrev: row['DVC ABBR'])
+          Device.create!(name: row['DEVICE'].strip, abbrev: row['DVC ABBR'].strip)
         end
       end
     end
@@ -170,7 +170,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless AdType.exists?(name: row['AD TYPE'])
-          AdType.create!(name: row['AD TYPE'], abbrev: row['AD ABBR'])
+          AdType.create!(name: row['AD TYPE'].strip, abbrev: row['AD ABBR'].strip)
         end
       end
     end
@@ -185,7 +185,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless Episode.exists?(name: row['EPISODE'])
-          Episode.create!(name: row['EPISODE'], abbrev: row['EP ABBR'])
+          Episode.create!(name: row['EPISODE'].strip, abbrev: row['EP ABBR'].strip)
         end
       end
     end
@@ -200,7 +200,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless TargetingType.exists?(name: row['TARGETING TYPE'])
-          TargetingType.create!(name: row['TARGETING TYPE'], abbrev: row['TGT ABBR'])
+          TargetingType.create!(name: row['TARGETING TYPE'].strip, abbrev: row['TGT ABBR'].strip)
         end
       end
     end
@@ -215,7 +215,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless CreativeGroup.exists?(name: row['CREATIVE GROUP'])
-          CreativeGroup.create!(name: row['CREATIVE GROUP'], abbrev: row['CTVE GRP ABBR'])
+          CreativeGroup.create!(name: row['CREATIVE GROUP'].strip, abbrev: row['CTVE GRP ABBR'].strip)
         end
       end
     end
@@ -230,7 +230,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless CreativeMessage.exists?(name: row['CREATIVE MESSAGE'])
-          CreativeMessage.create!(name: row['CREATIVE MESSAGE'], abbrev: row['CTVE MSG ABBR'])
+          CreativeMessage.create!(name: row['CREATIVE MESSAGE'].strip, abbrev: row['CTVE MSG ABBR'].strip)
         end
       end
     end
@@ -245,7 +245,7 @@ namespace :import do
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
         unless AbtestLabel.exists?(name: row['A/B TEST LABEL'])
-          AbtestLabel.create!(name: row['A/B TEST LABEL'], abbrev: row['A/B ABBR'])
+          AbtestLabel.create!(name: row['A/B TEST LABEL'].strip, abbrev: row['A/B ABBR'].strip)
         end
       end
     end
@@ -259,8 +259,8 @@ namespace :import do
       csv_text = File.read(Rails.root.join('lib', 'csv_data', 'video_lengths.csv')).scrub
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
-        unless VideoLength.exists?(name: row['VIDEO LENGTH']) || row['VIDEO LENGTH'].blank?
-          VideoLength.create!(name: row['VIDEO LENGTH'])
+        unless VideoLength.exists?(name: row['VIDEO LENGTH'] || row['VIDEO LENGTH']).blank?
+          VideoLength.create!(name: row['VIDEO LENGTH'].strip)
         end
       end
     end
