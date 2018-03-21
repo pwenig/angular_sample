@@ -14,7 +14,6 @@ namespace :import do
         end
       end
     end
-    export_to_csv(Network.all)
     puts 'Upload finished!'
   end
 
@@ -259,7 +258,7 @@ namespace :import do
       csv_text = File.read(Rails.root.join('lib', 'csv_data', 'video_lengths.csv')).scrub
       csv = CSV.parse(csv_text, headers: true)
       csv.each do |row|
-        unless VideoLength.exists?(name: row['VIDEO LENGTH'] || row['VIDEO LENGTH']).blank?
+        unless VideoLength.exists?(name: row['VIDEO LENGTH']) || row['VIDEO LENGTH'].blank?
           VideoLength.create!(name: row['VIDEO LENGTH'].strip)
         end
       end
@@ -372,14 +371,5 @@ namespace :import do
     Rake::Task['import:video_lengths'].invoke
     puts ''
     puts 'Reset completed'
-  end 
-
-  def export_to_csv(networks)
-    CSV.open('./lib/csv_data/networks_normalized.csv', 'wb') do |csv|
-      csv << Network.attribute_names
-      networks.each do |network|
-        csv << network.attributes.values
-      end
-    end
   end
 end
