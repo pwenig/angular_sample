@@ -104,6 +104,6 @@ class CampaignInputsController < ApplicationController
     # merge(user_id: current_user.id)
     params.permit(:network_id, :program_id, :season_id, :campaign_type_id, :custom,
                   :start_month, :start_year, :start_day, :end_month, :end_year, :end_day,
-                  :campaign_input_tag)
+                  :campaign_input_tag, :lock_version)
   end
 end

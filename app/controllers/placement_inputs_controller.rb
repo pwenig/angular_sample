@@ -86,6 +86,6 @@ class PlacementInputsController < ApplicationController
                   :targeting_type_1_id, :targeting_type_2_id,
                   :targeting_type_3_id, :targeting_type_4_id,
                   :episode_start_id, :episode_end_id,
-                  :placement_input_tag, :audience_type)
+                  :placement_input_tag, :audience_type, :lock_version)
   end
 end

@@ -261,6 +261,7 @@ closeModal() {
     if(action == 'Update') {
       createParams['package_input_id'] = this.selectedObject.namestring.namestring.package_input_id;
       createParams['ad_type'] = this.selectedObject.namestring.namestring.ad_type;
+      createParams['lock_version'] = this.selectedObject.namestring.namestring.lock_version;
       this._placement.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent).subscribe(
 
         (result) => {
@@ -274,7 +275,11 @@ closeModal() {
         },
         (error) => {
           this.modal.hide();
-          this.errorHandler.emit('Updating Placement');
+          if(error.status == 409) {
+            this.errorHandler.emit('Conflicting Updates');
+          } else {
+           this.errorHandler.emit('Updating Placement');
+          }
           console.log('Error', error);
         }
       )

@@ -77,6 +77,6 @@ class PackageInputsController < ApplicationController
   def permitted_params
     params.permit(:agency_id, :publisher_id, :buy_method_id,
                   :inventory_type_id, :campaign_input_id,
-                  :custom, :package_input_tag)
+                  :custom, :package_input_tag, :lock_version)
   end
 end

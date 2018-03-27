@@ -157,6 +157,7 @@ export class PackageComponent implements OnInit, OnChanges {
       if(createParams.custom == "") {
         createParams.custom = "XX";
       }
+      createParams['lock_version'] = this.selectedObject.namestring.namestring.lock_version;
       createParams['campaign_input_id'] = this.selectedObject.namestring.namestring.campaign_input_id;
       this._package.updateInput(this.selectedObject.namestring.namestring, createParams, this.selectedObject.namestring.campaignParent).subscribe(
 
@@ -169,7 +170,11 @@ export class PackageComponent implements OnInit, OnChanges {
         },
         (error) => {
           this.modal.hide();
-          this.errorHandler.emit('Updating Package');
+          if(error.status == 409) {
+            this.errorHandler.emit('Conflicting Updates');
+          } else {
+            this.errorHandler.emit('Updating Package');
+          }
           console.log('Error', error);
         }
       )

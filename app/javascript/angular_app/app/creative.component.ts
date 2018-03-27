@@ -220,6 +220,7 @@ export class CreativeComponent implements OnInit, OnChanges {
 
     if(action == 'Update') {
       createParams['ad_input_id'] = this.selectedObject.namestring.namestring.ad_input_id;
+      createParams['lock_version'] = this.selectedObject.namestring.namestring.lock_version;
       this._creative.updateInput(this.selectedObject.namestring.namestring.id, createParams).subscribe(
 
         (result) => {
@@ -232,7 +233,11 @@ export class CreativeComponent implements OnInit, OnChanges {
         },
         (error) => {
           this.modal.hide();
-          this.errorHandler.emit('Updating Creative');
+          if(error.status == 409) {
+           this.errorHandler.emit('Conflicting Updates');
+          } else {
+            this.errorHandler.emit('Updating Creative');
+          }
           console.log('ERROR', error);
         }
       );

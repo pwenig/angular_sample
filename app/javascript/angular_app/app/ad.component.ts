@@ -111,6 +111,7 @@ export class AdComponent implements OnInit, OnChanges {
       if(createParams.custom == "") {
         createParams.custom = "XX";
       }
+      createParams['lock_version'] = this.selectedObject.namestring.namestring.lock_version;
       createParams['placement_input_id'] = this.selectedObject.namestring.namestring.placement_input_id;
       // Need to get ids of the creative inputs and update each 
       // of the namestrings.
@@ -127,7 +128,11 @@ export class AdComponent implements OnInit, OnChanges {
         },
         (error) => {
           this.modal.hide();
-          this.errorHandler.emit('Updating Ad');
+          if(error.status == 409) {
+            this.errorHandler.emit('Conflicting Updates');
+          } else {
+            this.errorHandler.emit('Updating Ad');
+          }
           console.log('Error', error);
         }
       )

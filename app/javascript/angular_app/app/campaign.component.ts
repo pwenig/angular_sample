@@ -220,6 +220,7 @@ export class CampaignComponent implements OnInit, OnChanges {
       if(createParams.custom == ""){
         createParams.custom = 'XX';
       }
+      createParams['lock_version'] = this.selectedObject.namestring.namestring.lock_version;
       this._campaign.updateInput(this.selectedObject.namestring.namestring, createParams, this.agency).subscribe(
 
         (result) => {
@@ -231,7 +232,12 @@ export class CampaignComponent implements OnInit, OnChanges {
         },
         (error) => {
           this.modal.hide();
-          this.errorHandler.emit('Updating Campaign');
+          if(error.status == 409) {
+            this.errorHandler.emit('Conflicting Updates');
+          } else {
+            this.errorHandler.emit('Updating Campaign');
+            
+          }
           console.log('Error', error);
         }
       )

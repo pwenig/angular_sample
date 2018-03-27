@@ -58,6 +58,6 @@ class AdInputsController < ApplicationController
   private
 
   def permitted_params
-    params.permit(:placement_input_id, :creative_group_id, :custom, :ad_input_tag)
+    params.permit(:placement_input_id, :creative_group_id, :custom, :ad_input_tag, :lock_version)
   end
 end
