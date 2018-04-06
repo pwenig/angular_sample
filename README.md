@@ -78,6 +78,15 @@
   * EMAIL_ADDRESS
   * EMAIL_PASSWORD
 
+* To enable S3 exporting, add ENV variables:
+  * ACCESS_KEY
+  * SECRET_KEY
+  * BUCKET
+  * DIRECTORY_NAME
+
+* To export namestrings to S3:
+  * $rake export:namestrings
+
 * Rubocop
   * rubocop -a
     The -a option will automatically update some errors. Please see the
