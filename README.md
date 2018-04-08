@@ -79,11 +79,11 @@
   * EMAIL_PASSWORD
 
 * To enable S3 exporting, add ENV variables:
-  * AWS_ACCESS_KEY
-  * AWS_SECRET_KEY
-  * BUCKET
+  * AWS_ACCESS_KEY_ID
+  * AWS_SECRET_ACCESS_KEY
+  * AWS_S3_BUCKET
   * DIRECTORY_NAME
-  * REGION
+  * AWS_S3_REGION
 
 * To export namestrings to S3:
   * $rake export:namestrings

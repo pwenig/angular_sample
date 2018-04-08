@@ -119,8 +119,8 @@ class ExportNamestringsService
 
   # Send to S3
   def self.export_file(file_path)
-    s3 = Aws::S3::Resource.new(region: ENV["REGION"], access_key_id: ENV["AWS_ACCESS_KEY"], secret_access_key: ENV["AWS_SECRET_KEY"])
-    obj = s3.bucket(ENV["BUCKET"]).object(file_path)
+    s3 = Aws::S3::Resource.new(region: ENV["AWS_S3_REGION"], access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
+    obj = s3.bucket(ENV["AWS_S3_BUCKET"]).object(file_path)
     begin
       obj.upload_file(file_path)
       # Delete the file after it's been uploaded
