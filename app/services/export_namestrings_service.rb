@@ -1,4 +1,4 @@
-class ExportNamestringsService 
+class ExportNamestringsService
 
   def self.export_namestrings
      # Create a directory to put the exports in before they go to S3
@@ -8,7 +8,7 @@ class ExportNamestringsService
      export_placements
      export_ads
      export_creatives
-  end 
+  end
 
   def self.export_campaigns
     headers = []
@@ -18,16 +18,16 @@ class ExportNamestringsService
       @campaign_obj = format_campaign_export(campaign)
       @campaign_obj.each do |k,v|
         values << v
-      end 
+      end
       filevalues << values
-    end 
+    end
     @campaign_obj.each do |k,v|
-      headers << k 
-    end 
+      headers << k
+    end
     filevalues.unshift(headers)
     filename = create_filename('campaign_namestrings_')
     create_csv(filevalues, filename)
-  end 
+  end
 
   def self.export_packages
     headers = []
@@ -37,16 +37,16 @@ class ExportNamestringsService
       @package_obj = format_package_export(package)
       @package_obj.each do |k,v|
         values << v
-      end 
+      end
       filevalues << values
-    end 
+    end
     @package_obj.each do |k,v|
-      headers << k 
-    end 
+      headers << k
+    end
     filevalues.unshift(headers)
     filename = create_filename('package_namestrings_')
     create_csv(filevalues, filename)
-  end 
+  end
 
   def self.export_placements
     headers = []
@@ -56,35 +56,35 @@ class ExportNamestringsService
       @placement_obj = format_placement_export(placement)
       @placement_obj.each do |k,v|
         values << v
-      end 
+      end
       filevalues << values
-    end 
+    end
     @placement_obj.each do |k,v|
-      headers << k 
-    end 
+      headers << k
+    end
     filevalues.unshift(headers)
     filename = create_filename('placement_namestrings_')
     create_csv(filevalues, filename)
-  end 
+  end
 
   def self.export_ads
     headers = []
-    filevalues = [] 
+    filevalues = []
     AdInput.all.each do |ad|
       values = []
       @ad_obj = format_ad_export(ad)
       @ad_obj.each do |k,v|
         values << v
-      end 
+      end
       filevalues << values
-    end 
+    end
     @ad_obj.each do |k,v|
-      headers << k 
-    end 
+      headers << k
+    end
     filevalues.unshift(headers)
     filename = create_filename('ad_namestrings_')
     create_csv(filevalues, filename)
-  end 
+  end
 
   def self.export_creatives
     headers = []
@@ -94,43 +94,45 @@ class ExportNamestringsService
       @creative_obj = format_creative_export(creative)
       @creative_obj.each do |k,v|
         values << v
-      end 
+      end
       filevalues << values
-    end 
+    end
     @creative_obj.each do |k,v|
-      headers << k 
-    end 
+      headers << k
+    end
     filevalues.unshift(headers)
     filename = create_filename('creative_namestrings_')
     create_csv(filevalues, filename)
-  end 
+  end
 
 
 
   def self.create_filename(type)
     return type + DateTime.now.to_s
-  end 
+  end
 
   def self.create_csv(filevalues, filename)
-    directory = ENV["DIRECTORY_NAME"]
-    File.open("#{directory}/#{filename}.csv", "w", :headers => true) {|f| f.write(filevalues.inject([]) { |csv, row|  csv << CSV.generate_line(row) }.join(""))}
-    export_file("#{directory}/#{filename}.csv")
-  end 
+    local_filename = "/tmp/#{filename}.csv"
+    File.open(local_filename, "w", :headers => true) {|f| f.write(filevalues.inject([]) { |csv, row|  csv << CSV.generate_line(row) }.join(""))}
+    export_file(local_filename, "#{ENV["DIRECTORY_NAME"]}/#{filename}.csv")
+    # Delete the file after it's been uploaded
+    File.delete(local_filename)
+  end
 
   # Send to S3
-  def self.export_file(file_path)
+  def self.export_file(local_path, bucket_path)
+    puts "#{local_path} => #{ENV['AWS_S3_BUCKET']}/#{bucket_path}"
     s3 = Aws::S3::Resource.new(region: ENV["AWS_S3_REGION"], access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
-    obj = s3.bucket(ENV["AWS_S3_BUCKET"]).object(file_path)
+    obj = s3.bucket(ENV["AWS_S3_BUCKET"]).object(bucket_path)
     begin
-      obj.upload_file(file_path)
-      # Delete the file after it's been uploaded
-      File.delete(file_path)
-      puts "Successfully uploaded #{file_path} to S3"
-    rescue Aws::S3::Errors::ServiceError
+      obj.upload_file(local_path)
+      puts "Successfully uploaded #{local_path} to S3"
+    rescue Aws::S3::Errors::ServiceError => ex
+      puts ex.message
       puts 'There was an error uploading to S3'
     end
 
-  end 
+  end
 
   def self.format_campaign_export(campaign)
     campaign_object = {}
@@ -142,14 +144,14 @@ class ExportNamestringsService
     campaign_object['custom'] = campaign.custom
     campaign_object['start_month'] = campaign.start_month
     campaign_object['start_year'] = campaign.start_year
-    campaign_object['start_day'] = campaign.start_day 
-    campaign_object['end_month'] = campaign.end_month 
+    campaign_object['start_day'] = campaign.start_day
+    campaign_object['end_month'] = campaign.end_month
     campaign_object['end_year'] = campaign.end_year
     campaign_object['end_day'] = campaign.end_day
     campaign_object['created_at'] = campaign.created_at
     campaign_object['updated_at'] = campaign.updated_at
     campaign_object
-  end 
+  end
 
   def self.format_package_export(package)
     package_object = {}
@@ -157,22 +159,22 @@ class ExportNamestringsService
     package_object['campaign_input_tag'] = package.campaign_input.campaign_input_tag
     package_object['agency'] = package.agency.abbrev
     package_object['publisher'] = package.publisher.abbrev
-    package_object['buy_method'] = package.buy_method.abbrev 
-    package_object['inventory_type'] = package.inventory_type.abbrev 
+    package_object['buy_method'] = package.buy_method.abbrev
+    package_object['inventory_type'] = package.inventory_type.abbrev
     package_object['custom'] = package.custom
     package_object['created_at'] = package.created_at
     package_object['updated_at'] = package.updated_at
     package_object
-  end 
+  end
 
   def self.format_placement_export(placement)
     placement_object = {}
     placement_object['placement_input_tag'] = placement.placement_input_tag
     placement_object['package_input_tag'] = placement.package_input.package_input_tag
     placement_object['tentpole_details'] = placement.try(:tentpole_details)
-    placement_object['tactic'] = placement.tactic.abbrev 
+    placement_object['tactic'] = placement.tactic.abbrev
     placement_object['ad_type'] = placement.ad_type.abbrev
-    placement_object['device'] = placement.device.abbrev  
+    placement_object['device'] = placement.device.abbrev
     placement_object['audience_type'] = placement.audience_type
     placement_object['width'] = placement.try(:width)
     placement_object['height'] = placement.try(:height)
@@ -180,24 +182,24 @@ class ExportNamestringsService
     placement_object['targeting_type_2'] = placement.targeting_type_2.abbrev
     placement_object['targeting_type_3'] = placement.targeting_type_3.abbrev
     placement_object['targeting_type_4'] = placement.targeting_type_4.abbrev
-    placement_object['episode_start'] = placement.episode_start.abbrev 
+    placement_object['episode_start'] = placement.episode_start.abbrev
     placement_object['episode_end'] = placement.episode_end.abbrev
     placement_object['created_at'] = placement.created_at
     placement_object['updated_at'] = placement.updated_at
-    
+
     placement_object
-  end 
+  end
 
   def self.format_ad_export(ad)
     ad_object = {}
     ad_object['ad_input_tag'] = ad.ad_input_tag
     ad_object['placement_input_tag'] = ad.placement_input.placement_input_tag
-    ad_object['creative_group'] = ad.creative_group.abbrev 
-    ad_object['custom'] = ad.custom 
+    ad_object['creative_group'] = ad.creative_group.abbrev
+    ad_object['custom'] = ad.custom
     ad_object['created_at'] = ad.created_at
     ad_object['updated_at'] = ad.updated_at
     ad_object
-  end 
+  end
 
   def self.format_creative_export(creative)
     creative_object = {}
@@ -217,7 +219,7 @@ class ExportNamestringsService
     creative_object['created_at'] = creative.created_at
     creative_object['updated_at'] = creative.updated_at
     creative_object
-  end 
+  end
 
 
-end 
+end
