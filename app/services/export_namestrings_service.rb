@@ -119,7 +119,7 @@ class ExportNamestringsService
 
   # Send to S3
   def self.export_file(file_path)
-    s3 = Aws::S3::Resource.new(region:'us-west-2', access_key_id: ENV["ACCESS_KEY"], secret_access_key: ENV["SECRET_KEY"])
+    s3 = Aws::S3::Resource.new(region: ENV["REGION"], access_key_id: ENV["AWS_ACCESS_KEY"], secret_access_key: ENV["AWS_SECRET_KEY"])
     obj = s3.bucket(ENV["BUCKET"]).object(file_path)
     begin
       obj.upload_file(file_path)
