@@ -6,6 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'administrate'
+gem 'aws-sdk-s3', '~> 1'
 gem 'bootstrap-sass'
 gem 'coffee-rails', '~> 4.2'
 gem 'devise', '~> 4.2'
