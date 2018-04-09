@@ -135,91 +135,89 @@ class ExportNamestringsService
   end
 
   def self.format_campaign_export(campaign)
-    campaign_object = {}
-    campaign_object['campaign_input_tag'] = campaign.campaign_input_tag
-    campaign_object['program'] = campaign.program.abbrev
-    campaign_object['network'] = campaign.network.abbrev
-    campaign_object['season'] = campaign.season.abbrev
-    campaign_object['campaign_type'] = campaign.campaign_type.abbrev
-    campaign_object['custom'] = campaign.custom
-    campaign_object['start_month'] = campaign.start_month
-    campaign_object['start_year'] = campaign.start_year
-    campaign_object['start_day'] = campaign.start_day
-    campaign_object['end_month'] = campaign.end_month
-    campaign_object['end_year'] = campaign.end_year
-    campaign_object['end_day'] = campaign.end_day
-    campaign_object['created_at'] = campaign.created_at
-    campaign_object['updated_at'] = campaign.updated_at
-    campaign_object
+    {
+      campaign_input_tag: campaign.campaign_input_tag,
+      program: campaign.program.abbrev,
+      network: campaign.network.abbrev,
+      season: campaign.season.abbrev,
+      campaign_type: campaign.campaign_type.abbrev,
+      custom: campaign.custom,
+      start_month: campaign.start_month,
+      start_year: campaign.start_year,
+      start_day: campaign.start_day,
+      end_month: campaign.end_month,
+      end_year: campaign.end_year,
+      end_day: campaign.end_day,
+      created_at: campaign.created_at,
+      updated_at: campaign.updated_at
+    }
   end
 
   def self.format_package_export(package)
-    package_object = {}
-    package_object['package_input_tag'] = package.package_input_tag
-    package_object['campaign_input_tag'] = package.campaign_input.campaign_input_tag
-    package_object['agency'] = package.agency.abbrev
-    package_object['publisher'] = package.publisher.abbrev
-    package_object['buy_method'] = package.buy_method.abbrev
-    package_object['inventory_type'] = package.inventory_type.abbrev
-    package_object['custom'] = package.custom
-    package_object['created_at'] = package.created_at
-    package_object['updated_at'] = package.updated_at
-    package_object
+    {
+      package_input_tag: package.package_input_tag,
+      campaign_input_tag: package.campaign_input.campaign_input_tag,
+      agency: package.agency.abbrev,
+      publisher: package.publisher.abbrev,
+      buy_method: package.buy_method.abbrev,
+      inventory_type: package.inventory_type.abbrev,
+      custom: package.custom,
+      created_at: package.created_at,
+      updated_at: package.updated_at
+    }
   end
 
   def self.format_placement_export(placement)
-    placement_object = {}
-    placement_object['placement_input_tag'] = placement.placement_input_tag
-    placement_object['package_input_tag'] = placement.package_input.package_input_tag
-    placement_object['tentpole_details'] = placement.try(:tentpole_details)
-    placement_object['tactic'] = placement.tactic.abbrev
-    placement_object['ad_type'] = placement.ad_type.abbrev
-    placement_object['device'] = placement.device.abbrev
-    placement_object['audience_type'] = placement.audience_type
-    placement_object['width'] = placement.try(:width)
-    placement_object['height'] = placement.try(:height)
-    placement_object['targeting_type_1'] = placement.targeting_type_1.abbrev
-    placement_object['targeting_type_2'] = placement.targeting_type_2.abbrev
-    placement_object['targeting_type_3'] = placement.targeting_type_3.abbrev
-    placement_object['targeting_type_4'] = placement.targeting_type_4.abbrev
-    placement_object['episode_start'] = placement.episode_start.abbrev
-    placement_object['episode_end'] = placement.episode_end.abbrev
-    placement_object['created_at'] = placement.created_at
-    placement_object['updated_at'] = placement.updated_at
-
-    placement_object
+    {
+      placement_input_tag: placement.placement_input_tag,
+      package_input_tag: placement.package_input.package_input_tag,
+      tentpole_details: placement.try(:tentpole_details),
+      tactic: placement.tactic.abbrev,
+      ad_type: placement.ad_type.abbrev,
+      device: placement.device.abbrev,
+      audience_type: placement.audience_type,
+      width: placement.try(:width),
+      height: placement.try(:height),
+      targeting_type_1: placement.targeting_type_1.abbrev,
+      targeting_type_2: placement.targeting_type_2.abbrev,
+      targeting_type_3: placement.targeting_type_3.abbrev,
+      targeting_type_4: placement.targeting_type_4.abbrev,
+      episode_start: placement.episode_start.abbrev,
+      episode_end: placement.episode_end.abbrev,
+      created_at: placement.created_at,
+      updated_at: placement.updated_at
+    }
   end
 
   def self.format_ad_export(ad)
-    ad_object = {}
-    ad_object['ad_input_tag'] = ad.ad_input_tag
-    ad_object['placement_input_tag'] = ad.placement_input.placement_input_tag
-    ad_object['creative_group'] = ad.creative_group.abbrev
-    ad_object['custom'] = ad.custom
-    ad_object['created_at'] = ad.created_at
-    ad_object['updated_at'] = ad.updated_at
-    ad_object
+    {
+      ad_input_tag: ad.ad_input_tag,
+      placement_input_tag: ad.placement_input.placement_input_tag,
+      creative_group: ad.creative_group.abbrev,
+      custom: ad.custom,
+      created_at: ad.created_at,
+      updated_at: ad.updated_at
+    }
   end
 
   def self.format_creative_export(creative)
-    creative_object = {}
-    creative_object['creative_input_tag'] = creative.creative_input_tag
-    creative_object['ad_input_tag'] = creative.ad_input.ad_input_tag
-    creative_object['creative_message'] = creative.creative_message.abbrev
-    creative_object['abtest_label'] = creative.abtest_label.abbrev
-    creative_object['video_length'] = creative.video_length.try(:abbrev)
-    creative_object['start_month'] = creative.start_month
-    creative_object['start_day'] = creative.start_day
-    creative_object['start_year'] = creative.start_year
-    creative_object['end_month'] = creative.end_month
-    creative_object['end_day'] = creative.end_day
-    creative_object['end_year'] = creative.end_year
-    creative_object['custom'] = creative.custom
-    creative_object['creative_version_number'] = creative.creative_version_number
-    creative_object['created_at'] = creative.created_at
-    creative_object['updated_at'] = creative.updated_at
-    creative_object
+    {
+      creative_input_tag: creative.creative_input_tag,
+      ad_input_tag: creative.ad_input.ad_input_tag,
+      creative_message: creative.creative_message.abbrev,
+      abtest_label: creative.abtest_label.abbrev,
+      video_length: creative.video_length.try(:abbrev),
+      start_month: creative.start_month,
+      start_day: creative.start_day,
+      start_year: creative.start_year,
+      end_month: creative.end_month,
+      end_day: creative.end_day,
+      end_year: creative.end_year,
+      custom: creative.custom,
+      creative_version_number: creative.creative_version_number,
+      created_at: creative.created_at,
+      updated_at: creative.updated_at
+    }
   end
-
 
 end
