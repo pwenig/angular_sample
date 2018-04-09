@@ -206,7 +206,7 @@ class ExportNamestringsService
       ad_input_tag: creative.ad_input.ad_input_tag,
       creative_message: creative.creative_message&.abbrev,
       abtest_label: creative.abtest_label&.abbrev,
-      video_length: creative&.video_length&.abbrev,
+      video_length: creative.video_length&.name,
       start_month: creative.start_month,
       start_day: creative.start_day,
       start_year: creative.start_year,
