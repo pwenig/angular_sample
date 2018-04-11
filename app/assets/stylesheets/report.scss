@@ -11,7 +11,6 @@ html, body
 {
     width: 100%;
     height: 100%;
-
     margin: 0;
     padding: 0;
 }
@@ -76,62 +75,66 @@ body
     /* Needed for when the area gets squished too far and there is content that can't be displayed */
     overflow: auto;
 }
+
 .header-container {
   width: 100%;
+	min-width: 1200px;
   display: flex;
   flex-direction: row;
   margin: 0;
+	height: 40px;
 
-  .row {
-    width: 100%;
-    margin: 0;
-  }
+	.row {
+	  font-size: medium;
+	  background-color: $primary-color;
+	  color: #fff;
+		margin: 0;
 
-  section.header {
-    width: 100%;
-    padding: 10px;
-    font-size: medium;
-    background-color: $primary-color;
-    color: #fff;
-    text-align: center;
-    margin-bottom: 20px;
-    min-height: 120px;
+		img {
+			float: left;
+		}
 
-    img {
-      margin: 20px;
-    }
-    a {
-      text-decoration: none;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-    }
+	  a {
+	    text-decoration: none;
+	    color: white;
+	    cursor: pointer;
+	  }
 
-    .logout-link{
-      a {
-        color: white;
-        float: right;
-        margin-right: 30px;
-        font-size: 22px;
-      }
-    }
-  }
+		a.home-link {
+			margin-left: 30px;
+			line-height: 45px;
+			font-size: 20px;
+			float: left;
+		}
+
+	  .logout-link{
+	    a {
+	      color: white;
+	      float: right;
+	      margin: 0 30px 2px 0;
+	      font-size: 22px;
+				line-height: 40px;
+	    }
+	  }
+	}
 
   p {
     font-size: 20px;
-    text-align: center;
-  }
-
-  .alert {
-    font-size: 14px;
-    color: red;
-  }
-
-  .notice {
-    font-size: 14px;
   }
 
 }
+
+.alert {
+  font-size: 14px;
+  color: red;
+	text-align: center;
+}
+
+.notice {
+  font-size: 14px;
+	text-align: center;
+}
+
 .input-tag-container {
     select-string-component {
       select {
@@ -183,12 +186,12 @@ body
     width: 300px;;
     margin-left: 10px;
   }
-    .submit-column {
-      flex: 1;
-      font-size: 13px;
-      text-align: right;
-      margin-top: 5px;
-    }
+  .submit-column {
+    flex: 1;
+    font-size: 13px;
+    text-align: right;
+    margin-top: 5px;
+  }
 
   }
 }
@@ -297,7 +300,6 @@ body
 }
 
 .request-container {
-  margin-top: 20px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -393,6 +395,7 @@ body
 .tree-container {
   margin-top: 20px;
   width: 100%;
+	min-width: 1200px;
 
   section.tree {
     width: 100%;
@@ -530,6 +533,7 @@ button.duplicate {
 
 .btn-group.actions {
   float: left;
+	min-width: 1000px;
 
   .btn.btn-primary.action {
     background-color: $primary-color;
@@ -575,4 +579,18 @@ button.duplicate {
     border-radius: 4px;
     border-color: $primary-color;
   }
+}
+
+.navigation {
+  background-color: $primary-color;
+  a {
+    margin: 0 0 0 20px;
+    color: white;
+  }
+}
+
+#app-container {
+  max-width: 100%;
+  min-width: 1200px;
+	background-color: $primary-color;
 }
