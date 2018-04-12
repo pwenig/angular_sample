@@ -6,7 +6,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
     <label for="{{label}}">{{label}}</label>
     <select class="form-control" id="{{label}}" [disabled]="disabled" required (change)="optionSelected()" [(ngModel)]="chosenOption">
     <option disabled hidden [value]="placeholder">Select {{label}}</option>
-    <option *ngFor="let option of options" [ngValue]="option">{{option.name}}</option>
+    <option *ngFor="let option of options | sort:'name'" [ngValue]="option">{{option.name}}</option>
   `
 })
 
