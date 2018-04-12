@@ -21,6 +21,7 @@ By default, it renders:
   <title>
     <%= content_for(:title) %> - <%= Rails.application.class.parent_name.titlecase %>
   </title>
+
   <%= render "stylesheet" %>
   <%= csrf_meta_tags %>
 </head>
@@ -30,8 +31,9 @@ By default, it renders:
   <div class="header-container">
     <div class="row">
       <section class="header">
-       <a href="/"><%= image_tag('viacom_logo.png') %>Namestring Administrator</a>
-       <% if current_user %>
+        <%= image_tag('viacom_logo.png') %>
+        <a class='home-link' href="/">Namestring Administrator</a>
+        <% if current_user %>
           <span class="logout-link"><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></span>
           <span class="logout-link"><%= link_to 'Namestring Manager', root_path %></span>
         <% end %>
@@ -41,7 +43,7 @@ By default, it renders:
 
 
 
-  <div class="app-container">
+  <div class="app-container" id="app-container">
     <%= render "navigation" -%>
 
     <main class="main-content" role="main">
