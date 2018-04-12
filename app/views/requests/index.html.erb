@@ -1,0 +1,58 @@
+<div class='requests-container'>
+      <div class='row'>
+        <section class='request'>
+          <h2>Requests</h2>
+        </section>
+        <section class='filter'>
+          <h4>Filter</h4>
+          <%= form_tag "/requests/filter" do %>
+            <span class="filter-option">
+              <label>Pending</label>
+              <%= check_box_tag 'pending', 'true', true %>
+            </span>
+            <span class="filter-option">
+              <label>In Process</label>
+              <%= check_box_tag 'in_process', 'true', true %>
+            </span>
+            <span class="filter-option">
+              <label>Additional Info</label>
+              <%= check_box_tag 'addl_info', 'true', true %>
+            </span>
+            <span class="filter-option">
+              <label>Complete</label>
+              <%= check_box_tag 'complete', 'true' %>
+            </span>
+            <%= submit_tag 'Filter', class: 'btn btn-default' %>
+            <span class="new-request">
+              <%= link_to 'Create New Request', new_request_path %>
+            </span>
+          <% end %>
+        </section>
+        <section class='requests-table'>
+           <table>
+            <tr>
+              <th>Type</th>
+              <th>Value</th>
+              <th>Status</th>
+              <th>Updated At</th>
+              <th>Brand</th>
+              <th>Requestor</th>
+              <th>Administrator</th>
+              <th>Comment</th>
+            </tr>
+            <% @requests.each do |request| %>
+              <tr>
+                <td><%= link_to request.dimension, edit_request_path(request.id)%></td>
+                <td><%= link_to request.dimension_value %></td>
+                <td><%= request.status %></td>
+                <td><%= request.updated_at.strftime('%m/%d/%Y') %></td>
+                <td><%= request.brand %></td>
+                <td><%= request.requestor %></td>
+                <td><%= request.administrator %></td>
+                <td><%= request.additional_info %></td>
+              </tr>
+            <% end %>
+          </table>
+        </section>
+      </div>
+    </div>

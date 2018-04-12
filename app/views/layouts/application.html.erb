@@ -23,7 +23,7 @@
            <% if current_user %>
               <span class="logout-link">
                 <%= link_to 'Log Out', destroy_user_session_path, method: :delete %>
-                <%= link_to 'Submit New Requests', requests_path %>
+                <%= link_to 'Requests', requests_path %>
               </span>
             <% end %>
             <% if current_user && current_user.admin %>
