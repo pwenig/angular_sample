@@ -3,6 +3,9 @@ class RequestsController < ApplicationController
   before_action :admin_user, only: [:edit, :update]
 
   def index 
+    params[:pending] = 'true'
+    params[:in_process] = 'true'
+    params[:addl_info] = 'true'
     @requests = Request.where.not(status: 'Complete')
   end
 
@@ -59,28 +62,23 @@ class RequestsController < ApplicationController
     end 
   end 
 
-  # THIS NEEDS TO BE BETTER
   def filter
-  #  Add Filter logic
-  @requests = []
-  if params[:pending]
-    requests = Request.find_by(status: 'Pending')
-    @requests << requests
-  end 
-  if params[:in_process]
-    requests = Request.find_by(status: 'In Process')
-    @requests << requests
-  end
-  if params[:addl_info]
-    requests = Request.find_by(status: 'Additional Information')
-    @requests << requests
-  end 
-  if params[:complete]
-    requests = Request.find_by(status: 'Complete')
-    @requests << requests
-  end 
-  @requests.flatten(1)
-  render action: "index"
+    @requests = []
+    sortParams = []
+    if params[:pending]
+      sortParams << 'Pending'
+    end 
+    if params[:in_process]
+      sortParams << 'In Process'
+    end 
+    if params[:addl_info]
+      sortParams << 'Additional Info'
+    end 
+    if params[:complete]
+      sortParams << 'Complete'
+    end 
+    @requests = Request.where('status in (?)', sortParams)
+    render action: "index"
   end
 
   def request_params

@@ -8,19 +8,19 @@
           <%= form_tag "/requests/filter" do %>
             <span class="filter-option">
               <label>Pending</label>
-              <%= check_box_tag 'pending', 'true', true %>
+              <%= check_box_tag 'pending', 'true', params[:pending] == 'true' %>
             </span>
             <span class="filter-option">
               <label>In Process</label>
-              <%= check_box_tag 'in_process', 'true', true %>
+              <%= check_box_tag 'in_process', 'true', params[:in_process] == 'true' %>
             </span>
             <span class="filter-option">
               <label>Additional Info</label>
-              <%= check_box_tag 'addl_info', 'true', true %>
+              <%= check_box_tag 'addl_info', 'true', params[:addl_info] == 'true' %>
             </span>
             <span class="filter-option">
               <label>Complete</label>
-              <%= check_box_tag 'complete', 'true' %>
+              <%= check_box_tag 'complete', 'true', params[:complete] == 'true' %>
             </span>
             <%= submit_tag 'Filter', class: 'btn btn-default' %>
             <span class="new-request">
@@ -42,8 +42,12 @@
             </tr>
             <% @requests.each do |request| %>
               <tr>
-                <td><%= link_to request.dimension, edit_request_path(request.id)%></td>
-                <td><%= link_to request.dimension_value %></td>
+                <% if current_user.admin %>
+                  <td><%= link_to request.dimension, edit_request_path(request.id)%></td>
+                <% else %>
+                  <td><%= request.dimension %></td>
+                <% end %>
+                <td><%= request.dimension_value %></td>
                 <td><%= request.status %></td>
                 <td><%= request.updated_at.strftime('%m/%d/%Y') %></td>
                 <td><%= request.brand %></td>
