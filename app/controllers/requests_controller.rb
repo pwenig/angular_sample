@@ -34,7 +34,6 @@ class RequestsController < ApplicationController
       RequestMailer.request_email(user.email, current_user.email, params['request']).deliver!
     end
     flash[:notice] = 'Naming request sent'
-    redirect_to root_path
   end
 
   def edit 
