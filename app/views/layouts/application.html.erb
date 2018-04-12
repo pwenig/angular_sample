@@ -10,30 +10,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-    <div class="flexbox-parent">
       <div class="header-container">
+        <div class="row">
           <section class="header">
-           <a href="/"><%= image_tag('viacom_logo.png') %>Namestring</a>
-           <% if notice %>
-             <p class="notice"><%= notice %></p>
-           <% end %>
-           <% if alert %>
-             <p class="alert"><%= alert %></p>
-           <% end %>
+           <%= image_tag('viacom_logo.png') %>
+           <a class="home-link" href="/">Namestring Administrator</a>
            <% if current_user %>
               <span class="logout-link">
                 <%= link_to 'Log Out', destroy_user_session_path, method: :delete %>
+              </span>
+              <span class="logout-link">
                 <%= link_to 'Submit New Requests', requests_path %>
               </span>
-            <% end %>
-            <% if current_user && current_user.admin %>
-              <span class="logout-link"><%= link_to 'Admin', admin_root_path %></span>
+              <% if current_user.admin %>
+                <span class="logout-link"><%= link_to 'Admin', admin_root_path %></span>
+              <% end %>
            <% end %>
            <% if !current_user %>
             <script>localStorage.clear('inputs')</script>
            <% end %>
           </section>
         </div>
+      </div>
+      <% if notice %>
+        <p class="notice"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert"><%= alert %></p>
+      <% end %>
       <div class="flexbox-item-grow flexbox-parent">
         <%= yield %>
       </div>
