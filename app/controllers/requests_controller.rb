@@ -63,7 +63,6 @@ class RequestsController < ApplicationController
   end 
 
   def filter
-    @requests = []
     sortParams = []
     if params[:pending]
       sortParams << 'Pending'
