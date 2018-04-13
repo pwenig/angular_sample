@@ -198,34 +198,6 @@ body
 
 .select-container {
 
-    // section.select-date {
-    //   width: 700px;;
-    //   display: flex;
-    //   flex-direction: row;
-    //   margin: 0 auto;
-
-      // .first-column {
-      //   margin: 10px;
-      //   width: 200px;
-      // }
-    //   .second-column {
-    //     margin: 10px;
-    //     button.date-button {
-    //       background-color: #2CACD9;
-    //       border: none;
-    //       border-radius: 5%;
-    //       font-size: 14px;
-    //       color: white;
-    //       width: 300px;
-    //       margin-left: 10px;
-    //       height: 34px;
-    //       cursor: pointer;
-    //     }
-    //   }
-
-    // }
-
-
   section.select {
     width: 700px;
     display: flex;
@@ -329,6 +301,113 @@ body
       border: none;
       border-radius: 5%;
       width: 100px;
+    }
+  }
+
+}
+// This is the container for the requests index
+.requests-container {
+  section.request, .edit {
+    margin-left: 200px;
+
+    h2 {
+      margin-left: 50px;
+    }
+  }
+  section.edit-form {
+    margin-left: 275px;
+    margin-top: 30px;
+
+    label {
+      width: 100px;
+    }
+
+      select#request_status {
+        margin-bottom: 25px;
+        height: 25px;
+      }
+
+      input#request_dimension, input#request_dimension_value {
+        margin-bottom: 25px;
+        height: 30px;
+      }
+
+      textarea#request_additional_info {
+        width: 200px;
+        height: 100px;
+        margin-left: 100px;
+        margin-top: -18px;
+      }
+
+      input#request-edit {
+        margin: 20px;
+        margin-left: 150px;
+        background-color: $primary-color;
+        color: white;
+        border: none;
+        border-radius: 5%;
+        width: 100px;
+      }
+
+      button#cancel-edit {
+        margin: 20px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5%;
+        width: 100px;
+      }
+
+
+
+    
+
+  }
+  section.requests-table {
+    margin-left: 50px;
+    table {
+      width: 80%;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+
+    td, th {
+      padding-left:10px;
+      padding-top: 10px;
+    }
+    tr:nth-of-type(odd) {
+      background-color:#ccc;
+    }
+  }
+
+  section.filter {
+    h4 {
+      margin-right: 50px;
+    }
+    display: flex;
+    flex-direction: row;
+    margin-left: 75px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+
+  form {
+    margin-top: 8px;
+    .filter-option {
+      margin-right: 10px;
+    }
+    .new-request {
+      a {
+        margin-left: 600px;
+        font-size: 18px;
+      }
+    }
+    
+    input.btn.btn-default {
+      margin-left: 10px;
+      background-color: $primary-color;
+      color: white;
     }
   }
 

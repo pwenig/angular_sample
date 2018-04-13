@@ -28,10 +28,11 @@ Rails.application.routes.draw do
   resources :placement_inputs
   resources :ad_inputs
   resources :creative_inputs
-  resources :requests, only: [:create]
-  as :requests do
-    get 'requests' => 'requests#new'
-  end
+  resources :requests
+  post 'requests/filter' => 'requests#filter'
+  # as :requests do
+  #   get 'requests' => 'requests#new'
+  # end
 
   devise_for :users
   # Cleaning up devise routes

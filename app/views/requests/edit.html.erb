@@ -1,0 +1,22 @@
+<div class='requests-container'>
+  <div class='row'>
+    <section class='edit'>
+    <h2>Edit Request</h2>
+    </section>
+    <section class='edit-form'>
+      <h4>Requested by <%= @request.requestor %> on <%= @request.updated_at.strftime('%m/%d/%Y') %></h4>
+      <%= form_for @request do |f| %>
+        <label>Status</label>
+        <%= f.select :status, options_for_select(['Pending', 'In Process', 'Additional Info', 'Complete'])%><br>
+        <label>Type</label>
+        <%= f.text_field :dimension, :readonly => true %><br>
+        <label>Value</label>
+        <%= f.text_field :dimension_value, :readonly => true %><br>
+        <label>Comments</label><br>
+        <%= f.text_area :additional_info %><br>
+        <br>
+        <%= link_to 'Cancel', :back %><%= f.submit 'Submit', id: 'request-edit' %>
+      <% end %>
+    </section>
+  </div>
+</div>

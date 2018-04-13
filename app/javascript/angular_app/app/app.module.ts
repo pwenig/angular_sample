@@ -43,6 +43,8 @@ import { DeleteService } from '../services/delete_service';
 import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe';
 import {FilterPipe} from '../shared/filter.pipe';
+import {SortPipe} from '../shared/sort.pipe';
+
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import {FilterPipe} from '../shared/filter.pipe';
     DeleteComponent,
     ErrorComponent,
     RangePipe,
-    FilterPipe
+    FilterPipe,
+    SortPipe
   ],
   imports: [
     BrowserModule,

@@ -110,7 +110,10 @@ export class CreativeComponent implements OnInit, OnChanges {
   ngOnInit() {
     if(this.selectedObject.action == 'New Creative') {
       this.creativeInput.custom = "XX";
-      
+      this.defaultAbLabel = this.abtestLabels.find(x => x.name == 'Not Applicable')
+      this.creativeInput.abtest_label = this.defaultAbLabel
+      this.defaultCreativeVersion = '01'
+      this.creativeInput.creative_version_number = this.defaultCreativeVersion
     }
   }
 
@@ -271,8 +274,6 @@ export class CreativeComponent implements OnInit, OnChanges {
   checkAttributes() {
     if(this.creativeInput.creative_message && this._adtype.videoAdType(this.selectedObject.namestring.placementParent) &&
       this.creativeInput.custom &&
-      this.creativeInput.creative_version_number &&
-      this.creativeInput.abtest_label &&
       this.creativeInput.start_month &&
       this.creativeInput.start_day &&
       this.creativeInput.end_month &&
@@ -288,7 +289,7 @@ export class CreativeComponent implements OnInit, OnChanges {
       this.creativeInput.creative_message &&
       this.creativeInput.custom &&
       this.creativeInput.creative_version_number &&
-      this.creativeInput.abtest_label&&
+      this.creativeInput.abtest_label &&
       this.creativeInput.start_month &&
       this.creativeInput.start_day &&
       this.creativeInput.end_month &&
