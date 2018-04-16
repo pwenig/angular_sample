@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180411232858) do
+ActiveRecord::Schema.define(version: 20180416020631) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -247,9 +247,11 @@ ActiveRecord::Schema.define(version: 20180411232858) do
     t.string "dimension", null: false
     t.string "dimension_value", null: false
     t.text "additional_info"
-    t.string "status", null: false
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "requestor_email"
+    t.text "comments"
   end
 
   create_table "seasons", force: :cascade do |t|

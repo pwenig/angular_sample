@@ -319,7 +319,7 @@ body
     margin-top: 30px;
 
     label {
-      width: 100px;
+      width: 120px;
     }
 
       select#request_status {
@@ -332,10 +332,10 @@ body
         height: 30px;
       }
 
-      textarea#request_additional_info {
+      textarea#request_additional_info, #request_comments {
         width: 200px;
         height: 100px;
-        margin-left: 100px;
+        margin-left: 125px;
         margin-top: -18px;
       }
 
@@ -366,15 +366,15 @@ body
   section.requests-table {
     margin-left: 50px;
     table {
-      width: 80%;
+      width: 95%;
     }
     table, th, td {
       border: 1px solid black;
     }
 
     td, th {
-      padding-left:10px;
-      padding-top: 10px;
+      padding: 10px;
+      text-align: center;
     }
     tr:nth-of-type(odd) {
       background-color:#ccc;
