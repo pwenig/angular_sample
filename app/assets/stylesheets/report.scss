@@ -272,15 +272,11 @@ body
 }
 
 .request-container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  section.request {
+  .request {
+		width: 600px;
+		margin: auto;
     padding: 10px;
     font-size: medium;
-    height: auto;
 
     p.required {
       color: red;
@@ -303,66 +299,58 @@ body
       width: 100px;
     }
   }
-
 }
+
 // This is the container for the requests index
 .requests-container {
   section.request, .edit {
     margin-left: 200px;
-
-    h2 {
-      margin-left: 50px;
-    }
   }
   section.edit-form {
-    margin-left: 275px;
     margin-top: 30px;
 
     label {
       width: 120px;
     }
 
-      select#request_status {
-        margin-bottom: 25px;
-        height: 25px;
-      }
+    select#request_status {
+      margin-bottom: 25px;
+      height: 25px;
+    }
 
-      input#request_dimension, input#request_dimension_value {
-        margin-bottom: 25px;
-        height: 30px;
-      }
+    input#request_dimension, input#request_dimension_value {
+      margin-bottom: 25px;
+      height: 30px;
+    }
 
-      textarea#request_additional_info, #request_comments {
-        width: 200px;
-        height: 100px;
-        margin-left: 125px;
-        margin-top: -18px;
-      }
+    textarea#request_additional_info, #request_comments {
+      width: 200px;
+      height: 100px;
+      margin-left: 125px;
+      margin-top: -18px;
+    }
 
-      input#request-edit {
-        margin: 20px;
-        margin-left: 150px;
-        background-color: $primary-color;
-        color: white;
-        border: none;
-        border-radius: 5%;
-        width: 100px;
-      }
+    input#request-edit {
+      margin: 20px;
+      margin-left: 150px;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: 5%;
+      width: 100px;
+    }
 
-      button#cancel-edit {
-        margin: 20px;
-        background-color: red;
-        color: white;
-        border: none;
-        border-radius: 5%;
-        width: 100px;
-      }
-
-
-
-    
-
+    button#cancel-edit {
+      margin: 20px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5%;
+      width: 100px;
+    }
   }
+
+
   section.requests-table {
     margin-left: 50px;
     table {
@@ -403,7 +391,7 @@ body
         font-size: 18px;
       }
     }
-    
+
     input.btn.btn-default {
       margin-left: 10px;
       background-color: $primary-color;

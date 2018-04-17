@@ -1,10 +1,7 @@
-<div class='requests-container'>
-  <div class='row'>
-    <section class='edit'>
-    <h2>Edit Request</h2>
-    </section>
-    <section class='edit-form'>
-      <h4>Requested by <%= @request.requestor %> on <%= @request.created_at.strftime('%m/%d/%Y') %></h4>
+<div class='request-container'>
+   <section class='request'>
+      <h3>Edit Request</h3>
+      <p>Requested by <%= @request.requestor %> on <%= @request.created_at.strftime('%m/%d/%Y') %></p>
       <%= form_for @request do |f| %>
         <label>Status</label>
         <%= f.select :status, options_for_select(['In Progress', 'Did Not Include', 'Added'], @request.status)%><br>
@@ -15,13 +12,13 @@
         <label>Brand</label>
         <%= f.text_field :brand, :readonly => true %><br>
         <label>Additional Info</label><br>
-        <%= f.text_area :additional_info %><br>
+        <%= f.text_area :additional_info, cols: 80 %><br>
         <br>
         <label>Comments</label><br>
-        <%= f.text_area :comments %><br>
+        <%= f.text_area :comments, cols: 80  %><br>
         <br>
-        <%= link_to 'Cancel', :back %><%= f.submit 'Submit', id: 'request-edit' %>
+        <%= link_to 'Cancel', :back %>
+        <%= f.submit 'Submit', id: 'request-submit' %>
       <% end %>
     </section>
-  </div>
 </div>

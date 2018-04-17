@@ -1,5 +1,4 @@
 <div class='request-container'>
-  <div class='row'>
     <section class='request'>
       <h3>Naming Convention Value Request</h3>
       <p>Please submit request for each new value.</p>
@@ -16,8 +15,8 @@
         <p>Additional Information or Feedback<p>
         <%= f.text_field :additional, placeholder: "Your answer"%>
         <p>A copy of your responses will be emailed to the address you provided.</p>
+        <%= link_to 'Cancel', :back %>
         <%= f.submit 'Submit', id: 'request-submit'  %>
       <% end  %>
     </section>
-  </div>
 </div>
