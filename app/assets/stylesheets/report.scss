@@ -18,12 +18,10 @@ html, body
 body
 {
     background: #444444;
-
     color: #cccccc;
     font-size: 14px;
     /* Helvetica/Arial-based sans serif stack */
     font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
 }
 
 .flexbox-parent
@@ -97,23 +95,20 @@ body
 	  a {
 	    text-decoration: none;
 	    color: white;
+			margin: 0 30px 2px 0;
+			font-size: 22px;
+			line-height: 40px;
 	    cursor: pointer;
 	  }
 
 		a.home-link {
-			margin-left: 30px;
-			line-height: 45px;
-			font-size: 20px;
+			margin-left: 10px;
 			float: left;
 		}
 
 	  .logout-link{
 	    a {
-	      color: white;
 	      float: right;
-	      margin: 0 30px 2px 0;
-	      font-size: 22px;
-				line-height: 40px;
 	    }
 	  }
 	}
@@ -360,7 +355,6 @@ body
   display: flex;
   flex-direction: column;
 
-
   section.login {
     padding: 10px;
     font-size: medium;
@@ -372,6 +366,7 @@ body
     }
     input {
       height: 25px;
+			width: 400px;
       font-size: 20px;
       border: 2px solid $primary-color;
       border-radius: 5%;
@@ -392,7 +387,7 @@ body
     }
     .login-button {
       color: white;
-      width: 258px;
+      width: 300px;
       background-color: $primary-color;
       height: 40px;
       padding: 0;

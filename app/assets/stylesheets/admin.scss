@@ -2,10 +2,12 @@
 
 html, body
 {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
 }
 
 .header-container {
@@ -26,38 +28,28 @@ html, body
     a {
       text-decoration: none;
       color: white;
-      font-size: 20px;
+      font-size: 22px;
+      color: white;
+      float: right;
+      margin: 0 30px 0 0;
+      line-height: 40px;
       cursor: pointer;
     }
 
-    img {
-      float: left;
-    }
-
     a.home-link {
-			margin-left: 30px;
-			line-height: 45px;
-			font-size: 20px;
 			float: left;
+      margin-left: 10px;
 		}
 
     img {
+      float: left;
       padding: 10px 0px 0px 5px;
       margin-right: 8px;
     }
 
-    .logout-link {
-      a {
-        color: white;
-        float: right;
-        margin: 0 30px 0 0;
-        font-size: 22px;
-        line-height: 40px;
-      }
+    a.logout-link {
+      float: right;
     }
-  }
-  p {
-    font-size: 20px;
   }
 }
 
