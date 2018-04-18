@@ -1,65 +1,61 @@
 <div class='requests-container'>
-      <div class='row'>
-        <section class='request'>
-          <h2>Requests</h2>
-        </section>
-        <section class='filter'>
-          <h4>Filter</h4>
-          <%= form_tag "/requests/filter" do %>
-            <span class="filter-option">
-              <label>In Progress</label>
-              <%= check_box_tag 'in_progress', 'true', params[:in_progress] == 'true' %>
-            </span>
-            <span class="filter-option">
-              <label>Did Not Include</label>
-              <%= check_box_tag 'did_not_include', 'true', params[:did_not_include] == 'true' %>
-            </span>
-            <span class="filter-option">
-              <label>Added</label>
-              <%= check_box_tag 'added', 'true', params[:added] == 'true' %>
-            </span>
-            <%= submit_tag 'Filter', class: 'btn btn-default' %>
-            <span class="new-request">
-              <%= link_to 'Create New Request', new_request_path %>
-            </span>
+  <h2>Requests</h2>
+
+  <section class='requests-table'>
+    <section class='filter'>
+      <%= form_tag "/requests/filter" do %>
+        <span class="filter-option">
+          <label>In Progress</label>
+          <%= check_box_tag 'in_progress', 'true', params[:in_progress] == 'true' %>
+        </span>
+        <span class="filter-option">
+          <label>Did Not Include</label>
+          <%= check_box_tag 'did_not_include', 'true', params[:did_not_include] == 'true' %>
+        </span>
+        <span class="filter-option">
+          <label>Added</label>
+          <%= check_box_tag 'added', 'true', params[:added] == 'true' %>
+        </span>
+        <%= submit_tag 'Filter', class: 'btn btn-default' %>
+      <% end %>
+    </section>
+    <span class="link">
+      <%= link_to 'Create New Request', new_request_path %>
+    </span>
+     <table>
+      <tr>
+        <th>Dimension Selection</th>
+        <th>Requested Dimension Value</th>
+        <th>Brand</th>
+        <th>Addl Info</th>
+        <th>Requested On</th>
+        <th>Updated On</th>
+        <th>Requester</th>
+        <th>Requester Email</th>
+        <th>Status</th>
+        <th>Administrator</th>
+        <th>Comments</th>
+      </tr>
+      <% @requests.each do |request| %>
+        <tr>
+          <% if current_user.admin %>
+            <td><%= link_to request.dimension, edit_request_path(request.id)%></td>
+          <% else %>
+            <td><%= request.dimension %></td>
           <% end %>
-        </section>
-        <section class='requests-table'>
-           <table>
-            <tr>
-              <th>Dimension Selection</th>
-              <th>Requested Dimension Value</th>
-              <th>Brand</th>
-              <th>Addl Info</th>
-              <th>Requested On</th>
-              <th>Updated On</th>
-              <th>Requester</th>
-              <th>Requester Email</th>
-               <th>Status</th>
-              <th>Administrator</th>
-              <th>Comments</th>
-            </tr>
-            <% @requests.each do |request| %>
-              <tr>
-                <% if current_user.admin %>
-                  <td><%= link_to request.dimension, edit_request_path(request.id)%></td>
-                <% else %>
-                  <td><%= request.dimension %></td>
-                <% end %>
-                <td><%= request.dimension_value %></td>
-                <td><%= request.brand %></td>
-                
-                <td><%= request.additional_info %></td>
-                <td><%= request.created_at.strftime('%m/%d/%Y') %></td>
-                <td><%= request.updated_at.strftime('%m/%d/%Y') %></td>
-                <td><%= request.requestor %></td>
-                <td><%= request.requestor_email %></td>
-                <td><%= request.status %></td>
-                <td><%= request.administrator %></td>
-                <td><%= request.comments %></td>
-              </tr>
-            <% end %>
-          </table>
-        </section>
-      </div>
-    </div>
+          <td><%= request.dimension_value %></td>
+          <td><%= request.brand %></td>
+
+          <td><%= request.additional_info %></td>
+          <td><%= request.created_at.strftime('%m/%d/%Y') %></td>
+          <td><%= request.updated_at.strftime('%m/%d/%Y') %></td>
+          <td><%= request.requestor %></td>
+          <td><%= request.requestor_email %></td>
+          <td><%= request.status %></td>
+          <td><%= request.administrator %></td>
+          <td><%= request.comments %></td>
+        </tr>
+      <% end %>
+    </table>
+  </section>
+</div>

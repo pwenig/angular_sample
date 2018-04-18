@@ -303,82 +303,36 @@ body
 
 // This is the container for the requests index
 .requests-container {
+	margin: 0 50px;
+	min-width: 1200px;
+
   section.request, .edit {
     margin-left: 200px;
   }
-  section.edit-form {
-    margin-top: 30px;
-
-    label {
-      width: 120px;
-    }
-
-    select#request_status {
-      margin-bottom: 25px;
-      height: 25px;
-    }
-
-    input#request_dimension, input#request_dimension_value {
-      margin-bottom: 25px;
-      height: 30px;
-    }
-
-    textarea#request_additional_info, #request_comments {
-      width: 200px;
-      height: 100px;
-      margin-left: 125px;
-      margin-top: -18px;
-    }
-
-    input#request-edit {
-      margin: 20px;
-      margin-left: 150px;
-      background-color: $primary-color;
-      color: white;
-      border: none;
-      border-radius: 5%;
-      width: 100px;
-    }
-
-    button#cancel-edit {
-      margin: 20px;
-      background-color: red;
-      color: white;
-      border: none;
-      border-radius: 5%;
-      width: 100px;
-    }
-  }
-
-
   section.requests-table {
-    margin-left: 50px;
-    table {
-      width: 95%;
-    }
     table, th, td {
       border: 1px solid black;
     }
-
     td, th {
       padding: 10px;
       text-align: center;
     }
     tr:nth-of-type(odd) {
-      background-color:#ccc;
+      background-color:#eee;
     }
   }
 
   section.filter {
-    h4 {
-      margin-right: 50px;
-    }
-    display: flex;
-    flex-direction: row;
-    margin-left: 75px;
-    margin-top: 25px;
-    margin-bottom: 25px;
+		width: 500px;
+		margin: 0 0 10px 0;
+		float: left;
   }
+
+	.link {
+		margin-top: 10px;
+		font-size: 18px;
+		float: right;
+	}
 
   form {
     margin-top: 8px;
@@ -391,14 +345,12 @@ body
         font-size: 18px;
       }
     }
-
     input.btn.btn-default {
       margin-left: 10px;
       background-color: $primary-color;
       color: white;
     }
   }
-
 }
 
 .login-container {
@@ -417,45 +369,40 @@ body
 
     .field {
       margin: 20px;
-
     }
-      input {
-        height: 25px;
-        font-size: 20px;
-        border: 2px solid $primary-color;
+    input {
+      height: 25px;
+      font-size: 20px;
+      border: 2px solid $primary-color;
+      border-radius: 5%;
+      padding: 20px;
+    }
+
+    form#new_user.new_user {
+
+      select#user_agency_id {
+        height: 40px;
+        font-size: 18px;
+        border: 2px solid #2CACD9;
         border-radius: 5%;
         padding: 20px;
+        background: white;
+        margin-bottom: 10px;
       }
-
-      form#new_user.new_user {
-
-        select#user_agency_id {
-          height: 40px;
-          font-size: 18px;
-          border: 2px solid #2CACD9;
-          border-radius: 5%;
-          padding: 20px;
-          background: white;
-          margin-bottom: 10px;
-        }
-
-      }
-
-      .login-button {
-        color: white;
-        width: 258px;
-        background-color: $primary-color;
-        height: 40px;
-        padding: 0;
-        margin-bottom: 6px;
-      }
-
+    }
+    .login-button {
+      color: white;
+      width: 258px;
+      background-color: $primary-color;
+      height: 40px;
+      padding: 0;
+      margin-bottom: 6px;
+    }
   }
 
   section.component {
     height: auto;
   }
-
 }
 
 
