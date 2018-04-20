@@ -1,22 +1,27 @@
 <div class='request-container'>
     <section class='request'>
       <h3>Naming Convention Value Request</h3>
-      <p>Please submit request for each new value.</p>
+      <p>Please submit 1 request for each new value.</p>
       <p class="required">* Required</p>
       <%= form_for :request, url: requests_path do |f| %>
-        <p>Name<span style="color: red">*</span><p>
+
+        <label>Name<span style="color: red">*</span></label>
         <%= f.text_field :name, placeholder: "Your name", :required => true %>
-        <p>Brand<span style="color: red">*</span><p>
+
+        <label>Brand<span style="color: red">*</span></label>
         <%= f.select :brand, Network.all.map{ |a| [a.name] }, :prompt => "Choose", :required => true %>
-        <p>Dimension Selection<span style="color: red">*</span><p>
+
+        <label>Dimension Selection<span style="color: red">*</span></label>
         <%= f.select :dimension, @sorted_dimensions, :prompt => "Choose", :required => true %>
-        <p>Requested Dimension Value<span style="color: red">*</span><p>
+
+        <label>Requested Dimension Value<span style="color: red">*</span></label>
         <%= f.text_field :dimension_value, placeholder: "Your answer", :required => true %>
-        <p>Additional Information or Feedback<p>
+
+        <label>Additional Information or Feedback</label>
         <%= f.text_field :additional, placeholder: "Your answer"%>
-        <p>A copy of your responses will be emailed to the address you provided.</p>
-        <%= link_to 'Cancel', :back %>
-        <%= f.submit 'Submit', id: 'request-submit'  %>
+
+        <%= link_to 'Cancel', :back, class: :cancel %>
+        <%= f.submit 'Submit', id: 'request-submit' %>
       <% end  %>
     </section>
 </div>

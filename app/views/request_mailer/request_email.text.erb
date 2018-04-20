@@ -1,7 +1,10 @@
-Hello! A new naming convention value has been requested.
-Name: <%= detail['name'] %>
-Email: <%= detail['email'] %>
-Brand: <%= detail['brand'] %>
-Dimension Selection: <%= detail['dimension'] %>
-Dimension Value: <%= detail['dimension_value'] %>
-Additional Comments: <%= detail['additional'] %>
+A new naming convention value has been requested.
+
+<% link_to 'View', request %>
+
+Name: <%= request.requestor %>
+Email: <%= request.requestor_email %>
+Brand: <%= request.brand %>
+Dimension: <%= request.dimension %>
+Value: <%= request.dimension_value %>
+Comments: <%= request.comments %>

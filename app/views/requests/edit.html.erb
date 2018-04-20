@@ -1,20 +1,20 @@
 <div class='request-container'>
    <section class='request'>
       <h3>Edit Request</h3>
-      <p>Requested by <%= @request.requestor %> on <%= @request.created_at.strftime('%m/%d/%Y') %></p>
+
+      <dl>
+        <dt>Requested By</dt> <dd> <%= @request.requestor %> </dd>
+        <dt>Date</dt> <dd> <%= @request.created_at.strftime('%m/%d/%Y') %> </dd>
+        <dt>Dimension</dt> <dd> <%= @request.dimension %> </dd>
+        <dt>Value</dt> <dd> <%= @request.dimension_value %> </dd>
+        <dt>Brand</dt> <dd> <%= @request.brand %> </dd>
+      </dl>
+
       <%= form_for @request do |f| %>
-        <label>Status</label>
+        <p>Status</p>
         <%= f.select :status, options_for_select(['In Progress', 'Did Not Include', 'Added'], @request.status)%><br>
-        <label>Dimension Selection</label>
-        <%= f.text_field :dimension, :readonly => true %><br>
-        <label>Requested Dimension Value</label>
-        <%= f.text_field :dimension_value, :readonly => true %><br>
-        <label>Brand</label>
-        <%= f.text_field :brand, :readonly => true %><br>
-        <label>Additional Info</label><br>
-        <%= f.text_area :additional_info, cols: 80 %><br>
-        <br>
-        <label>Comments</label><br>
+
+        <p>Comments</p>
         <%= f.text_area :comments, cols: 80  %><br>
         <br>
         <%= link_to 'Cancel', :back %>

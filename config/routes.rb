@@ -39,8 +39,6 @@ Rails.application.routes.draw do
   as :user do
     get 'signin' => 'pages#index'
     get 'invite' => 'devise/invitations#new'
-
-
   end
 
   # Redirects routes to index if a wrong route is entered.

@@ -268,25 +268,57 @@ body
 
 .request-container {
   .request {
-		width: 600px;
+		width: 625px;
 		margin: auto;
     padding: 10px;
     font-size: medium;
+
+		a.top {
+			float: right;
+		}
+
+		a.cancel {
+			float: left;
+		}
+		dl {
+	    padding: 0.5em;
+	  }
+	  dt {
+	    float: left;
+	    clear: left;
+			margin-right: 10px;
+	    width: 275px;
+	    text-align: right;
+	    font-weight: bold;
+	  }
+	  dt::after {
+	    content: ":";
+	  }
+	  dd {
+	    padding: 0 0 0.5em 0;
+	  }
 
     p.required {
       color: red;
       font-size: 12px;
     }
 
+		label {
+			margin: 15px 0 5px 0;
+		}
+
     input, select {
-      margin-bottom: 10px;
-      height: 30px;
+			margin: 0;
+			padding: 0;
+			display: block;
       background: white;
       width: 400px;
     }
 
+
     input#request-submit {
       margin: 20px;
+			float: right;
       background-color: $primary-color;
       color: white;
       border: none;
@@ -305,8 +337,8 @@ body
     margin-left: 200px;
   }
   section.requests-table {
-    table, th, td {
-      border: 1px solid black;
+    table {
+			width: 100%;
     }
     td, th {
       padding: 10px;
@@ -315,6 +347,7 @@ body
     tr:nth-of-type(odd) {
       background-color:#eee;
     }
+		min-width: 1200px;
   }
 
   section.filter {
