@@ -259,11 +259,25 @@ body
       select.form-control {
         width: 190px;
       }
-
     }
-
   }
+}
 
+.form-header {
+	display: flex;
+	justify-content: space-between;
+	h3 {
+		margin: 0;
+		padding: 0;
+	}
+}
+
+.form-actions {
+	display: flex;
+	justify-content: space-around;
+	a {
+		margin: 20 0;
+	}
 }
 
 .request-container {
@@ -272,10 +286,6 @@ body
 		margin: auto;
     padding: 10px;
     font-size: medium;
-
-		a.top {
-			float: right;
-		}
 
 		a.cancel {
 			float: left;
@@ -316,9 +326,8 @@ body
     }
 
 
-    input#request-submit {
-      margin: 20px;
-			float: right;
+    input#submit {
+			margin: 0 20px;
       background-color: $primary-color;
       color: white;
       border: none;

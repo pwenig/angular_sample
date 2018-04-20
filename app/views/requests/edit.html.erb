@@ -17,8 +17,10 @@
         <p>Comments</p>
         <%= f.text_area :comments, cols: 80  %><br>
         <br>
-        <%= link_to 'Cancel', :back %>
-        <%= f.submit 'Submit', id: 'request-submit' %>
+        <div class="form-actions">
+          <%= link_to 'Cancel', :back %>
+          <%= f.submit 'Submit', id: 'submit' %>
+        </div>
       <% end %>
     </section>
 </div>

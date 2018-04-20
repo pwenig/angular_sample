@@ -1,7 +1,9 @@
 <div class='request-container'>
   <div class='request'>
-    <h3> Request </h3>
-
+    <div class="form-header">
+      <h3> Request </h3>
+      <%= link_to('Edit Request', edit_request_path(@request), class: 'top') unless !current_user.admin %>
+    </div>
     <dl>
       <dt>Status</dt> <dd><%= @request.status %></dd>
       <dt>Name</dt> <dd><%= @request.requestor %></dd>
@@ -15,6 +17,6 @@
       <dt>Comments</dt> <dd><%= @request.comments %></dd>
       <dt>Date Updated</dt> <dd> <%= @request.updated_at %></dd>
     </dl>
-        <%= link_to('Edit Request', edit_request_path(@request), class: 'top') unless !current_user.admin %>
+
   </div>
 </div>

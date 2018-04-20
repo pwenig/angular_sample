@@ -19,9 +19,11 @@
 
         <label>Additional Information or Feedback</label>
         <%= f.text_field :additional, placeholder: "Your answer"%>
-
-        <%= link_to 'Cancel', :back, class: :cancel %>
-        <%= f.submit 'Submit', id: 'request-submit' %>
+        <br>
+        <div class="form-actions">
+          <%= link_to 'Cancel', :back, class: :cancel %>
+          <%= f.submit 'Submit', id: 'submit' %>
+        </div>
       <% end  %>
     </section>
 </div>
