@@ -21,7 +21,7 @@
         <%= f.text_field :additional, placeholder: "Your answer"%>
         <br>
         <div class="form-actions">
-          <%= link_to 'Cancel', :back, class: :cancel %>
+          <%= link_to 'Cancel', requests_path, class: :cancel %>
           <%= f.submit 'Submit', id: 'submit' %>
         </div>
       <% end  %>
