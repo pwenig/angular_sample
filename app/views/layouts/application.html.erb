@@ -3,42 +3,43 @@
   <head>
     <title>Vmtapp</title>
     <%= csrf_meta_tags %>
-
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'false' %>
     <link rel="stylesheet" href="https://unpkg.com/ngx-bootstrap/datepicker/bs-datepicker.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-      <div class="header-container">
-        <div class="row">
-          <section class="header">
-           <%= image_tag('viacom_logo.png') %>
-           <a class="home-link" href="/">Namestring Administrator</a>
-           <% if current_user %>
-              <span class="logout-link">
-                <%= link_to 'Log Out', destroy_user_session_path, method: :delete %>
-                <%= link_to 'Requests', requests_path %>
-              </span>
-              <% if current_user.admin %>
-                <span class="logout-link"><%= link_to 'Admin', admin_root_path %></span>
-              <% end %>
-           <% end %>
-           <% if !current_user %>
-            <script>localStorage.clear('inputs')</script>
-           <% end %>
-          </section>
-        </div>
+    <div class="header-container">
+      <div class="row">
+        <section class="header">
+         <%= image_tag('viacom_logo.png') %>
+         <a class="home-link" href="/">
+           Namestring Administrator
+           <% if ENV['APP_STAGE'] %>
+             <span class="stage">Staging</span>
+          <% end %>
+        </a>
+         <% if current_user %>
+            <span class="logout-link"><%= link_to('Log Out', destroy_user_session_path, method: :delete) %></span>
+            <span class="logout-link"><%= link_to 'Requests', requests_path %></span>
+            <% if current_user.admin %>
+              <span class="logout-link"><%= link_to 'Admin', admin_root_path %></span>
+            <% end %>
+         <% end %>
+         <% if !current_user %>
+          <script>localStorage.clear('inputs')</script>
+         <% end %>
+        </section>
       </div>
-      <% if notice %>
-        <p class="notice"><%= notice %></p>
-      <% end %>
-      <% if alert %>
-        <p class="alert"><%= alert %></p>
-      <% end %>
-      <div class="flexbox-item-grow flexbox-parent">
-        <%= yield %>
-      </div>
+    </div>
+    <% if notice %>
+      <p class="notice"><%= notice %></p>
+    <% end %>
+    <% if alert %>
+      <p class="alert"><%= alert %></p>
+    <% end %>
+    <div class="flexbox-item-grow flexbox-parent">
+      <%= yield %>
     </div>
   </body>
 </html>

@@ -2,11 +2,14 @@ class RequestsController < ApplicationController
 
   before_action :admin_user, only: [:edit, :update]
 
-  def index 
-    params[:pending] = 'true'
-    params[:in_process] = 'true'
-    params[:addl_info] = 'true'
-    @requests = Request.where.not(status: 'Complete')
+  def index
+    params[:submitted] = 'true'
+    params[:in_progress] = 'true'
+    @requests =     @requests = Request.where('status in (?)', ['Submitted', 'In Progress'])
+  end
+
+  def show
+    @request = Request.find(params[:id])
   end
 
   def new
@@ -27,66 +30,68 @@ class RequestsController < ApplicationController
     # Store request
     create_request(params)
     params['request']['email'] = current_user.email
+    params['request']
     # Send email to the current_user/requestor
-    RequestMailer.request_email(current_user.email, current_user.email, params['request']).deliver!
+    RequestMailer.request_email(current_user.email, current_user.email, @request).deliver!
     # Send email to each of the admins
     User.where(admin: true).each do |user|
-      RequestMailer.request_email(user.email, current_user.email, params['request']).deliver!
+      RequestMailer.request_email(user.email, current_user.email, @request).deliver!
     end
     flash[:notice] = 'Naming request sent'
   end
 
-  def edit 
+  def edit
     @request = Request.find(params[:id])
-  end 
+  end
 
   def update
     @request = Request.find(params[:id])
     @request.update_attribute(:administrator, current_user.email)
     @request.update_attributes!(request_params)
-    redirect_to requests_path
-  end 
+    redirect_to @request
+  end
 
   def create_request(params)
-    @request = Request.create!(requestor:  params['request']['name'], 
-      brand: params['request']['brand'], dimension: params['request']['dimension'], 
-      dimension_value: params['request']['dimension_value'], 
+    @request = Request.create!(
+      status: 'Submitted',
+      requestor:  params['request']['name'],
+      brand: params['request']['brand'],
+      dimension: params['request']['dimension'],
+      dimension_value: params['request']['dimension_value'],
       additional_info: params['request']['additional'],
-      status: 'Pending' )
+      requestor_email: current_user.email
+    )
     if @request
       redirect_to requests_path
     else
       flash[:notice] = "There was an error with the request."
       redirect_to new_request_path
-    end 
-  end 
+    end
+  end
 
   def filter
     sortParams = []
-    if params[:pending]
-      sortParams << 'Pending'
-    end 
-    if params[:in_process]
-      sortParams << 'In Process'
-    end 
-    if params[:addl_info]
-      sortParams << 'Additional Info'
-    end 
-    if params[:complete]
-      sortParams << 'Complete'
-    end 
+    if params[:submitted]
+      sortParams << 'Submitted'
+    end
+    if params[:did_not_include]
+      sortParams << 'Did Not Include'
+    end
+    if params[:in_progress]
+      sortParams << 'In Progress'
+    end
+    if params[:added]
+      sortParams << 'Added'
+    end
     @requests = Request.where('status in (?)', sortParams)
     render action: "index"
   end
 
   def request_params
-    params.require(:request).permit(:status, :additional_info)
-  end 
+    params.require(:request).permit(:status, :additional_info, :comments)
+  end
 
   def admin_user
-    if current_user.admin
-    else
-      redirect_to requests_path
-    end 
-  end 
+    redirect_to requests_path unless current_user.admin
+  end
 end

@@ -32,10 +32,16 @@ By default, it renders:
     <div class="row">
       <section class="header">
         <%= image_tag('viacom_logo.png') %>
-        <a class='home-link' href="/">Namestring Administrator</a>
+        <a class="home-link" href="/">
+          Namestring Administrator
+          <% if ENV['APP_STAGE'] %>
+            <span class="stage">Staging</span>
+         <% end %>
+       </a>
         <% if current_user %>
           <span class="logout-link"><%= link_to 'Log Out', destroy_user_session_path, method: :delete %></span>
-          <span class="logout-link"><%= link_to 'Namestring Manager', root_path %></span>
+          <span class="logout-link"><%= link_to 'Requests', requests_path %></span>
+          <span class="logout-link"><%= link_to 'Admin', admin_root_path %></span>
         <% end %>
       </section>
     </div>

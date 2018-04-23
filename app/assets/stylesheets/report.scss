@@ -18,12 +18,10 @@ html, body
 body
 {
     background: #444444;
-
     color: #cccccc;
     font-size: 14px;
     /* Helvetica/Arial-based sans serif stack */
     font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
-
 }
 
 .flexbox-parent
@@ -97,23 +95,20 @@ body
 	  a {
 	    text-decoration: none;
 	    color: white;
+			margin: 0 30px 2px 0;
+			font-size: 22px;
+			line-height: 40px;
 	    cursor: pointer;
 	  }
 
 		a.home-link {
-			margin-left: 30px;
-			line-height: 45px;
-			font-size: 20px;
+			margin-left: 10px;
 			float: left;
 		}
 
 	  .logout-link{
 	    a {
-	      color: white;
 	      float: right;
-	      margin: 0 30px 2px 0;
-	      font-size: 22px;
-				line-height: 40px;
 	    }
 	  }
 	}
@@ -264,38 +259,75 @@ body
       select.form-control {
         width: 190px;
       }
-
     }
-
   }
+}
 
+.form-header {
+	display: flex;
+	justify-content: space-between;
+	h3 {
+		margin: 0;
+		padding: 0;
+	}
+}
+
+.form-actions {
+	display: flex;
+	justify-content: space-around;
+	a {
+		margin: 20 0;
+	}
 }
 
 .request-container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  section.request {
+  .request {
+		width: 625px;
+		margin: auto;
     padding: 10px;
     font-size: medium;
-    height: auto;
+
+		a.cancel {
+			float: left;
+		}
+		dl {
+	    padding: 0.5em;
+	  }
+	  dt {
+	    float: left;
+	    clear: left;
+			margin-right: 10px;
+	    width: 275px;
+	    text-align: right;
+	    font-weight: bold;
+	  }
+	  dt::after {
+	    content: ":";
+	  }
+	  dd {
+	    padding: 0 0 0.5em 0;
+	  }
 
     p.required {
       color: red;
       font-size: 12px;
     }
 
+		label {
+			margin: 15px 0 5px 0;
+		}
+
     input, select {
-      margin-bottom: 10px;
-      height: 30px;
+			margin: 0;
+			padding: 0;
+			display: block;
       background: white;
       width: 400px;
     }
 
-    input#request-submit {
-      margin: 20px;
+
+    input#submit {
+			margin: 0 20px;
       background-color: $primary-color;
       color: white;
       border: none;
@@ -303,94 +335,41 @@ body
       width: 100px;
     }
   }
-
 }
+
 // This is the container for the requests index
 .requests-container {
+	margin: 0 50px;
+	min-width: 1200px;
+
   section.request, .edit {
     margin-left: 200px;
-
-    h2 {
-      margin-left: 50px;
-    }
-  }
-  section.edit-form {
-    margin-left: 275px;
-    margin-top: 30px;
-
-    label {
-      width: 100px;
-    }
-
-      select#request_status {
-        margin-bottom: 25px;
-        height: 25px;
-      }
-
-      input#request_dimension, input#request_dimension_value {
-        margin-bottom: 25px;
-        height: 30px;
-      }
-
-      textarea#request_additional_info {
-        width: 200px;
-        height: 100px;
-        margin-left: 100px;
-        margin-top: -18px;
-      }
-
-      input#request-edit {
-        margin: 20px;
-        margin-left: 150px;
-        background-color: $primary-color;
-        color: white;
-        border: none;
-        border-radius: 5%;
-        width: 100px;
-      }
-
-      button#cancel-edit {
-        margin: 20px;
-        background-color: red;
-        color: white;
-        border: none;
-        border-radius: 5%;
-        width: 100px;
-      }
-
-
-
-    
-
   }
   section.requests-table {
-    margin-left: 50px;
     table {
-      width: 80%;
+			width: 100%;
     }
-    table, th, td {
-      border: 1px solid black;
-    }
-
     td, th {
-      padding-left:10px;
-      padding-top: 10px;
+      padding: 10px;
+      text-align: center;
     }
     tr:nth-of-type(odd) {
-      background-color:#ccc;
+      background-color:#eee;
     }
+		min-width: 1200px;
   }
 
   section.filter {
-    h4 {
-      margin-right: 50px;
-    }
-    display: flex;
-    flex-direction: row;
-    margin-left: 75px;
-    margin-top: 25px;
-    margin-bottom: 25px;
+		width: 500px;
+		margin: 0 0 10px 0;
+		float: left;
   }
+
+	.link {
+		margin-top: 10px;
+		font-size: 18px;
+		float: right;
+	}
 
   form {
     margin-top: 8px;
@@ -403,14 +382,12 @@ body
         font-size: 18px;
       }
     }
-    
     input.btn.btn-default {
       margin-left: 10px;
       background-color: $primary-color;
       color: white;
     }
   }
-
 }
 
 .login-container {
@@ -420,7 +397,6 @@ body
   display: flex;
   flex-direction: column;
 
-
   section.login {
     padding: 10px;
     font-size: medium;
@@ -429,45 +405,41 @@ body
 
     .field {
       margin: 20px;
-
     }
-      input {
-        height: 25px;
-        font-size: 20px;
-        border: 2px solid $primary-color;
+    input {
+      height: 25px;
+			width: 400px;
+      font-size: 20px;
+      border: 2px solid $primary-color;
+      border-radius: 5%;
+      padding: 20px;
+    }
+
+    form#new_user.new_user {
+
+      select#user_agency_id {
+        height: 40px;
+        font-size: 18px;
+        border: 2px solid #2CACD9;
         border-radius: 5%;
         padding: 20px;
+        background: white;
+        margin-bottom: 10px;
       }
-
-      form#new_user.new_user {
-
-        select#user_agency_id {
-          height: 40px;
-          font-size: 18px;
-          border: 2px solid #2CACD9;
-          border-radius: 5%;
-          padding: 20px;
-          background: white;
-          margin-bottom: 10px;
-        }
-
-      }
-
-      .login-button {
-        color: white;
-        width: 258px;
-        background-color: $primary-color;
-        height: 40px;
-        padding: 0;
-        margin-bottom: 6px;
-      }
-
+    }
+    .login-button {
+      color: white;
+      width: 300px;
+      background-color: $primary-color;
+      height: 40px;
+      padding: 0;
+      margin-bottom: 6px;
+    }
   }
 
   section.component {
     height: auto;
   }
-
 }
 
 

@@ -4,13 +4,17 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h3>Hello! A new naming convention value has been requested.</h3>
-    <p>Name: <%= detail['name'] %></p>
-    <p>Email: <%= detail['email'] %></p>
-    <hr>
-    <p>Brand: <%= detail['brand'] %></p>
-    <p>Dimension Selection: <%= detail['dimension'] %></p>
-    <p>Dimension Value: <%= detail['dimension_value'] %></p>
-    <p>Additional Comments: <%= detail['additional'] %></p>
+    <p>A new naming convention value has been requested.</p>
+
+    <%= link_to 'View/Edit Request', request %>
+
+    <ul>
+      <li><b>Name:</b> <%= request.requestor %></li>
+      <li><b>Email:</b> <%= request.requestor_email %></li>
+      <li><b>Brand:</b> <%= request.brand %></li>
+      <li><b>Dimension:</b> <%= request.dimension %></li>
+      <li><b>Value:</b> <%= request.dimension_value %></li>
+      <li><b>Comments:</b> <%= request.comments %></li>
+    </ul>
   </body>
 </html>

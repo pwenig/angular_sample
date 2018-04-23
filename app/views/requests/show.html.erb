@@ -1,0 +1,22 @@
+<div class='request-container'>
+  <div class='request'>
+    <div class="form-header">
+      <h3> Request </h3>
+      <%= link_to('Edit Request', edit_request_path(@request), class: 'top') unless !current_user.admin %>
+    </div>
+    <dl>
+      <dt>Status</dt> <dd><%= @request.status %></dd>
+      <dt>Name</dt> <dd><%= @request.requestor %></dd>
+      <dt>Email</dt> <dd><%= @request.requestor_email %></dd>
+      <dt>Date Requested</dt> <dd><%= @request.created_at %></dd>
+      <dt>Brand</dt> <dd><%= @request.brand %></dd>
+      <dt>Requested Dimension</dt> <dd><%= @request.dimension %></dd>
+      <dt>Requested Dimension Value</dt> <dd><%= @request.dimension_value %></dd>
+      <dt>Additional Info</dt> <dd><%= @request.additional_info %></dd>
+      <dt>Administrator</dt> <dd><%= @request.administrator %></dd>
+      <dt>Comments</dt> <dd><%= @request.comments %></dd>
+      <dt>Date Updated</dt> <dd> <%= @request.updated_at %></dd>
+    </dl>
+
+  </div>
+</div>
