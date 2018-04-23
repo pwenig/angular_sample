@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180416020631) do
+ActiveRecord::Schema.define(version: 20180423224718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20180416020631) do
     t.string "ad_input_tag", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "lock_version"
+    t.integer "lock_version", default: 0, null: false
     t.index ["creative_group_id"], name: "index_ad_inputs_on_creative_group_id"
     t.index ["placement_input_id"], name: "index_ad_inputs_on_placement_input_id"
   end
@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 20180416020631) do
     t.string "campaign_input_tag", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "lock_version"
+    t.integer "lock_version", default: 0, null: false
     t.index ["campaign_type_id"], name: "index_campaign_inputs_on_campaign_type_id"
     t.index ["network_id"], name: "index_campaign_inputs_on_network_id"
     t.index ["program_id"], name: "index_campaign_inputs_on_program_id"
@@ -119,7 +119,7 @@ ActiveRecord::Schema.define(version: 20180416020631) do
     t.datetime "updated_at", null: false
     t.integer "start_year", default: 2017, null: false
     t.integer "end_year", default: 2017, null: false
-    t.integer "lock_version"
+    t.integer "lock_version", default: 0, null: false
     t.index ["abtest_label_id"], name: "index_creative_inputs_on_abtest_label_id"
     t.index ["ad_input_id"], name: "index_creative_inputs_on_ad_input_id"
     t.index ["creative_message_id"], name: "index_creative_inputs_on_creative_message_id"
@@ -181,7 +181,7 @@ ActiveRecord::Schema.define(version: 20180416020631) do
     t.string "package_input_tag", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "lock_version"
+    t.integer "lock_version", default: 0, null: false
     t.index ["agency_id"], name: "index_package_inputs_on_agency_id"
     t.index ["buy_method_id"], name: "index_package_inputs_on_buy_method_id"
     t.index ["campaign_input_id"], name: "index_package_inputs_on_campaign_input_id"
@@ -207,7 +207,7 @@ ActiveRecord::Schema.define(version: 20180416020631) do
     t.bigint "episode_end_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "lock_version"
+    t.integer "lock_version", default: 0, null: false
     t.index ["ad_type_id"], name: "index_placement_inputs_on_ad_type_id"
     t.index ["device_id"], name: "index_placement_inputs_on_device_id"
     t.index ["episode_end_id"], name: "index_placement_inputs_on_episode_end_id"
