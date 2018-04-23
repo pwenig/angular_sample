@@ -3,24 +3,24 @@ import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit} from '@a
 @Component({
   selector: 'children-component',
   template: `
-    <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType != 'Creative'">
-      <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-plus" style="font-size: 13px;"></i></span>
-      <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-minus" style="font-size: 13px;"></i></span>
-      <span class="no-children" *ngIf="!children || children.length == 0"></span>
-      <span [popover]="tooltip" triggers="mouseenter:mouseleave" (mouseenter)="getNames(parentType, parent, campaignParent, packageParent, null)">
-        <span class="parent-type" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}"
-        (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">
-        {{inputTag}}
+      <li class="{{parentType}}"  id="{{parentType}}-{{parent.id}}" *ngIf="parentType != 'Creative'">
+        <span class="expand-children" id="{{parentType}}-expand-{{parent.id}}" (click)="expand(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-plus" style="font-size: 13px;"></i></span>
+        <span class="collapse-children" id="{{parentType}}-collapse-{{parent.id}}" (click)="collapse(childType, children, parentType, parent)" *ngIf="children && children.length > 0"><i class="glyphicon glyphicon-minus" style="font-size: 13px;"></i></span>
+        <span class="no-children" *ngIf="!children || children.length == 0"></span>
+        <span [popover]="tooltip" triggers="mouseenter:mouseleave" (mouseenter)="getNames(parentType, parent, campaignParent, packageParent, null)">
+          <span class="parent-type" (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}"
+          (click)="namestringSelected(parent, parentType, childType, campaignParent, packageParent, placementParent, adParent)">
+          {{inputTag}}
+          </span>
         </span>
-      </span>
-      <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
-    </li>
-    <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'Creative'">
-      <span [popover]="tooltip" triggers="mouseenter:mouseleave" (mouseenter)="getNames(parentType, parent, campaignParent, null, adParent)">
-        <span class="parent-type" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
-      </span>
-      <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
-    </li>
+        <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
+      </li>
+      <li class="{{parentType}}" id="{{parentType}}-{{parent.id}}" *ngIf="parentType == 'Creative'">
+        <span [popover]="tooltip" triggers="mouseenter:mouseleave" (mouseenter)="getNames(parentType, parent, campaignParent, null, adParent)">
+          <span class="parent-type" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{ parentType}}: </span><span class="namestring" id="{{parentType}}-{{parent.id}}" (click)="namestringSelected(parent, parentType, null, campaignParent, packageParent, placementParent, adParent)">{{inputTag}}</span>
+        </span>
+        <span class="clipboard" id="{{parentType}}-{{parent.id}}-clip" ngxClipboard [cbContent]="inputTag" tooltip="Copy to clipboard"><i class="glyphicon glyphicon-copy"></i></span>
+      </li>
   `,
 })
 
@@ -36,7 +36,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   @Input() placementParent: any = {};
   @Input() adParent: any = {};
   @Input() action: any;
-  @Input() search: any;
+  @Input() clearSelected: boolean;
   @Output() selectedNamestring = new EventEmitter();
 
   inputTag: string;
@@ -48,47 +48,37 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   // Checks to make sure all of the data is rendered and then calls the function if currentCreated exists.
   ngAfterViewInit() {
-    if(!this.search) {
-      if(Object.keys(this.currentCreated).length != 0) {
-        setTimeout(() => {
-            if(this.action == 'Edit' || this.currentCreated.parentType == 'Campaign') {
-              if(localStorage.getItem('selected') != this.currentCreated.parentType + '-' + this.currentCreated.namestring.id ) {
-                this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
-              } else {
-                this.namestringUpdated(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
-              }
-            } else if ( this.currentCreated.parentType + '-' + this.currentCreated.namestring.id != localStorage.getItem('selected') ){
+    if(Object.keys(this.currentCreated).length != 0 && this.clearSelected == true) {
+      setTimeout(() => {
+          if(this.action == 'Edit' || this.currentCreated.parentType == 'Campaign') {
+            if(localStorage.getItem('selected') != this.currentCreated.parentType + '-' + this.currentCreated.namestring.id ) {
               this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
-            } else {}
-            
-            if(this.currentCreated.parentType == 'Package') {
-              this.expand('Package', [this.currentCreated.namestring], 'Campaign', this.campaignParent);
+            } else {
+              this.namestringUpdated(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
             }
-            if(this.currentCreated.parentType == 'Placement') {
-              this.expand('Placement', [this.currentCreated.namestring], 'Package', this.packageParent);
-            }
-            if(this.currentCreated.parentType == 'Ad') {
-              this.expand('Ad', [this.currentCreated.namestring], 'Placement', this.placementParent);
-            }
-            if(this.currentCreated.parentType == 'Creative') {
-              this.expand('Creative', [this.currentCreated.namestring], 'Ad', this.adParent);
-            }
-        });
-      }
+          } else if ( this.currentCreated.parentType + '-' + this.currentCreated.namestring.id != localStorage.getItem('selected') ){
+            this.namestringSelected(this.currentCreated.namestring, this.currentCreated.parentType, this.currentCreated.childType, this.campaignParent, this.packageParent, this.placementParent, this.adParent);
+          } else {}
+          if(this.clearSelected) {
+            this.expandTree(this.currentCreated.parentType);
+          }
+      });
     }
-    
-    if(this.search) {
-      if(localStorage.getItem('selected')) {
-        var oldClip = document.getElementById(localStorage.getItem('clip'));
-        var oldElement = document.getElementById(localStorage.getItem('selected'));
-        if(oldElement) {
-          oldElement.style.fontWeight = 'normal';
-          oldElement.style.backgroundColor = 'white';
-        }
-        if(oldClip) {
-          oldClip.style.visibility = 'hidden'
-        }
-      } 
+
+  }
+
+  expandTree(parentType) {
+    if(parentType == 'Package') {
+      this.expand('Package', [this.currentCreated.namestring], 'Campaign', this.campaignParent);
+    }
+    if(parentType == 'Placement') {
+      this.expand('Placement', [this.currentCreated.namestring], 'Package', this.packageParent);
+    }
+    if(parentType == 'Ad') {
+      this.expand('Ad', [this.currentCreated.namestring], 'Placement', this.placementParent);
+    }
+    if(parentType == 'Creative') {
+      this.expand('Creative', [this.currentCreated.namestring], 'Ad', this.adParent);
     }
   }
 
@@ -207,6 +197,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   }
 
   expand(childType, children, parentType, parent) {
+    // The problem is in here. Why is it going into this twice?
+
     var expand = document.getElementById(parentType + '-expand-' + parent.id);
     if(expand) {
       expand.style.display = 'none';
@@ -220,7 +212,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     if(children.length > 0) {
       for(let child of children) {
         var namestrings = document.getElementById(childType + '-' + child.id);
-        namestrings.style.display = 'block';
+        if(namestrings) {
+          namestrings.style.display = 'block';
+        }
       }
     }
     

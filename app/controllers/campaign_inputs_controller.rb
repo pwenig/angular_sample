@@ -6,6 +6,8 @@ class CampaignInputsController < ApplicationController
                                     .where(package_inputs: { agency_id: current_user.agency.id })
                                     .or(CampaignInput.includes(:package_inputs)
                                     .where(package_inputs: {agency_id: nil}))
+    # Sort the campaign_inputs by updated_at
+    @campaign_inputs = @campaign_inputs.sort_by { |campaign| campaign.updated_at }
     render json: @campaign_inputs, include: [:network, :season, :program, :campaign_type, { package_inputs:
     { include: [:publisher, :agency, :inventory_type, :buy_method, { placement_inputs: { include: [:episode_start, :episode_end, :tactic, :device, :targeting_type_1, :targeting_type_2,
     :targeting_type_3, :targeting_type_4, :ad_type,

@@ -40,9 +40,9 @@ import { HistoryService } from '../services/history_service';
 import { TreeService } from '../services/tree_service';
 import { ExportService } from '../services/export_service';
 import { DeleteService } from '../services/delete_service';
+import { SearchService } from '../services/search_service';
 import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe';
-import {FilterPipe} from '../shared/filter.pipe';
 import {SortPipe} from '../shared/sort.pipe';
 
 
@@ -66,7 +66,6 @@ import {SortPipe} from '../shared/sort.pipe';
     DeleteComponent,
     ErrorComponent,
     RangePipe,
-    FilterPipe,
     SortPipe
   ],
   imports: [
@@ -86,7 +85,7 @@ import {SortPipe} from '../shared/sort.pipe';
               PackageInputService, PlacementInputService, 
               AdInputService, CreativeInputService, 
               AdTypeService, CampaignTypeService,
-              HistoryService, TreeService, ExportService, DeleteService, DateFormatService],
+              HistoryService, TreeService, ExportService, DeleteService, DateFormatService, SearchService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
