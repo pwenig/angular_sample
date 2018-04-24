@@ -7,6 +7,7 @@ import {CampaignInputService} from '../services/campaign_input_service';
 import {TreeService} from '../services/tree_service';
 import {DateFormatService} from '../services/date_format_service'
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { CustomInputValidationService } from '../services/custom_input_validation_service';
 
 @Component({
   selector: 'creative',
@@ -30,7 +31,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                     <select-component [label]="creativeMessageLabel" [default]="defaultCreativeMessage" [options]="creativeMessages" (selected)="attributeUpdated($event, 'creative_message')"></select-component>
                   </div>
                   <div class="custom-column">
-                    <label for="creativeCustom">Creative Version Custom</label>
+                    <label for="creativeCustom">Creative Version Custom<span *ngIf="invalidCustom" style="color: red"> Invalid</span></label>
                     <input type="text" id="creativeCustom" [(ngModel)]="creativeInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
                   </div>
                   <div class="column">
@@ -52,7 +53,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                 <section class="select">
                   <div class="action-column">
                     <button class="btn btn-primary action" (click)="Modal.hide()">Cancel</button>
-                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}}</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" [disabled]="invalidCustom" (click)="saveInput(action)">{{action}}</button>
                   </div>
                 </section>
               </div>
@@ -104,8 +105,9 @@ export class CreativeComponent implements OnInit, OnChanges {
   showSave: boolean = false;
   showSelect: boolean = false;
   action: any = 'Create';
+  invalidCustom: boolean;
 
-  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService, private _date: DateFormatService) {}
+  constructor( private _creative: CreativeInputService, private _adtype: AdTypeService, private changeDetector: ChangeDetectorRef, private _history: HistoryService, private _tree: TreeService, private _date: DateFormatService, private _customValidate: CustomInputValidationService) {}
 
   ngOnInit() {
     if(this.selectedObject.action == 'New Creative') {
@@ -277,6 +279,18 @@ export class CreativeComponent implements OnInit, OnChanges {
   }
 
   checkAttributes() {
+    // Custom validations
+    if(this.creativeInput.custom) {
+      let validResponse = this._customValidate.validateInput(this.creativeInput.custom, 'Creative');
+      if(validResponse['status'] == 'invalid') {
+        this.invalidCustom = true;
+        this.creativeInput.custom = validResponse['value'];
+      } else {
+        this.invalidCustom = false;
+        this.creativeInput.custom = validResponse['value'];
+      }
+    }
+
     if(this.creativeInput.creative_message && this._adtype.videoAdType(this.selectedObject.namestring.placementParent) &&
       this.creativeInput.custom &&
       this.creativeInput.start_month &&

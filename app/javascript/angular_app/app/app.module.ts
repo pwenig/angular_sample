@@ -41,6 +41,7 @@ import { TreeService } from '../services/tree_service';
 import { ExportService } from '../services/export_service';
 import { DeleteService } from '../services/delete_service';
 import { SearchService } from '../services/search_service';
+import {CustomInputValidationService} from '../services/custom_input_validation_service';
 import {DateFormatService} from '../services/date_format_service';
 import {RangePipe} from '../shared/range.pipe';
 import {SortPipe} from '../shared/sort.pipe';
@@ -85,7 +86,7 @@ import {SortPipe} from '../shared/sort.pipe';
               PackageInputService, PlacementInputService, 
               AdInputService, CreativeInputService, 
               AdTypeService, CampaignTypeService,
-              HistoryService, TreeService, ExportService, DeleteService, DateFormatService, SearchService],
+              HistoryService, TreeService, ExportService, DeleteService, DateFormatService, SearchService, CustomInputValidationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

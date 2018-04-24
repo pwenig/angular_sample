@@ -4,6 +4,7 @@ import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
 import {HistoryService} from '../services/history_service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { CustomInputValidationService } from '../services/custom_input_validation_service';
 
 @Component({
   selector: 'campaign',
@@ -38,7 +39,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                     <select-component [label]="campaignTypeLabel" [default]="defaultCampaignType" [options]="campaignTypes" (selected)="attributeUpdated($event, 'campaignType')"></select-component>
                   </div>
                   <div class="custom-column"> 
-                    <label for="type">Campaign Custom</label><br>
+                    <label for="type">Campaign Custom<span *ngIf="invalidCustom" style="color: red"> Invalid</span></label><br>
                     <input type="text" id="customCampaign" [(ngModel)]="campaignInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
                   </div>
                   <div class="column">
@@ -49,7 +50,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                 <section class="select">
                   <div class="action-column">
                     <button class="btn btn-primary action" (click)="Modal.hide()">Cancel</button>
-                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}}</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" [disabled]="invalidCustom" (click)="saveInput(action)">{{action}}</button>
                   </div>
                 </section>
               </div>
@@ -108,8 +109,9 @@ export class CampaignComponent implements OnInit, OnChanges {
   showSelect: boolean = false;
   showModal: boolean;
   action: string = 'Create';
+  invalidCustom: boolean;
   
-  constructor( private _campaign: CampaignInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
+  constructor( private _campaign: CampaignInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService, private _customValidate: CustomInputValidationService) {}
 
   ngOnInit() {
     if(this.selectedObject.action == 'New Campaign') {
@@ -179,6 +181,18 @@ export class CampaignComponent implements OnInit, OnChanges {
 
   // Checks to see if everything is selected before creating the tag
   checkAttributes() {
+    // Custom validations
+    if(this.campaignInput.custom) {
+      let validResponse = this._customValidate.validateInput(this.campaignInput.custom, 'Campaign');
+      if(validResponse['status'] == 'invalid') {
+        this.invalidCustom = true;
+        this.campaignInput.custom = validResponse['value'];
+      } else {
+        this.invalidCustom = false;
+        this.campaignInput.custom = validResponse['value'];
+      }
+    }
+
     if(this.campaignInput.network && 
       this.campaignInput.program &&
       this.campaignInput.season &&

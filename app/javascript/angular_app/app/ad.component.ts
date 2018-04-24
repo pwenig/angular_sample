@@ -4,6 +4,7 @@ import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
 import {HistoryService} from '../services/history_service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { CustomInputValidationService } from '../services/custom_input_validation_service';
 
 @Component({
   selector: 'ad',
@@ -27,14 +28,14 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                     <select-component [label]="creativeGroupLabel" [default]="defaultCreativeGroup" [options]="creativeGroups" (selected)="attributeUpdated($event, 'creative_group')"></select-component>
                   </div>
                   <div class="custom-column">
-                    <label for="customAd">Ad Custom</label><br>
+                    <label for="customAd">Ad Custom<span *ngIf="invalidCustom" style="color: red"> Invalid</span></label><br>
                     <input type="text" id="customAd" [(ngModel)]="adInput.custom" placeholder="Enter Custom" (change)="checkAttributes()">
                   </div>
                   </section>
                   <section class="select">
                     <div class="action-column">
                       <button class="btn btn-primary action" (click)="Modal.hide()">Cancel</button>
-                      <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}}</button>
+                      <button class="btn btn-primary action" *ngIf="showSave" [disabled]="invalidCustom" (click)="saveInput(action)">{{action}}</button>
                     </div>
                   </section>
                 </div>
@@ -72,8 +73,9 @@ export class AdComponent implements OnInit, OnChanges {
   showSave: boolean = false;
   showSelect: boolean = false;
   action: any = 'Create';
+  invalidCustom: boolean;
 
-  constructor( private _ad: AdInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
+  constructor( private _ad: AdInputService, private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService, private _customValidate: CustomInputValidationService) {}
 
   ngOnInit() {
     if(this.selectedObject.action == 'New Ad') {
@@ -175,6 +177,18 @@ export class AdComponent implements OnInit, OnChanges {
 
   // Checks to see if everything is selected before creating the tag
   checkAttributes() {
+    // Custom validations
+    if(this.adInput.custom) {
+      let validResponse = this._customValidate.validateInput(this.adInput.custom, 'Ad');
+      if(validResponse['status'] == 'invalid') {
+        this.invalidCustom = true;
+        this.adInput.custom = validResponse['value'];
+      } else {
+        this.invalidCustom = false;
+        this.adInput.custom = validResponse['value'];
+      }
+    }
+
     if(this.adInput.creative_group && this.adInput.custom) {
       this.adInput.adInputTag = this._ad.createAdString(this.selectedObject.namestring.campaignParent, this.selectedObject.namestring.packageParent, this.selectedObject.namestring.placementParent, this.adInput)
       this.showSave = true;

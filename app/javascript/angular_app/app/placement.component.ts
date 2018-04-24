@@ -6,6 +6,7 @@ import {SelectComponent} from './select.component';
 import {TreeService} from '../services/tree_service';
 import {HistoryService} from '../services/history_service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { CustomInputValidationService } from '../services/custom_input_validation_service';
 
 @Component({
   selector: 'placement',
@@ -32,7 +33,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                   <select-component [label]="episodeEndLabel" [default]="defaultEpisodeEnd" [options]="episodes" (selected)="attributeUpdated($event, 'episode_end')"></select-component>
                 </div>
                 <div class="custom-column" *ngIf="_campaign.tentpole(selectedObject.namestring.campaignParent)"> 
-                  <label for="customTentpole">Tentpole Details</label><br>
+                  <label for="customTentpole">Tentpole Details<span *ngIf="invalidTentpole" style="color: red"> Invalid</span></label><br>
                   <input type="text" id="customTentpole" [(ngModel)]="placementInput.tentpole_details" placeholder="Enter Details" (change)="checkAttributes()">
                 </div>
                 </section>
@@ -63,22 +64,22 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
                 </section>
                 <section class="select" *ngIf="placementInput.ad_type">
                 <div class="custom-column"> 
-                  <label for="type">Audience Type</label><br>
+                  <label for="type">Audience Type<span *ngIf="invalidAudience" style="color: red"> Invalid</span></label><br>
                   <input type="text" id="customAudience" [(ngModel)]="placementInput.audience_type" placeholder="Enter Type" (change)="checkAttributes()">
                 </div>
                 <div class="custom-column"> 
-                  <label for="type">Width</label><br>
+                  <label for="type">Width<span *ngIf="invalidWidth" style="color: red"> Invalid</span></label><br>
                   <input type="text" id="customWidth" [(ngModel)]="placementInput.width" placeholder="Enter Width" (change)="checkAttributes()">
                 </div>
                 <div class="custom-column"> 
-                  <label for="type">Height</label><br>
+                  <label for="type">Height<span *ngIf="invalidHeight" style="color: red"> Invalid</span></label><br>
                   <input type="text" id="customHeight" [(ngModel)]="placementInput.height" placeholder="Enter Width" (change)="checkAttributes()">
                 </div>
                 </section>
                 <section class="select">
                   <div class="action-column">
                     <button class="btn btn-primary action" (click)="Modal.hide()">Cancel</button>
-                    <button class="btn btn-primary action" *ngIf="showSave" (click)="saveInput(action)">{{action}}</button>
+                    <button class="btn btn-primary action" *ngIf="showSave" [disabled]="saveDisabled()" (click)="saveInput(action)">{{action}}</button>
                   </div>
                 </section>
               </div>
@@ -139,8 +140,12 @@ export class PlacementComponent implements OnInit, OnChanges {
   showSave: boolean = false;
   showSelect: boolean = false;
   action: string = 'Create';
-
-  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService,  private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService) {}
+  invalidAudience: boolean;
+  invalidTentpole: boolean;
+  invalidWidth: boolean;
+  invalidHeight: boolean;
+  
+  constructor( private _placement: PlacementInputService, private _adtype: AdTypeService, private _campaign: CampaignTypeService,  private changeDetector: ChangeDetectorRef, private _tree: TreeService, private _history: HistoryService, private _customValidate: CustomInputValidationService) {}
 
   ngOnInit() {
     if(this.selectedObject.action == 'New Placement') {
@@ -178,8 +183,54 @@ closeModal() {
     this.checkAttributes();
   }
 
+  saveDisabled = function() {
+    return this.invalidAudience || this.invalidTentpole || this.invalidWidth || this.invalidHeight;
+  }
+
   // Checks to see if everything is selected before creating the tag
   checkAttributes(){
+    // Custom validations
+    if(this.placementInput.audience_type) {
+      let validResponse = this._customValidate.validateInput(this.placementInput.audience_type, 'Placement');
+      if(validResponse['status'] == 'invalid') {
+        this.invalidAudience = true;
+        this.placementInput.audience_type = validResponse['value'];
+      } else {
+        this.invalidAudience = false;
+        this.placementInput.audience_type = validResponse['value'];
+      }
+    }
+    if(this.placementInput.tentpole_details) {
+      let validResponse = this._customValidate.validateInput(this.placementInput.tentpole_details, 'Placement');
+      if(validResponse['status'] == 'invalid') {
+        this.invalidTentpole = true;
+        this.placementInput.tentpole_details = validResponse['value'];
+      } else {
+        this.invalidTentpole = false;
+        this.placementInput.tentpole_details = validResponse['value'];
+      }
+    }
+    if(this.placementInput.width) {
+      let validResponse = this._customValidate.validateInput(this.placementInput.width, 'Placement');
+      if(validResponse['status'] == 'invalid') {
+        this.invalidWidth = true;
+        this.placementInput.width = validResponse['value'];
+      } else {
+        this.invalidWidth = false;
+        this.placementInput.width = validResponse['value'];
+      }
+    }
+    if(this.placementInput.height) {
+      let validResponse = this._customValidate.validateInput(this.placementInput.height, 'Placement');
+      if(validResponse['status'] == 'invalid') {
+        this.invalidHeight = true;
+        this.placementInput.height = validResponse['value'];
+      } else {
+        this.invalidHeight = false;
+        this.placementInput.height = validResponse['value'];
+      }
+    }
+
     // Not a tentpole and not video ad type
     if(!this._campaign.tentpole(this.selectedObject.namestring.campaignParent) && !this._adtype.videoAdType(this.placementInput) && 
       this.placementInput.episode_start &&
