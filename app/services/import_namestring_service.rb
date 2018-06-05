@@ -102,6 +102,7 @@ class ImportNamestringService
     end
   end
 
+
   def self.find_or_create_campaign_input(row)
     network = Network.find_by_name(row[:network])
     program = Program.find_by_name(row[:program])
@@ -197,10 +198,10 @@ class ImportNamestringService
   end
 
   def self.find_or_create_creative_input(ad_input, row)
-    if !row[:abtest_label]
+    if !row[:a_b_test_label]
       abtest_label = AbtestLabel.find_by_name('Not Applicable')
     else
-      abtest_label = AbtestLabel.find_by_name(row[:abtest_label])
+      abtest_label = AbtestLabel.find_by_name(row[:a_b_test_label])
     end
     video_length = row[:video_length] ? VideoLength.find_by_name(row[:video_length]) : nil
     params = {

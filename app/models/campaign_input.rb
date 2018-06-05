@@ -31,8 +31,7 @@ class CampaignInput < ApplicationRecord
         season.abbrev,
         campaign_type.abbrev,
         custom,
-        "#{start_year}#{start_month.to_s.rjust(2,"0")}#{start_day.to_s.rjust(2,"0")}",
-        "#{end_year}#{end_month.to_s.rjust(2,"0")}#{end_day.to_s.rjust(2,"0")}"
+        "#{start_year}#{start_month.to_s.rjust(2,'0')}#{start_day.to_s.rjust(2,'0')}-#{end_year}#{end_month.to_s.rjust(2,'0')}#{end_day.to_s.rjust(2,'0')}"
       ].join("_")
     end
   end

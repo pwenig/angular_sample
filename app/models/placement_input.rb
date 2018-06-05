@@ -59,7 +59,7 @@ class PlacementInput < ApplicationRecord
     !ad_type&.video? ? "#{width}x#{height}" : "X"
   end
 
-  def set_placement_input_tag
+  def set_placement_input_tag    
     if !self.placement_input_tag
       c = package_input.campaign_input
       self.placement_input_tag = [
@@ -80,8 +80,7 @@ class PlacementInput < ApplicationRecord
         targeting_type_4.abbrev,
         audience_type,
         dimensions_field,
-        "#{c.start_year}#{c.start_month.to_s.rjust(2,"0")}#{c.start_day.to_s.rjust(2,"0")}",
-        "#{c.end_year}#{c.end_month.to_s.rjust(2,"0")}#{c.end_day.to_s.rjust(2,"0")}"
+        "#{c.start_year}#{c.start_month.to_s.rjust(2,'0')}#{c.start_day.to_s.rjust(2,"0")}-#{c.end_year}#{c.end_month.to_s.rjust(2,'0')}#{c.end_day.to_s.rjust(2,'0')}"
       ].compact().join("_")
     end
   end
