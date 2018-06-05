@@ -32,9 +32,8 @@ class CreativeInput < ApplicationRecord
         ad_input.placement_input.ad_type.video? ?
           video_length.name :
           "#{ad_input.placement_input.width}x#{ad_input.placement_input.height}",
-        "#{start_month.to_s.rjust(2,"0")}#{start_day.to_s.rjust(2,"0")}" +
-          "-" +
-            "#{end_month.to_s.rjust(2,"0")}#{end_day.to_s.rjust(2,"0")}"
+          "#{start_year}#{start_month.to_s.rjust(2,"0")}#{start_day.to_s.rjust(2,"0")}",
+          "#{end_year}#{end_month.to_s.rjust(2,"0")}#{end_day.to_s.rjust(2,"0")}"
       ].compact.join('_')
     end
   end

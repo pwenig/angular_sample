@@ -80,8 +80,8 @@ class PlacementInput < ApplicationRecord
         targeting_type_4.abbrev,
         audience_type,
         dimensions_field,
-        "#{c.start_month.to_s.rjust(2,"0")}#{c.start_day.to_s.rjust(2,"0")}",
-        "#{c.end_month.to_s.rjust(2,"0")}#{c.end_day.to_s.rjust(2,"0")}"
+        "#{c.start_year}#{c.start_month.to_s.rjust(2,"0")}#{c.start_day.to_s.rjust(2,"0")}",
+        "#{c.end_year}#{c.end_month.to_s.rjust(2,"0")}#{c.end_day.to_s.rjust(2,"0")}"
       ].compact().join("_")
     end
   end

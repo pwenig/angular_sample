@@ -17,10 +17,13 @@
 * To create the initial admin user:
   * $rake admin:create_user
 
-* To import all initial data:
+* To import all initial data except for initial namestrings:
   * $rake import:all
 
-* To clear and reset all initial data (except Users and Agencies)
+* To import initial namestrings
+  * $rake import:namestrings
+
+* To clear and reset all initial data including namestrings (except Users and Agencies)
   * $rake import:reset
 
 * To import initial network data:
