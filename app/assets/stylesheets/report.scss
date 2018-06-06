@@ -191,6 +191,28 @@ body
   }
 }
 
+.glossary-container {
+  overflow-y: scroll;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 20px;
+
+  .glossary-row {
+    margin-left: -500px;
+    margin-right: 30px;
+  }
+  section.glossary {
+    width: 700px;
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+
+    .table {
+      margin-right: 20px;
+    }
+  }
+}
+
 .select-container {
 
   section.select {

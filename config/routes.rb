@@ -41,6 +41,8 @@ Rails.application.routes.draw do
     get 'invite' => 'devise/invitations#new'
   end
 
+  get 'glossary' => 'glossary#index'
+
   # Redirects routes to index if a wrong route is entered.
   get '*path' => redirect('/')
 

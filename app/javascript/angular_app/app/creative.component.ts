@@ -111,7 +111,7 @@ export class CreativeComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     if(this.selectedObject.action == 'New Creative') {
-      this.creativeInput.custom = "XX";
+      this.creativeInput.custom = "X";
       this.defaultAbLabel = this.abtestLabels.find(x => x.name == 'Not Applicable')
       this.creativeInput.abtest_label = this.defaultAbLabel
       this.defaultCreativeVersion = '01'

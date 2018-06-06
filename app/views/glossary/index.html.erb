@@ -1,0 +1,221 @@
+
+<div class="glossary-container">
+  <div class="glossary-row">
+    <section class="glossary">
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>NETWORK</th>
+              <th>NET ABBR</th> 
+              <th>PROGRAM</th>
+              <th>PGM ABBR</th> 
+            </tr>
+            <% @networks.each do |network| %>
+                <% network.programs.each do |program| %>
+                <tr>
+                  <td><%= network.name %></td>
+                  <td><%= network.abbrev %></td>
+                  <td><%= program.name %></td>
+                  <td><%= program.abbrev %></td>
+                </tr>
+              <% end%>
+            <% end%>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>SEASON</th>
+              <th>SN ABBR</th>
+            </tr>
+            <% @seasons.each do |season| %>
+              <tr>
+                <td><%= season.name %></td>
+                <td><%= season.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>CAMPAIGN TYPE</th>
+              <th>CPN TYPE ABBR</th>
+            </tr>
+            <% @campaign_types.each do |campaign| %>
+              <tr>
+                <td><%= campaign.name %></td>
+                <td><%= campaign.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>PUBLISHER</th>
+              <th>PUB ABBR</th>
+            </tr>
+            <% @publishers.each do |publisher| %>
+              <tr>
+                <td><%= publisher.name %></td>
+                <td><%= publisher.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>BUY METHOD</th>
+              <th>BUY ABBR</th>
+            </tr>
+            <% @buy_methods.each do |method| %>
+              <tr>
+                <td><%= method.name %></td>
+                <td><%= method.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>INVENTORY TYPE</th>
+              <th>INV ABBR</th>
+            </tr>
+            <% @inventory_types.each do |type| %>
+              <tr>
+                <td><%= type.name %></td>
+                <td><%= type.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>EPISODE</th>
+              <th>EP ABBR</th>
+            </tr>
+            <% @episodes.each do |episode| %>
+              <tr>
+                <td><%= episode.name %></td>
+                <td><%= episode.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+       <div class="table">
+        <table border="1">
+            <tr>
+              <th>TACTIC</th>
+              <th>TAC ABBR</th>
+            </tr>
+            <% @tactics.each do |tactic| %>
+              <tr>
+                <td><%= tactic.name %></td>
+                <td><%= tactic.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+       <div class="table">
+        <table border="1">
+            <tr>
+              <th>DEVICE</th>
+              <th>DVC ABBR</th>
+            </tr>
+            <% @devices.each do |device| %>
+              <tr>
+                <td><%= device.name %></td>
+                <td><%= device.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+       <div class="table">
+        <table border="1">
+            <tr>
+              <th>AD TYPE</th>
+              <th>AD ABBR</th>
+            </tr>
+            <% @ad_types.each do |type| %>
+              <tr>
+                <td><%= type.name %></td>
+                <td><%= type.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>TARGETING TYPE</th>
+              <th>TGT ABBR</th>
+            </tr>
+            <% @targeting_types.each do |type| %>
+              <tr>
+                <td><%= type.name %></td>
+                <td><%= type.abbrev %>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+       <div class="table">
+        <table border="1">
+            <tr>
+              <th>VIDEO LENGTH</th>
+            </tr>
+            <% @video_lengths.each do |length| %>
+              <tr>
+                <td><%= length.name %></td>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+       <div class="table">
+        <table border="1">
+            <tr>
+              <th>CREATIVE GROUP</th>
+              <th>CTVE GRP ABBR</th>
+            </tr>
+            <% @creative_groups.each do |group| %>
+              <tr>
+                <td><%= group.name %></td>
+                <td><%= group.abbrev %></td>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>CREATIVE MESSAGE</th>
+              <th>CTVE MSG ABBR</th>
+            </tr>
+            <% @creative_messages.each do |message| %>
+              <tr>
+                <td><%= message.name %></td>
+                <td><%= message.abbrev %></td>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+      <div class="table">
+        <table border="1">
+            <tr>
+              <th>A/B TEST LABEL</th>
+              <th>A/B ABBR</th>
+            </tr>
+            <% @abtest_labels.each do |label| %>
+              <tr>
+                <td><%= label.name %></td>
+                <td><%= label.abbrev %></td>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+    </section>
+  </div>
+</div>

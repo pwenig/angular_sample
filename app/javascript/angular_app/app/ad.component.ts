@@ -79,7 +79,7 @@ export class AdComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     if(this.selectedObject.action == 'New Ad') {
-      this.adInput.custom = "XX";
+      this.adInput.custom = "X";
     }
   }
 

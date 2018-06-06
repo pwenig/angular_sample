@@ -115,7 +115,7 @@ export class CampaignComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     if(this.selectedObject.action == 'New Campaign') {
-      this.campaignInput.custom = 'XX';
+      this.campaignInput.custom = 'X';
     }
   }
 
