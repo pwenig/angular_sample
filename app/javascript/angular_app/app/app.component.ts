@@ -11,7 +11,7 @@ import { LIFECYCLE_HOOKS_VALUES } from '@angular/compiler/src/lifecycle_reflecto
   template: `
    <div class="flexbox-item">
     <actions [selectedNameString]="selectedNameString" (namestringAction)="selectedAction($event)" [namestringSelected]="disableActions"></actions>
-    <a href="/glossary">Glossary</a>
+    <a href="/glossary" style="position: fixed">Glossary</a>
    </div>
       <tree class="flexbox-item-grow flexbox-parent" [loading]="loading" [current_created_input]="current_created_input" [action]="action" [all_inputs]="all_inputs" (selectedNamestring)="selectedString($event)"></tree>
     <div *ngIf="campaignAction">
