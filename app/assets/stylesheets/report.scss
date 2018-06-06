@@ -209,6 +209,11 @@ body
 
     .table {
       margin-right: 20px;
+      th {
+        font-weight: bold;
+        background: lightgray;
+        padding: 0 5px 0 5px;
+      }
       td {
         padding: 5px;
       }
@@ -217,7 +222,6 @@ body
 }
 
 .select-container {
-
   section.select {
     width: 700px;
     display: flex;
