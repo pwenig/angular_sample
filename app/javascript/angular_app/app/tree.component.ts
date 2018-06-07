@@ -6,7 +6,7 @@ import {SearchService} from '../services/search_service';
   template: `
     <div class="tree-container flexbox-item-grow flexbox-parent">
     <div class="search">
-      <input type="text" [(ngModel)]="queryString" id="search" (input)="searchChange(queryString)" placeholder="Search Network/Program Name/Abbrev">
+      <input type="text" [(ngModel)]="queryString" id="search" (input)="searchChange(queryString)" placeholder="Search">
      </div>
         <section class="tree flexbox-item-grow">
         <div *ngIf="loading"style="float:left; font-size: 18px;">
@@ -212,7 +212,7 @@ export class TreeComponent implements OnChanges {
 
   searchChange(queryString) {
     this.selectedNamestring.emit(null);
-    if(queryString && queryString.length > 2) {
+    if(queryString && queryString.length > 1) {
       this.filtered_inputs = this._search.searchCampaigns(queryString, this.all_inputs);
       if(this.filtered_inputs.length == 0){
         this.noInputs = true;

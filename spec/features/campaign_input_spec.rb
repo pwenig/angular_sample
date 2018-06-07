@@ -118,8 +118,8 @@ RSpec.feature 'Campaign Input', type: :feature, js: true do
     expect(page).to have_text('Create')
     click_on('Create')
     expect(page).to have_text("CCL_BC_s00_BG_XX_#{date}")
-    expect(page).to have_field('Search Network/Program Name/Abbrev')
-    fill_in('Search Network/Program Name/Abbrev', with: 'Broad')
+    expect(page).to have_field('Search')
+    fill_in('Search', with: 'Broad')
     expect(page).to have_text("CCL_BC_s00_BG_XX_#{date}")
     expect(page).to_not have_text("CCL_CLTF_s00_BG_XX_#{date}")
   end

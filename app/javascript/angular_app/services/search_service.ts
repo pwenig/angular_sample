@@ -5,16 +5,37 @@ export class SearchService {
 
   constructor() {}
 
+  month: string;
+  day: string;
+  year: string;
+
+  match_dates(input, queryString) {
+    if(queryString.length > 7) {
+      if( (Number(input['start_day']) == Number(this.day) && Number(input['start_month']) == Number(this.month) && Number(input['start_year']) == Number(this.year)) ||
+      ( Number(input['end_day']) == Number(this.day) && Number(input['end_month']) == Number(this.month) && Number(input['end_year']) == Number(this.year)) ) {
+        return true;
+      } 
+    }
+  }
+
   searchCampaigns(queryString, campaigns) {
 
     let filteredNamestrings = [];
     queryString = queryString.toLowerCase();
     for(let campaign of campaigns) {
+      // Check to see if a number and the min format (1/1/2020) has been entered
+      if(!isNaN(Number(queryString.charAt(0))) && queryString.length > 7) {
+        let splitString = queryString.split('/');
+        this.month = splitString[0];
+        this.day = splitString[1];
+        this.year = splitString[2];
+      }
       // Check campaign keys
       if(campaign.network.name.toLowerCase().includes(queryString) ||
         campaign.network.abbrev.toLowerCase().includes(queryString) ||
         campaign.program.name.toLowerCase().includes(queryString) ||
         campaign.program.abbrev.toLowerCase().includes(queryString) ||
+        this.match_dates(campaign, queryString) || 
         campaign.custom.toLowerCase() == queryString) 
         {
           filteredNamestrings.push(campaign);
@@ -109,6 +130,7 @@ export class SearchService {
                     for(let creative_input of ad_input.creative_inputs) {
                       if(creative_input.creative_message.name.toLowerCase().includes(queryString) ||
                         creative_input.creative_message.abbrev.toLowerCase().includes(queryString) ||
+                        this.match_dates(creative_input, queryString) || 
                         creative_input.custom.toLowerCase == queryString) 
                         {
                           ad_input.filtered_creative_inputs.push(creative_input);
