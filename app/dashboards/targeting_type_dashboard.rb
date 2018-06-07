@@ -11,6 +11,7 @@ class TargetingTypeDashboard < Administrate::BaseDashboard
     id: Field::Number,
     name: Field::String,
     abbrev: Field::String,
+    definition: Field::Text,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -23,6 +24,7 @@ class TargetingTypeDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     name
     abbrev
+    definition
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -30,6 +32,7 @@ class TargetingTypeDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     name
     abbrev
+    definition
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -38,6 +41,7 @@ class TargetingTypeDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     name
     abbrev
+    definition
   ].freeze
 
   # Overwrite this method to customize how targeting types are displayed

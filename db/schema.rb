@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180423224718) do
+ActiveRecord::Schema.define(version: 20180607031442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20180423224718) do
     t.string "abbrev", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "definition"
     t.index ["abbrev"], name: "index_ad_types_on_abbrev", unique: true
     t.index ["name"], name: "index_ad_types_on_name", unique: true
   end
@@ -99,6 +100,7 @@ ActiveRecord::Schema.define(version: 20180423224718) do
     t.string "abbrev", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "definition"
     t.index ["abbrev"], name: "index_creative_groups_on_abbrev", unique: true
     t.index ["name"], name: "index_creative_groups_on_name", unique: true
   end
@@ -158,6 +160,7 @@ ActiveRecord::Schema.define(version: 20180423224718) do
     t.string "abbrev", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "definition"
     t.index ["abbrev"], name: "index_inventory_types_on_abbrev", unique: true
     t.index ["name"], name: "index_inventory_types_on_name", unique: true
   end
@@ -277,6 +280,7 @@ ActiveRecord::Schema.define(version: 20180423224718) do
     t.string "abbrev", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "definition"
     t.index ["abbrev"], name: "index_targeting_types_on_abbrev", unique: true
     t.index ["name"], name: "index_targeting_types_on_name", unique: true
   end

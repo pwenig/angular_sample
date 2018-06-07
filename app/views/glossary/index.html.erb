@@ -83,11 +83,13 @@
             <tr>
               <th>Inventory Type</th>
               <th>Abbrev</th>
+              <th>Definition</th>
             </tr>
             <% @inventory_types.each do |type| %>
               <tr>
                 <td><%= type.name %></td>
                 <td><%= type.abbrev %>
+                <td><%= type.definition %>
               </tr>
             <% end %>
           </table>
@@ -139,11 +141,13 @@
             <tr>
               <th>Ad Type</th>
               <th>Abbrev</th>
+              <th>Definition</th>
             </tr>
             <% @ad_types.each do |type| %>
               <tr>
                 <td><%= type.name %></td>
                 <td><%= type.abbrev %>
+                <td><%= type.definition %>
               </tr>
             <% end %>
           </table>
@@ -153,11 +157,13 @@
             <tr>
               <th>Targeting Type</th>
               <th>Abbrev</th>
+              <th>Definition</th>
             </tr>
             <% @targeting_types.each do |type| %>
               <tr>
                 <td><%= type.name %></td>
-                <td><%= type.abbrev %>
+                <td><%= type.abbrev %></td>
+                <td><%= type.definition %></td>
               </tr>
             <% end %>
           </table>
@@ -179,11 +185,13 @@
             <tr>
               <th>Creative Group</th>
               <th>Abbrev</th>
+              <th>Definition</th>
             </tr>
             <% @creative_groups.each do |group| %>
               <tr>
                 <td><%= group.name %></td>
                 <td><%= group.abbrev %></td>
+                <td><%= group.definition %></td>
               </tr>
             <% end %>
           </table>

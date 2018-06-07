@@ -4,9 +4,11 @@ RSpec.describe CreativeGroup, type: :model do
   subject { CreativeGroup.new(abbrev: 'AON') }
 
   it 'should create a creative group' do
-    creative_group = CreativeGroup.create!(name: 'Always On', abbrev: 'AON')
+    creative_group = CreativeGroup.create!(name: 'Always On', abbrev: 'AON', definition: 'Use for buys like with PopSugar')
     expect(creative_group.name).to include('Always On')
     expect(creative_group.abbrev).to include('AON')
+    expect(creative_group.definition).to include('Use for buys like with PopSugar')
+    
   end
 
   it 'should validate :abbrev required' do

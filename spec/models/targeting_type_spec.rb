@@ -4,9 +4,10 @@ RSpec.describe TargetingType, type: :model do
   subject { TargetingType.new(abbrev: 'BT') }
 
   it 'should create a targeting type' do
-    targeting_type = TargetingType.create!(name: 'Behavioral', abbrev: 'BT')
+    targeting_type = TargetingType.create!(name: 'Behavioral', abbrev: 'BT', definition: 'Use for buys like with PopSugar')
     expect(targeting_type.name).to include('Behavioral')
     expect(targeting_type.abbrev).to include('BT')
+    expect(targeting_type.definition).to include('Use for buys like with PopSugar')
   end
 
   it 'should validate :abbrev required' do
